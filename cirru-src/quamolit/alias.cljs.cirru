@@ -1,13 +1,21 @@
 
 ns quamolit.alias
 
-defn create-element
+defn create-shape
   tag-name props & children
-  concat ([] tag-name props)
-    , children
+  into ([])
+    concat ([] tag-name props)
+      , children
 
-def line $ partial create-element :line
+defn create-component (name details)
+  fn (& args)
+    into ([])
+      concat
+        [] $ assoc :details :name name
+        , args
 
-def group $ partial create-element :group
+def line $ partial create-shape :line
 
-def circle $ partial create-element :circle
+def group $ partial create-shape :group
+
+def circle $ partial create-shape :circle
