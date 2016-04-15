@@ -1,7 +1,7 @@
 
 ns quamolit.component.container $ :require
   [] quamolit.alias :refer $ [] create-component group
-  [] quamolit.component :refer $ [] todolist-component
+  [] quamolit.component.todolist :refer $ [] todolist-component
 
 def container-component $ create-component :container
   {}
@@ -16,7 +16,7 @@ def container-component $ create-component :container
         fn (instant fluxion)
           group
             {} $ :style ({})
-            todolist-component store
+            [] $ todolist-component store
 
     :on-mount $ fn ()
     :on-unmount $ fn ()

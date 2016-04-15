@@ -1,5 +1,5 @@
 
-ns quamolit.contoller.gc
+ns quamolit.controller.gc
 
 defn gc-component (component)
   , component

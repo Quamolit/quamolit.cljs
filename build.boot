@@ -11,7 +11,7 @@
                  [adzerk/boot-reload        "0.4.6"       :scope "test"]
                  [mvc-works/boot-html-entry "0.1.1"       :scope "test"]
                  [cirru/boot-cirru-sepal    "0.1.1"       :scope "test"]
-                 [binaryage/devtools        "0.5.2"       :scope "test"]
+                 [binaryage/devtools        "0.6.1"       :scope "test"]
                  [mvc-works/hsl             "0.1.2"]]
 
   :repositories #(conj % ["clojars" {:url "https://clojars.org/repo/"}]))
@@ -90,7 +90,8 @@
     (compile-cirru)
     (pom)
     (jar)
-    (install)))
+    (install)
+    (target)))
 
 (deftask deploy []
   (comp

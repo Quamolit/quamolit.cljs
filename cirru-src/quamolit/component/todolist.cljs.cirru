@@ -12,5 +12,5 @@ def todolist-component $ create-component :todolist
     :update-instant merge
     :render $ fn (store)
       fn (state)
-        fn (instant velocity)
+        fn (instant)
           group $ {}
