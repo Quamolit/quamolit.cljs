@@ -9,7 +9,6 @@ def todolist-component $ create-component :todolist
     :update-state merge
     :init-instant $ fn ()
       {}
-    :update-instant merge
     :render $ fn (store)
       fn (state)
         fn (instant)

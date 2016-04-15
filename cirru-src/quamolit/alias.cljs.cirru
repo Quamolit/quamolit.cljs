@@ -3,6 +3,9 @@ ns quamolit.alias
 
 defn no-op $
 
+defn no-op-2 ()
+  , no-op-2
+
 defn create-shape (shape-name props children)
   {} (:name shape-name)
     :type :shape
@@ -27,15 +30,15 @@ defn create-component (component-name details)
         fn (& args)
           {}
 
-      :update-instant $ or (:update-instant details)
-        , no-op
       :render $ :render details
       :on-mount $ or (:on-mount details)
         , no-op
       :on-unmount $ or (:on-unmount details)
         , no-op
-      :on-update $ or (:on-update details)
-        , no-op
+      :on-props $ or (:on-props details)
+        , no-op-2
+      :on-state $ or (:on-state details)
+        , no-op-2
       :on-tick $ or (:on-tick details)
         , no-op
 
