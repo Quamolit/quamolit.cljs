@@ -19,7 +19,7 @@ defn create-component (component-name details)
   fn (& args)
     {} (:name component-name)
       :type :component
-      :props args
+      :args args
       :init-state $ or (:init-state details)
         fn (& args)
           {}
@@ -35,10 +35,8 @@ defn create-component (component-name details)
         , no-op
       :on-unmount $ or (:on-unmount details)
         , no-op
-      :on-props $ or (:on-props details)
-        , no-op-2
-      :on-state $ or (:on-state details)
-        , no-op-2
+      :on-update $ or (:on-update details)
+        , no-op
       :on-tick $ or (:on-tick details)
         , no-op
 
