@@ -10,7 +10,7 @@ defn merge-children
 
   (acc old-children new-children)
     cond
-      (and (= (count old-children) (, 0)) (= $ count new-children 0)) acc
+      (and (= (count old-children) (, 0)) (= (count new-children) (, 0))) acc
 
       (and (= (count old-children) (, 0)) (> (count new-children) (, 0)))
         let
@@ -21,7 +21,7 @@ defn merge-children
           merge-children new-acc (list)
             rest new-children
 
-      (and (> (count old-list) (, 0)) (= (count new-list) (, 0)))
+      (and (> (count old-children) (, 0)) (= (count new-children) (, 0)))
         let
           (cursor $ first old-children)
             child-key $ first cursor
@@ -98,7 +98,7 @@ defn expand-shape
 
           into $ sorted-map
 
-      assoc markup :children $ merge-children old-chilren new-children
+      assoc markup :children $ merge-children old-children new-children
 
     let
       (new-children $ ->> (:children markup) (map $ fn (child) (let ((child-key $ key child) (child-markup $ val child) (child-coord $ conj coord child-key)) ([] child-key $ if (= (:type child-markup) (, :component)) (expand-component child-markup nil child-coord states at-place?) (expand-shape child-markup nil child-coord coord states at-place?)))) (into $ sorted-map))
@@ -114,14 +114,14 @@ defn expand-component
         (old-args $ :args old-tree)
           old-state $ :state old-tree
           old-instant $ :state old-tree
-          new-atgs $ :args markup
+          new-args $ :args markup
           new-state $ get states coord
           on-update $ :on-update markup
           new-instant $ on-update old-instant old-args new-args old-state new-state
-          render $ :render markup
-          render-with-args $ apply render new-args
-          render-with-args-state $ render-with-args new-state
-          new-shape $ render-with-args-state new-instant
+          new-shape $ -> (:render markup)
+            apply new-args
+            apply $ list new-state
+            apply $ list new-instant
           new-tree $ expand-shape new-shape (:tree old-tree)
             , coord coord states at-place?
 
@@ -136,12 +136,14 @@ defn expand-component
           initial-instant $ init-instant-with-args state
           on-mount $ :on-mount markup at-place?
           instant $ on-mount initial-instant args state
-          render $ :render markup
-          render-with-args $ apply render new-args
-          render-with-args-state $ render-with-args state
-          shape $ render-with-args-state instant
-          tree $ expand-shape new-shape nil coord coord states false
-        {} :name (:name markup)
+          shape $ -> (:render markup)
+            apply args
+            apply $ list state
+            apply $ list instant
+          tree $ expand-shape shape nil coord coord states false
+
+        {}
+          :name $ :name markup
           :args args
           :state state
           :instant instant

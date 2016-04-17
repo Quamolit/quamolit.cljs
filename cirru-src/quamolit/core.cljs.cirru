@@ -17,17 +17,14 @@ defonce global-tick $ atom (get-tick)
 
 defn render-page ()
   let
-    (components $ expand-app (container-component @global-store) (, @global-tree @global-states))
+    (tree $ expand-app (container-component @global-store) (, @global-tree @global-states))
 
-    reset! global-components components
-    .log js/console components
+    reset! global-tree tree
+    .log js/console tree
 
 defn tick-page ()
-  let
-    (new-tick $ get-tick)
-      elapse $ - new-tick @global-tick
-      new-global-instants $ handle-tick @global-components @global-instants elapse
-    reset! global-tick new-tick
+  let $ (new-tick $ get-tick)
+    elapse $ - new-tick @global-tick
 
 defn -main ()
   devtools/install! $ [] :custom-formatters :santy-hints
@@ -38,5 +35,6 @@ defn -main ()
 set! js/window.onload -main
 
 defn on-jsload ()
+  .clear js/console
   .log js/console |reloading...
   render-page
