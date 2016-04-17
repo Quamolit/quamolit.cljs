@@ -98,12 +98,13 @@ defn expand-shape
 
           into $ sorted-map
 
-      assoc markup :children $ merge-children old-children new-children
+      assoc markup :children (merge-children old-children new-children)
+        , :coord coord :c-coord c-coord
 
     let
       (new-children $ ->> (:children markup) (map $ fn (child) (let ((child-key $ key child) (child-markup $ val child) (child-coord $ conj coord child-key)) ([] child-key $ if (= (:type child-markup) (, :component)) (expand-component child-markup nil child-coord states at-place?) (expand-shape child-markup nil child-coord coord states at-place?)))) (into $ sorted-map))
 
-      assoc markup :children new-children
+      assoc markup :children new-children :coord coord :c-coord c-coord
 
 defn expand-component
   markup old-tree coord states at-place?

@@ -3,10 +3,16 @@ ns quamolit.alias
 
 defn no-op $
 
-defn no-op-2 ()
-  , no-op-2
-
 defn create-shape (shape-name props children)
+  if
+    not $ map? props
+    throw $ js/Error. "|Props expeced to be a map!"
+  if
+    not $ or (vector? children)
+      map? children
+      = nil children
+    throw $ js/Error. "|Children expeced to be a vector!"
+
   {} (:name shape-name)
     :type :shape
     :props props
@@ -44,4 +50,32 @@ def line $ partial create-shape :line
 
 def group $ partial create-shape :group
 
+def path $ partial create-shape :path
+
 def circle $ partial create-shape :circle
+
+def text $ partial create-shape :text
+
+def arc $ partial create-shape :arc
+
+def rect $ partial create-shape :rect
+
+def image $ partial create-shape :image
+
+def bezier $ partial create-shape :bezier
+
+def native-save $ partial create-shape :native-save
+
+def native-restore $ partial create-shape :native-restore
+
+def native-rotate $ partial create-shape :native-rotate
+
+def native-scale $ partial create-shape :native-scale
+
+def native-clip $ partial create-shape :native-clip
+
+def native-translate $ partial create-shape :native-translate
+
+def native-transform $ partial create-shape :native-transform
+
+def native-alpha $ partial create-shape :native-alpha

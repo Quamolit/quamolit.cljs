@@ -45,7 +45,7 @@
      nil
      "body * {box-sizing: border-box; }"]]
     [:script {:id "config"  :type "text/edn"} (pr-str data)]
-   [:body [:div#app] [:script {:src "main.js"}]]])
+   [:body [:canvas#app] [:script {:src "main.js"}]]])
 
 (deftask compile-cirru []
   (cirru-sepal :paths ["cirru-src"]))

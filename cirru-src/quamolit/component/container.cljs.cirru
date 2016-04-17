@@ -1,6 +1,8 @@
 
 ns quamolit.component.container $ :require
+  [] hsl.core :refer $ [] hsl
   [] quamolit.alias :refer $ [] create-component group
+  [] quamolit.render.element :refer $ [] translate
   [] quamolit.component.todolist :refer $ [] todolist-component
 
 def container-component $ create-component :container
