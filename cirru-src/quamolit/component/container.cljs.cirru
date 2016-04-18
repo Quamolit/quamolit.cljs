@@ -17,4 +17,4 @@ def container-component $ create-component :container
         fn (instant fluxion)
           group
             {} $ :style ({})
-            [] $ todolist-component store
+            todolist-component store

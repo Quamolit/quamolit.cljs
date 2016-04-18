@@ -1,25 +1,24 @@
 
-ns quamolit.alias
+ns quamolit.alias $ :require
+  [] quamolit.util.detect :refer $ [] map-of-children?
 
 defn no-op $
 
-defn create-shape (shape-name props children)
+defn create-shape
+  shape-name props & children
   if
     not $ map? props
     throw $ js/Error. "|Props expeced to be a map!"
-  if
-    not $ or (vector? children)
-      map? children
-      = nil children
-    throw $ js/Error. "|Children expeced to be a vector!"
-
   {} (:name shape-name)
     :type :shape
     :props props
-    :children $ into (sorted-map)
-      if (map? children)
-        , children
-        map-indexed vector children
+    :children $ if
+      and
+        = 1 $ count children
+        map-of-children? $ first children
+      into (sorted-map)
+        first children
+      map-indexed vector children
 
 defn create-component (component-name details)
   fn (& args)

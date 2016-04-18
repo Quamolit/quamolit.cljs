@@ -8,8 +8,8 @@ def translate $ create-component :translate
       fn (state)
         fn (instant)
           group ({})
-            [] (native-save $ {})
-              native-translate props
-              group ({})
-                , children
-              native-restore $ {}
+            native-save $ {}
+            native-translate props
+            group ({})
+              , children
+            native-restore $ {}
