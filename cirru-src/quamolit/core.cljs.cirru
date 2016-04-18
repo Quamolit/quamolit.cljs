@@ -11,7 +11,7 @@ ns quamolit.core $ :require (cljs.reader :as reader)
   [] quamolit.controller.resolve :refer $ [] resolve-target
   [] quamolit.updater.core :refer $ [] updater-fn
 
-defonce global-store $ atom ({})
+defonce global-store $ atom ([])
 
 defonce global-states $ atom ({})
 
@@ -28,7 +28,6 @@ defn dispatch (action-type action-data)
   let
     (new-tick $ get-tick)
       new-store $ updater-fn @global-store action-type action-data new-tick
-    .log js/console "|store update:" new-store
     reset! global-store new-store
 
 defn build-mutate (coord old-state update-state)

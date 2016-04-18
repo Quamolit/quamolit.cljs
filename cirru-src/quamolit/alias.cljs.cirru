@@ -1,6 +1,5 @@
 
-ns quamolit.alias $ :require
-  [] quamolit.util.detect :refer $ [] map-of-children?
+ns quamolit.alias
 
 defn no-op $
 
@@ -12,13 +11,10 @@ defn create-shape
   {} (:name shape-name)
     :type :shape
     :props props
-    :children $ if
-      and
-        = 1 $ count children
-        map-of-children? $ first children
-      into (sorted-map)
-        first children
-      map-indexed vector children
+    :children $ let
+      (the-children $ case (count children) (0 $ list) (1 $ let ((cursor $ first children) (all-keys $ keys cursor) (all-values $ vals cursor)) (if (every? number? all-keys) (, cursor) (let ((maybe-type $ :type cursor)) (if (keyword? maybe-type) ([] $ [] 0 cursor) (, cursor))))) (map-indexed vector children))
+
+      , the-children
 
 defn create-component (component-name details)
   fn (& args)

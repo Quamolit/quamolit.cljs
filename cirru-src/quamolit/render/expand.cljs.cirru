@@ -118,7 +118,8 @@ defn expand-component
           old-state $ :state old-tree
           old-instant $ :state old-tree
           new-args $ :args markup
-          new-state $ merge old-state (get states coord)
+          new-state $ or (get states coord)
+            , old-state
           on-update $ :on-update markup
           new-instant $ on-update old-instant old-args new-args old-state new-state
           mutate $ build-mutate coord old-state (:update-state markup)
