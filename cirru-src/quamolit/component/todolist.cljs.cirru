@@ -21,39 +21,43 @@ def style-rect $ {}
 def position-body $ {} (:x 0)
   :y 0
 
-def event-button $ {} :click
-  fn (simple-event dispatch set-state)
+defn event-button (mutate)
+  {} :click $ fn (simple-event dispatch)
     .log js/console |event
 
 defn handle-click (simple-event dispatch set-state)
   .log js/console simple-event
 
-defn handle-input (simple-event dispatch set-state)
-  .log js/console $ js/prompt "|input to canvas:" "|default value"
-  .log js/console |input
+defn handle-input (mutate default-text)
+  fn (simple-event dispatch)
+    let
+      (user-text $ js/prompt "|input to canvas:" default-text)
+      mutate $ {} :draft user-text
 
 def todolist-component $ create-component :todolist
   {}
     :init-state $ fn ()
-      {}
+      {} (:draft |)
+        :show-done? false
+
     :update-state merge
     :init-instant $ fn ()
       {}
     :render $ fn (store)
-      fn (state)
+      fn (state mutate)
         fn (instant)
           group ({})
             translate ({} :style position-header)
               translate
                 {} :style $ {} :x -100 :y 0
                 input $ {} :style
-                  {} :w 100 :h 40 :text |Nothing
+                  {} :w 100 :h 40 :text $ :draft state
                   , :event
-                  {} :click handle-input
+                  {} :click $ handle-input mutate (:draft state)
 
               translate
                 {} :style $ {} :x 40
-                button $ {} :style style-button :event event-button
+                button $ {} :style style-button :event (event-button mutate)
 
             translate ({} :style position-body)
               group ({})

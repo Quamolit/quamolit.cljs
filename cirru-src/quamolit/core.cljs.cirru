@@ -31,13 +31,20 @@ defn dispatch (action-type action-data)
     .log js/console "|store update:" new-store
     reset! global-store new-store
 
+defn build-mutate (coord old-state update-state)
+  fn (& state-args)
+    let
+      (partial-updater $ partial update-state old-state)
+        new-state $ apply partial-updater state-args
+      swap! global-states assoc coord new-state
+
 defn render-page ()
   let
-    (tree $ expand-app (container-component @global-store) (, @global-tree @global-states))
+    (tree $ expand-app (container-component @global-store) (, @global-tree @global-states build-mutate))
       directives $ flatten-tree tree
       target $ .querySelector js/document |#app
 
-    .info js/console "|rendering page..."
+    .info js/console "|rendering page..." @global-states
     reset! global-tree tree
     reset! global-directives directives
     -- .log js/console |tree tree
@@ -55,24 +62,7 @@ defn handle-event (event-name coord)
   let
     (maybe-listener $ resolve-target @global-tree event-name coord)
     if (some? maybe-listener)
-      let
-        (listener $ first maybe-listener)
-          component $ last maybe-listener
-          c-coord $ :coord component
-          args $ :args component
-          init-state $ :init-state component
-          update-state $ :update-state component
-          bare-state-updater $ apply update-state args
-          old-state $ or (get @global-states c-coord)
-            apply init-state args
-          partial-state-updater $ partial update-state old-state
-          mutate $ fn (& state-args)
-            let
-              (new-state $ apply partial-state-updater state-args)
-              swap! global-states assoc c-coord new-state
-
-        listener nil dispatch mutate
-
+      maybe-listener nil dispatch
       .log js/console "|no target"
 
 defn configure-canvas ()

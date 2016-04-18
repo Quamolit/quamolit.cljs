@@ -13,7 +13,7 @@ def container-component $ create-component :container
     :init-instant $ fn ()
       {}
     :render $ fn (store)
-      fn (state)
+      fn (state mutate)
         fn (instant fluxion)
           group
             {} $ :style ({})

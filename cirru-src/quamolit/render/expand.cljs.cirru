@@ -79,7 +79,7 @@ defn merge-children
               rest new-children
 
 defn expand-shape
-  markup old-tree coord c-coord states at-place?
+  markup old-tree coord c-coord states build-mutate at-place?
   if (some? old-tree)
     let
       (old-children $ :children old-tree)
@@ -93,8 +93,8 @@ defn expand-shape
               [] child-key $ if
                 = (:type child-markup)
                   , :component
-                expand-component child-markup old-child-tree child-coord states at-place?
-                expand-shape child-markup old-child-tree child-coord coord states at-place?
+                expand-component child-markup old-child-tree child-coord states build-mutate at-place?
+                expand-shape child-markup old-child-tree child-coord coord states build-mutate at-place?
 
           into $ sorted-map
 
@@ -102,30 +102,34 @@ defn expand-shape
         , :coord coord :c-coord c-coord
 
     let
-      (new-children $ ->> (:children markup) (map $ fn (child) (let ((child-key $ key child) (child-markup $ val child) (child-coord $ conj coord child-key)) ([] child-key $ if (= (:type child-markup) (, :component)) (expand-component child-markup nil child-coord states at-place?) (expand-shape child-markup nil child-coord coord states at-place?)))) (into $ sorted-map))
+      (new-children $ ->> (:children markup) (map $ fn (child) (let ((child-key $ key child) (child-markup $ val child) (child-coord $ conj coord child-key)) ([] child-key $ if (= (:type child-markup) (, :component)) (expand-component child-markup nil child-coord states build-mutate at-place?) (expand-shape child-markup nil child-coord coord states build-mutate at-place?)))) (into $ sorted-map))
 
       assoc markup :children new-children :coord coord :c-coord c-coord
 
 defn expand-component
-  markup old-tree coord states at-place?
+  markup old-tree coord states build-mutate at-place?
   let
     (existed? $ some? old-tree)
+    -- .log js/console |component (:name markup)
+      , coord
     if existed?
       let
         (old-args $ :args old-tree)
           old-state $ :state old-tree
           old-instant $ :state old-tree
           new-args $ :args markup
-          new-state $ get states coord
+          new-state $ merge old-state (get states coord)
           on-update $ :on-update markup
           new-instant $ on-update old-instant old-args new-args old-state new-state
+          mutate $ build-mutate coord old-state (:update-state markup)
           new-shape $ -> (:render markup)
             apply new-args
-            apply $ list new-state
+            apply $ list new-state mutate
             apply $ list new-instant
           new-tree $ expand-shape new-shape (:tree old-tree)
-            , coord coord states at-place?
+            , coord coord states build-mutate at-place?
 
+        -- .log js/console "|existing state" coord $ get states coord
         assoc old-tree :args new-args :state new-state :instant new-instant :tree new-tree
 
       let
@@ -137,11 +141,12 @@ defn expand-component
           initial-instant $ init-instant-with-args state
           on-mount $ :on-mount markup at-place?
           instant $ on-mount initial-instant args state
+          mutate $ build-mutate coord state (:update-state markup)
           shape $ -> (:render markup)
             apply args
-            apply $ list state
+            apply $ list state mutate
             apply $ list instant
-          tree $ expand-shape shape nil coord coord states false
+          tree $ expand-shape shape nil coord coord states build-mutate false
 
         {}
           :name $ :name markup
@@ -155,7 +160,8 @@ defn expand-component
           :init-state $ :init-state markup
           :update-state $ :update-state markup
 
-defn expand-app (markup old-tree states)
+defn expand-app
+  markup old-tree states build-mutate
   let
     (initial-coord $ [])
-    expand-component markup old-tree initial-coord states true
+    expand-component markup old-tree initial-coord states build-mutate true

@@ -22,28 +22,6 @@ defn locate-target (tree coord)
             , nil
             recur possible-child rest-coord
 
-defn locate-component (tree coord)
-  -- .log js/console |locating coord tree
-  if
-    = (count coord)
-      , 0
-    , tree
-    if
-      = :component $ :type tree
-      recur (:tree tree)
-        , coord
-      if
-        = 0 $ count coord
-        , tree
-        let
-          (this-key $ first coord)
-            rest-coord $ subvec coord 1
-            possible-child $ get-in tree ([] :children this-key)
-
-          if (nil? possible-child)
-            , nil
-            recur possible-child rest-coord
-
 defn resolve-target (tree event-name coord)
   let
     (maybe-target $ locate-target tree coord)
@@ -55,11 +33,7 @@ defn resolve-target (tree event-name coord)
 
         -- .log js/console |listener maybe-listener
         if (some? maybe-listener)
-          let
-            (c-coord $ :c-coord maybe-target)
-              component-target $ locate-component tree c-coord
-            list maybe-listener component-target
-
+          , maybe-listener
           if
             = 0 $ count coord
             , nil
