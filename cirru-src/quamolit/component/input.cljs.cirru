@@ -1,2 +1,0 @@
-
-ns quamolit.component.input

@@ -2,25 +2,14 @@
 ns quamolit.component.todolist $ :require
   [] hsl.core :refer $ [] hsl
   [] quamolit.alias :refer $ [] create-component group rect text
-  [] quamolit.render.element :refer $ [] translate
+  [] quamolit.render.element :refer $ [] translate button input
 
-def style-button $ {}
-  :fill-style $ hsl 200 70 80
-  :stroke-style $ hsl 100 20 80
-  :line-width 2
-  :x 0
-  :y 0
-  :w 40
+def position-header $ {} (:x 0)
+  :y -100
+
+def style-button $ {} (:w 80)
   :h 40
-
-def style-text $ {} (:size 20)
-  :font-family |Optima
-  :x 0
-  :y 0
-  :max-width 200
-  :text-align |center
   :text |Demo
-  :fill-style $ hsl 0 80 50
 
 def style-rect $ {}
   :fill-style $ hsl 300 60 70
@@ -29,12 +18,19 @@ def style-rect $ {}
   :w 10
   :h 30
 
+def position-body $ {} (:x 0)
+  :y 0
+
 def event-button $ {} :click
-  fn (simple-event intent set-state)
+  fn (simple-event dispatch set-state)
     .log js/console |event
 
 defn handle-click (simple-event dispatch set-state)
   .log js/console simple-event
+
+defn handle-input (simple-event dispatch set-state)
+  .log js/console $ js/prompt "|input to canvas:" "|default value"
+  .log js/console |input
 
 def todolist-component $ create-component :todolist
   {}
@@ -47,16 +43,19 @@ def todolist-component $ create-component :todolist
       fn (state)
         fn (instant)
           group ({})
-            translate
-              {} :style $ {} :x 0 :y -40
-              group
-                {} :event $ {} :click handle-click
-                rect
-                  {} :style style-button :event event-button
-                  text $ {} :style style-text
+            translate ({} :style position-header)
+              translate
+                {} :style $ {} :x -100 :y 0
+                input $ {} :style
+                  {} :w 100 :h 40 :text |Nothing
+                  , :event
+                  {} :click handle-input
 
-            translate
-              {} :style $ {} :x 0 :y -100
+              translate
+                {} :style $ {} :x 40
+                button $ {} :style style-button :event event-button
+
+            translate ({} :style position-body)
               group ({})
                 rect ({} :style style-rect)
                   text $ {}
