@@ -5,23 +5,24 @@ defn paint-line $ ctx props
 
 defn paint-path $ ctx props
 
-defn paint-rect (ctx style)
+defn paint-rect (ctx style coord)
+  .beginPath ctx
+  .rect ctx (:x style)
+    :y style
+    :w style
+    :h style
+  .addHitRegion ctx $ clj->js
+    {} :id $ pr-str coord
   if (contains? style :fill-style)
     do
       set! ctx.fillStyle $ :fill-style style
-      .fillRect ctx (:x style)
-        :y style
-        :w style
-        :h style
+      .fill ctx
 
   if (contains? style :stroke-style)
     do
       set! ctx.strokeStyle $ :stroke-style style
       set! ctx.lineWidth $ :line-width style
-      .strokeRect ctx (:x style)
-        :y style
-        :w style
-        :h style
+      .stroke ctx
 
 defn paint-text (ctx style)
   set! ctx.fillStyle $ :fill-style style
@@ -61,7 +62,7 @@ defn paint-one (ctx directive)
       :line $ paint-line ctx style
       :path $ paint-path ctx style
       :text $ paint-text ctx style
-      :rect $ paint-rect ctx style
+      :rect $ paint-rect ctx style coord
       :native-save $ paint-save ctx style
       :native-restore $ paint-restore ctx style
       :native-translate $ paint-translate ctx style

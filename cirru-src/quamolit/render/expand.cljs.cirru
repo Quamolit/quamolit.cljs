@@ -155,5 +155,5 @@ defn expand-component
 
 defn expand-app (markup old-tree states)
   let
-    (initial-coord $ [] 0)
+    (initial-coord $ [])
     expand-component markup old-tree initial-coord states true

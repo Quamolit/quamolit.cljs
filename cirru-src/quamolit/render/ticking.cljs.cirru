@@ -49,5 +49,5 @@ defn ticking-component
 
 defn ticking-app (markup old-tree states)
   let
-    (initial-coord $ [] 0)
+    (initial-coord $ [])
     ticking-component markup old-tree initial-coord states

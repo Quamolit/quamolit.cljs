@@ -4,6 +4,9 @@ ns quamolit.component.todolist $ :require
   [] quamolit.alias :refer $ [] create-component group rect text
   [] quamolit.render.element :refer $ [] translate
 
+defn handle-click (simple-event dispatch set-state)
+  .log js/console simple-event
+
 def todolist-component $ create-component :todolist
   {}
     :init-state $ fn ()
@@ -17,17 +20,23 @@ def todolist-component $ create-component :todolist
           group ({})
             []
               translate
-                {} :style $ {} :x 0 :y -30
-                [] $ group ({})
+                {} :style $ {} :x 0 :y -20
+                [] $ group
+                  {} :event $ {} :click handle-click
                   [] $ rect
-                    {} :style $ {}
-                      :fill-style $ hsl 200 70 80
-                      :stroke-style $ hsl 100 20 80
-                      :line-width 2
-                      :x 0
-                      :y 0
-                      :w 40
-                      :h 40
+                    {} :style
+                      {}
+                        :fill-style $ hsl 200 70 80
+                        :stroke-style $ hsl 100 20 80
+                        :line-width 2
+                        :x 0
+                        :y 0
+                        :w 40
+                        :h 40
+                      , :event
+                      {} :click $ fn (simple-event intent set-state)
+                        .log js/console |event
+
                     [] $ text
                       {} :style $ {} (:size 20)
                         :font-family |Optima
