@@ -39,52 +39,57 @@ defn handle-remove (task-id)
   fn (event dispatch)
     dispatch :rm task-id
 
-def component-task $ create-component :task
-  {}
-    :init-instant $ fn (task index)
-      fn (state)
-        {} :numb? true
+defn init-instant (args state)
+  {} :numb? false
 
-    :on-mount $ fn
-      instant args state at-place?
-      .info js/console "|on mount:" instant
-      , instant
-    :on-tick $ fn (instant tick)
-      .info js/console "|on tick:" instant
-      , instant
-    :on-update $ fn
-      instant old-args args old-state state
-      .info js/console "|on update:" instant
-      , instant
-    :on-unmount $ fn (instant)
-      .info js/console "|on unmount:" instant
-      , instant
-    :render $ fn (task index)
-      fn (state mutate)
-        fn (instant)
-          .log js/console "|watch instant:" instant
-          group ({})
-            translate
-              {} :style $ {} :x 0 :y
-                - (* 60 index)
-                  , 140
+defn on-mount
+  instant args state at-place?
+  , instant
 
-              translate
-                {} :style $ {} :x -200
-                rect $ {} :style
-                  style-done $ :done? task
-                  , :event
-                  {} :click $ handle-toggle (:id task)
+defn on-tick (instant tick elapsed)
+  , instant
 
-              translate
-                {} :style $ {} :x -140
-                input $ {} :style
-                  style-input $ :text task
-                  , :event
-                  {} :click $ handle-input (:id task)
-                    :text task
+defn on-update
+  instant old-args args old-state state
+  , instant
 
-              translate
-                {} :style $ {} :x 280
-                rect $ {} :style style-remove :event
+defn on-unmount (instant tick)
+  assoc instant :numb? true
+
+defn render (task index)
+  fn (state mutate)
+    fn (instant)
+      .log js/console "|watch instant:" instant
+      group ({})
+        translate
+          {} :style $ {} :x 0 :y
+            - (* 60 index)
+              , 140
+
+          translate
+            {} :style $ {} :x -200
+            rect $ {} :style
+              style-done $ :done? task
+              , :event
+              {} :click $ handle-toggle (:id task)
+
+          translate
+            {} :style $ {} :x -140
+            input $ {} :style
+              style-input $ :text task
+              , :event
+              {} :click $ handle-input (:id task)
+                :text task
+
+          translate
+            {} :style $ {} :x 280
+            rect $ {} :style style-remove :event
                   {} :click $ handle-remove (:id task)
+
+def component-task $ create-component :task
+  {} (:init-instant init-instant)
+    :on-mount on-mount
+    :on-tick on-tick
+    :on-update on-update
+    :on-unmount on-unmount
+    :render render

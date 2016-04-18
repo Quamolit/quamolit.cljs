@@ -29,6 +29,32 @@ defn handle-input (mutate default-text)
       (user-text $ js/prompt "|input to canvas:" default-text)
       mutate $ {} :draft user-text
 
+defn render (store)
+  fn (state mutate)
+    fn (instant)
+      -- .info js/console |todolist: store
+      group ({})
+        translate ({} :style position-header)
+          translate
+            {} :style $ {} :x -200 :y 0
+            input $ {} :style
+              {} :w 200 :h 40 :text $ :draft state
+              , :event
+              {} :click $ handle-input mutate (:draft state)
+
+          translate
+            {} :style $ {} :x 40
+            button $ {} :style style-button :event
+              event-button mutate $ :draft state
+
+        translate ({} :style position-body)
+          group ({})
+            ->> store (reverse)
+              map-indexed $ fn (index task)
+                [] index $ component-task task index
+              into $ sorted-map
+
+
 def todolist-component $ create-component :todolist
   {}
     :init-state $ fn ()
@@ -38,27 +64,4 @@ def todolist-component $ create-component :todolist
     :update-state merge
     :init-instant $ fn ()
       {}
-    :render $ fn (store)
-      fn (state mutate)
-        fn (instant)
-          -- .info js/console |todolist: store
-          group ({})
-            translate ({} :style position-header)
-              translate
-                {} :style $ {} :x -200 :y 0
-                input $ {} :style
-                  {} :w 200 :h 40 :text $ :draft state
-                  , :event
-                  {} :click $ handle-input mutate (:draft state)
-
-              translate
-                {} :style $ {} :x 40
-                button $ {} :style style-button :event
-                  event-button mutate $ :draft state
-
-            translate ({} :style position-body)
-              group ({})
-                ->> store (reverse)
-                  map-indexed $ fn (index task)
-                    [] index $ component-task task index
-                  into $ sorted-map
+    :render render

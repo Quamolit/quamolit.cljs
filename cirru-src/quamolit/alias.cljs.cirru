@@ -33,7 +33,7 @@ defn create-component (component-name details)
       :update-state $ or (:update-state details)
         , merge
       :init-instant $ or (:init-instant details)
-        fn (& args)
+        fn (args state)
           {} :numb? true
 
       :render $ :render details

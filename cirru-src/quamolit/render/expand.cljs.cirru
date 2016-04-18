@@ -139,12 +139,10 @@ defn expand-component
           state $ apply init-state args
           initial-instant $ ->
             or (:init-instant markup)
-              fn (& some-args)
-                fn (state)
-                  {} :numb? true
+              fn (some-args state)
+                {} :numb? true
 
-            apply args
-            apply $ list state
+            apply $ list args state
 
           on-mount $ :on-mount markup
           instant $ on-mount initial-instant args state at-place?
