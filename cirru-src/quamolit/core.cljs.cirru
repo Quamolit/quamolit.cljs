@@ -3,9 +3,8 @@ ns quamolit.core $ :require (cljs.reader :as reader)
   [] devtools.core :as devtools
   [] quamolit.component.container :refer $ [] container-component
   [] quamolit.render.expand :refer $ [] expand-app
-  [] quamolit.render.transform :refer $ [] pick-components
+  [] quamolit.render.ticking :refer $ [] ticking-app
   [] quamolit.util.time :refer $ [] get-tick
-  [] quamolit.controller.compare :refer $ [] handle-mount handle-unmount handle-props handle-state handle-tick
   [] quamolit.render.flatten :refer $ [] flatten-tree
   [] quamolit.render.paint :refer $ [] paint
   [] quamolit.controller.resolve :refer $ [] resolve-target
@@ -20,9 +19,6 @@ defonce global-tree $ atom nil
 defonce global-directives $ atom ([])
 
 defonce global-tick $ atom (get-tick)
-
-defonce ctx $ .getContext (.querySelector js/document |#app)
-  , |2d
 
 defn dispatch (action-type action-data)
   let
@@ -42,6 +38,7 @@ defn render-page ()
     (tree $ expand-app (container-component @global-store) (, @global-tree @global-states build-mutate))
       directives $ flatten-tree tree
       target $ .querySelector js/document |#app
+      ctx $ .getContext target |2d
 
     .info js/console "|rendering page..." @global-states
     reset! global-tree tree
@@ -54,8 +51,23 @@ defn render-page ()
       , directives
 
 defn tick-page ()
-  let $ (new-tick $ get-tick)
-    elapse $ - new-tick @global-tick
+  let
+    (new-tick $ get-tick)
+      elapsed $ - new-tick @global-tick
+      new-tree $ ticking-app (container-component @global-store)
+        , @global-tree @global-states
+      directives $ flatten-tree new-tree
+      ctx $ .getContext (.querySelector js/document |#app)
+        , |2d
+
+    reset! global-tick new-tick
+    reset! global-tree new-tree
+    paint ctx $ filter
+      fn (directive)
+        not= :group $ get directive 1
+      , directives
+
+    -- .info js/console |ticking: new-tick elapsed
 
 defn handle-event (event-name coord)
   let
@@ -75,13 +87,13 @@ defn -main ()
   devtools/install! $ [] :custom-formatters :santy-hints
   enable-console-print!
   configure-canvas
-  set! window.ctx ctx
   .log js/console |loaded
   .addEventListener (.querySelector js/document |#app)
     , |click
     fn (event)
       let
         (hit-region $ aget event |region)
+        .log js/console |hit: hit-region
         if (some? hit-region)
           handle-event :click $ reader/read-string hit-region
 
@@ -92,5 +104,9 @@ set! js/window.onload -main
 
 set! js/window.onresize configure-canvas
 
+defonce global-interval $ atom (js/setInterval tick-page 1000)
+
 defn on-jsload ()
   render-page
+  js/clearInterval @global-interval
+  reset! global-interval $ js/setInterval tick-page 1000

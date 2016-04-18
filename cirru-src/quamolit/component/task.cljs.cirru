@@ -40,10 +40,29 @@ defn handle-remove (task-id)
     dispatch :rm task-id
 
 def component-task $ create-component :task
-  {} $ :render
-    fn (task index)
+  {}
+    :init-instant $ fn (task index)
+      fn (state)
+        {} :numb? true
+
+    :on-mount $ fn
+      instant args state at-place?
+      .info js/console "|on mount:" instant
+      , instant
+    :on-tick $ fn (instant tick)
+      .info js/console "|on tick:" instant
+      , instant
+    :on-update $ fn
+      instant old-args args old-state state
+      .info js/console "|on update:" instant
+      , instant
+    :on-unmount $ fn (instant)
+      .info js/console "|on unmount:" instant
+      , instant
+    :render $ fn (task index)
       fn (state mutate)
         fn (instant)
+          .log js/console "|watch instant:" instant
           group ({})
             translate
               {} :style $ {} :x 0 :y

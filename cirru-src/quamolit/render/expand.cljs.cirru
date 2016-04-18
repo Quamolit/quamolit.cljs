@@ -116,7 +116,7 @@ defn expand-component
       let
         (old-args $ :args old-tree)
           old-state $ :state old-tree
-          old-instant $ :state old-tree
+          old-instant $ :instant old-tree
           new-args $ :args markup
           new-state $ or (get states coord)
             , old-state
@@ -137,11 +137,17 @@ defn expand-component
         (args $ :args markup)
           init-state $ :init-state markup
           state $ apply init-state args
-          init-instant $ :init-instant markup
-          init-instant-with-args $ apply init-instant args
-          initial-instant $ init-instant-with-args state
-          on-mount $ :on-mount markup at-place?
-          instant $ on-mount initial-instant args state
+          initial-instant $ ->
+            or (:init-instant markup)
+              fn (& some-args)
+                fn (state)
+                  {} :numb? true
+
+            apply args
+            apply $ list state
+
+          on-mount $ :on-mount markup
+          instant $ on-mount initial-instant args state at-place?
           mutate $ build-mutate coord state (:update-state markup)
           shape $ -> (:render markup)
             apply args
@@ -157,9 +163,10 @@ defn expand-component
           :type :component
           :coord coord
           :tree tree
-          :fading false
-          :init-state $ :init-state markup
-          :update-state $ :update-state markup
+          :fading? false
+          :on-unmount $ :on-unmount markup
+          :on-update $ :on-update markup
+          :on-tick $ :on-tick markup
 
 defn expand-app
   markup old-tree states build-mutate

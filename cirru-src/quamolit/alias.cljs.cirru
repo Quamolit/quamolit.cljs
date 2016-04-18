@@ -1,7 +1,12 @@
 
 ns quamolit.alias
 
-defn no-op $
+defn no-op-instant (instant & args)
+  , instant
+
+defn no-op-instant-log (instant & args)
+  .log js/console "|with log" instant
+  , instant
 
 defn create-shape
   shape-name props & children
@@ -29,17 +34,17 @@ defn create-component (component-name details)
         , merge
       :init-instant $ or (:init-instant details)
         fn (& args)
-          {}
+          {} :numb? true
 
       :render $ :render details
       :on-mount $ or (:on-mount details)
-        , no-op
+        , no-op-instant
       :on-unmount $ or (:on-unmount details)
-        , no-op
+        , no-op-instant
       :on-update $ or (:on-update details)
-        , no-op
+        , no-op-instant
       :on-tick $ or (:on-tick details)
-        , no-op
+        , no-op-instant
 
 def line $ partial create-shape :line
 
