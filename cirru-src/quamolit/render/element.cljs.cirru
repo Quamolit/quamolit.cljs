@@ -34,6 +34,8 @@ def button $ create-component :button
           style-bg $ {} (:x 0)
             :y 0
             :fill-style $ hsl 0 80 80
+            :w w
+            :h h
           event-button $ :event props
           style-text $ {}
             :fill-style $ hsl 0 0 10

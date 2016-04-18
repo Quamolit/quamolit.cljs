@@ -83,7 +83,7 @@ defn paint-one (ctx directive)
     (([] coord op props) directive)
       style $ :style props
 
-    .log js/console :paint-one op style
+    -- .log js/console :paint-one op style
     case op
       :line $ paint-line ctx style
       :path $ paint-path ctx style

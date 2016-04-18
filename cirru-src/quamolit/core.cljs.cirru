@@ -9,6 +9,7 @@ ns quamolit.core $ :require (cljs.reader :as reader)
   [] quamolit.render.flatten :refer $ [] flatten-tree
   [] quamolit.render.paint :refer $ [] paint
   [] quamolit.controller.resolve :refer $ [] resolve-target
+  [] quamolit.updater.core :refer $ [] updater-fn
 
 defonce global-store $ atom ({})
 
@@ -23,12 +24,20 @@ defonce global-tick $ atom (get-tick)
 defonce ctx $ .getContext (.querySelector js/document |#app)
   , |2d
 
+defn dispatch (action-type action-data)
+  let
+    (new-tick $ get-tick)
+      new-store $ updater-fn @global-store action-type action-data new-tick
+    .log js/console "|store update:" new-store
+    reset! global-store new-store
+
 defn render-page ()
   let
     (tree $ expand-app (container-component @global-store) (, @global-tree @global-states))
       directives $ flatten-tree tree
       target $ .querySelector js/document |#app
 
+    .info js/console "|rendering page..."
     reset! global-tree tree
     reset! global-directives directives
     -- .log js/console |tree tree
@@ -46,7 +55,24 @@ defn handle-event (event-name coord)
   let
     (maybe-listener $ resolve-target @global-tree event-name coord)
     if (some? maybe-listener)
-      maybe-listener nil nil nil
+      let
+        (listener $ first maybe-listener)
+          component $ last maybe-listener
+          c-coord $ :coord component
+          args $ :args component
+          init-state $ :init-state component
+          update-state $ :update-state component
+          bare-state-updater $ apply update-state args
+          old-state $ or (get @global-states c-coord)
+            apply init-state args
+          partial-state-updater $ partial update-state old-state
+          mutate $ fn (& state-args)
+            let
+              (new-state $ apply partial-state-updater state-args)
+              swap! global-states assoc c-coord new-state
+
+        listener nil dispatch mutate
+
       .log js/console "|no target"
 
 defn configure-canvas ()
@@ -70,10 +96,12 @@ defn -main ()
         if (some? hit-region)
           handle-event :click $ reader/read-string hit-region
 
+  add-watch global-store :rerender render-page
+  add-watch global-states :rerender render-page
+
 set! js/window.onload -main
 
 set! js/window.onresize configure-canvas
 
 defn on-jsload ()
-  .log js/console |reloading...
   render-page

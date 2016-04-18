@@ -152,6 +152,8 @@ defn expand-component
           :coord coord
           :tree tree
           :fading false
+          :init-state $ :init-state markup
+          :update-state $ :update-state markup
 
 defn expand-app (markup old-tree states)
   let
