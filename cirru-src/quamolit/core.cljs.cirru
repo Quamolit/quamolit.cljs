@@ -53,7 +53,7 @@ defn render-page ()
     (tree $ expand-app (container-component @global-store) (, @global-tree @global-states build-mutate))
       directives $ flatten-tree tree
 
-    .info js/console "|rendering page..." @global-states
+    -- .info js/console "|rendering page..." @global-states
     reset! global-tree tree
     call-paint directives
     -- .log js/console |tree tree
@@ -86,13 +86,12 @@ defn configure-canvas ()
     (app-container $ .querySelector js/document |#app)
     .setAttribute app-container |width js/window.innerWidth
     .setAttribute app-container |height js/window.innerHeight
-    render-page
+    reset! global-directives nil
 
 defn -main ()
   devtools/install! $ [] :custom-formatters :santy-hints
   enable-console-print!
   configure-canvas
-  .log js/console |loaded
   .addEventListener (.querySelector js/document |#app)
     , |click
     fn (event)
@@ -104,11 +103,11 @@ defn -main ()
 
   add-watch global-store :rerender render-page
   add-watch global-states :rerender render-page
+  render-page
   tick-page
 
 set! js/window.onload -main
 
 set! js/window.onresize configure-canvas
 
-defn on-jsload ()
-  render-page
+defn on-jsload $

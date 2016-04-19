@@ -6,7 +6,7 @@ ns quamolit.component.digits $ :require
   [] quamolit.util.iterate :refer $ [] iterate-instant tween
 
 defn init-instant (args state)
-  .log js/console "|store init:" args
+  -- .log js/console "|stroke init:" args
   let
     (style $ :style (first args))
       ([] x0 y0 x1 y1) args
@@ -55,7 +55,7 @@ defn on-update
       check-number 3 :y1-v :y1-target
 
 defn on-unmount (instant tick)
-  .log js/console "|stroke unmount"
+  -- .log js/console "|stroke unmount"
   assoc instant :presence-v -3 :numb? false
 
 defn render
@@ -117,9 +117,9 @@ defn render-3 ()
       group ({})
         component-stroke 0 0 40 0
         component-stroke 40 0 40 40
-        component-stroke 40 40 0 40
         component-stroke 40 40 40 80
         component-stroke 40 80 0 80
+        component-stroke 40 40 0 40
 
 defn render-4 ()
   fn (state mutate)
@@ -127,8 +127,8 @@ defn render-4 ()
       group ({})
         component-stroke 0 0 0 40
         component-stroke 0 40 40 40
-        component-stroke 40 40 40 0
         component-stroke 40 40 40 80
+        component-stroke 40 40 40 0
 
 defn render-5 ()
   fn (state mutate)

@@ -19,4 +19,6 @@ def container-component $ create-component :container
           group
             {} $ :style ({})
             todolist-component store
-            component-digit 0
+            translate
+              {} :style $ {} :x 340 :y -200
+              component-digit 0
