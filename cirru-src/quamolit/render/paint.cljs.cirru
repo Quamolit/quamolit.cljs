@@ -97,7 +97,7 @@ defn paint-one (ctx directive)
 defn paint (ctx directives)
   let
     (w js/window.innerWidth) (h js/window.innerHeight)
-    .clearRect ctx 0 0 1000 1000
+    .clearRect ctx 0 0 w h
     .save ctx
     .translate ctx (/ w 2)
       / h 2

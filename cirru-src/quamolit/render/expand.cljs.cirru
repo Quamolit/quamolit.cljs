@@ -9,50 +9,33 @@ defn merge-children
       , old-children new-children
 
   (acc old-children new-children)
-    cond
-      (and (= (count old-children) (, 0)) (= (count new-children) (, 0))) acc
+    let
+      (new-n $ count new-children)
+        old-n $ count old-children
+        old-cursor $ first old-children
+        new-cursor $ first new-children
+      cond
+        (and (= old-n 0) (= new-n 0)) acc
 
-      (and (= (count old-children) (, 0)) (> (count new-children) (, 0)))
-        let
-          (cursor $ first new-children)
-            child-key $ first cursor
-            child $ last cursor
-            new-acc $ assoc acc child-key child
-          merge-children new-acc (list)
+        (and (> old-n 0) (> new-n 0) (= (key old-cursor) (key new-cursor)))
+          merge-children
+            assoc acc (key new-cursor)
+              val new-cursor
+            rest old-children
             rest new-children
 
-      (and (> (count old-children) (, 0)) (= (count new-children) (, 0)))
-        let
-          (cursor $ first old-children)
-            child-key $ first cursor
-            child $ last cursor
-            component? $ = :component (:type child)
-            new-acc $ if component?
-              if (:fading? child)
-                assoc acc child-key child
-                let
-                  (args $ :args child)
-                    state $ :state child
-                    old-instant $ :instant child
-                    on-unmount $ :on-unmount child
-                    new-instant $ on-unmount old-instant
-                  assoc acc child-key $ assoc child :instant new-instant :fading? true
+        (and (> new-n 0) (or (= old-n 0) (and (> old-n 0) (= 1 $ compare (key old-cursor) (key new-cursor)))))
+          let
+            (child-key $ first new-cursor)
+              child $ last new-cursor
+              new-acc $ assoc acc child-key child
+            merge-children new-acc (rest old-children)
+              rest new-children
 
-              , acc
-
-          merge-children new-acc (rest old-children)
-            list
-
-      :else $ let
-        (old-cursor $ first old-children)
-          old-key $ first old-cursor
-          new-cursor $ first new-children
-          new-key $ first new-cursor
-        case (compare old-key new-key)
-          -1 $ let
-            (cursor $ first old-children)
-              child-key $ first cursor
-              child $ last cursor
+        (and (> old-n 0) (or (= new-n 0) (and (> new-n 0) (= -1 $ compare (key old-cursor) (key new-cursor)))))
+          let
+            (child-key $ first old-cursor)
+              child $ last old-cursor
               component? $ = :component (:type child)
               new-acc $ if component?
                 if (:fading? child)
@@ -67,16 +50,10 @@ defn merge-children
 
                 , acc
 
-          1 $ let
-            (new-acc $ assoc acc new-key (last new-cursor))
-
-            merge-children new-acc old-children $ rest new-children
-
-          let
-            (new-acc $ assoc acc new-key (last new-cursor))
-
             merge-children new-acc (rest old-children)
-              rest new-children
+              list
+
+        :else acc
 
 defn expand-shape
   markup old-tree coord c-coord states build-mutate at-place?
@@ -98,7 +75,9 @@ defn expand-shape
 
           into $ sorted-map
 
-      assoc markup :children (merge-children old-children new-children)
+      assoc markup :children
+        into (sorted-map)
+          merge-children old-children new-children
         , :coord coord :c-coord c-coord
 
     let
@@ -112,6 +91,7 @@ defn expand-component
     (existed? $ some? old-tree)
     -- .log js/console |component (:name markup)
       , coord
+    -- .log js/console states
     if existed?
       let
         (old-args $ :args old-tree)
@@ -162,6 +142,7 @@ defn expand-component
           :coord coord
           :tree tree
           :fading? false
+          :render $ :render markup
           :on-unmount $ :on-unmount markup
           :on-update $ :on-update markup
           :on-tick $ :on-tick markup

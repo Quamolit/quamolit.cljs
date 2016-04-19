@@ -43,7 +43,7 @@ defn render-page ()
     .info js/console "|rendering page..." @global-states
     reset! global-tree tree
     reset! global-directives directives
-    -- .log js/console |tree tree
+    .log js/console |tree tree
     -- .log js/console |directives directives
     paint ctx $ filter
       fn (directive)
@@ -55,19 +55,21 @@ defn tick-page ()
     (new-tick $ get-tick)
       elapsed $ - new-tick @global-tick
       new-tree $ ticking-app (container-component @global-store)
-        , @global-tree @global-states
+        , @global-tree @global-states build-mutate new-tick elapsed
       directives $ flatten-tree new-tree
       ctx $ .getContext (.querySelector js/document |#app)
         , |2d
 
     reset! global-tick new-tick
     reset! global-tree new-tree
+    -- .log js/console new-tree
     paint ctx $ filter
       fn (directive)
         not= :group $ get directive 1
       , directives
 
     -- .info js/console |ticking: new-tick elapsed
+    js/requestAnimationFrame tick-page
 
 defn handle-event (event-name coord)
   let
@@ -99,14 +101,11 @@ defn -main ()
 
   add-watch global-store :rerender render-page
   add-watch global-states :rerender render-page
+  tick-page
 
 set! js/window.onload -main
 
 set! js/window.onresize configure-canvas
 
-defonce global-interval $ atom (js/setInterval tick-page 1000)
-
 defn on-jsload ()
   render-page
-  js/clearInterval @global-interval
-  reset! global-interval $ js/setInterval tick-page 1000

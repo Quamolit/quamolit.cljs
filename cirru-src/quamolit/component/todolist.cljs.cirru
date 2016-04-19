@@ -32,7 +32,7 @@ defn handle-input (mutate default-text)
 defn render (store)
   fn (state mutate)
     fn (instant)
-      -- .info js/console |todolist: store
+      -- .info js/console |todolist: store state
       group ({})
         translate ({} :style position-header)
           translate
@@ -51,9 +51,10 @@ defn render (store)
           group ({})
             ->> store (reverse)
               map-indexed $ fn (index task)
-                [] index $ component-task task index
-              into $ sorted-map
+                [] (:id task)
+                  component-task task index
 
+              into $ sorted-map
 
 def todolist-component $ create-component :todolist
   {}

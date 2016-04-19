@@ -16,10 +16,22 @@ defn create-shape
   {} (:name shape-name)
     :type :shape
     :props props
-    :children $ let
-      (the-children $ case (count children) (0 $ list) (1 $ let ((cursor $ first children) (all-keys $ keys cursor) (all-values $ vals cursor)) (if (every? number? all-keys) (, cursor) (let ((maybe-type $ :type cursor)) (if (keyword? maybe-type) ([] $ [] 0 cursor) (, cursor))))) (map-indexed vector children))
+    :children $ into (sorted-map)
+      case (count children)
+        0 $ list
+        1 $ let
+          (cursor $ first children)
+            all-keys $ keys cursor
+            all-values $ vals cursor
+          if (every? number? all-keys)
+            , cursor
+            let
+              (maybe-type $ :type cursor)
+              if (keyword? maybe-type)
+                [] $ [] 0 cursor
+                , cursor
 
-      , the-children
+        map-indexed vector children
 
 defn create-component (component-name details)
   fn (& args)

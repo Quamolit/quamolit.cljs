@@ -40,29 +40,57 @@ defn handle-remove (task-id)
     dispatch :rm task-id
 
 defn init-instant (args state)
-  {} :numb? false
+  {} (:numb? false)
+    :presence 0
+    :presence-velocity 0
 
 defn on-mount
   instant args state at-place?
-  , instant
+  assoc instant :presence-velocity 3
 
 defn on-tick (instant tick elapsed)
-  , instant
+  -- .log js/console "|on tick data:" tick elapsed
+  let
+    (v $ :presence-velocity instant)
+    cond
+      (= v 0) instant
+      (> v 0)
+        let
+          (presence $ :presence instant)
+            next-presence $ + presence (* v elapsed)
+
+          if (>= next-presence 1000)
+            assoc instant :presence 1000 :presence-velocity 0
+            assoc instant :presence next-presence
+
+      :else $ let
+        (presence $ :presence instant)
+          next-p $ + presence (* v elapsed)
+
+        if (<= next-p 0)
+          assoc instant :presence 0 :presence-velocity 0 :numb? true
+          assoc instant :presence next-p
 
 defn on-update
   instant old-args args old-state state
   , instant
 
 defn on-unmount (instant tick)
-  assoc instant :numb? true
+  assoc instant :presence-velocity -3
 
 defn render (task index)
   fn (state mutate)
     fn (instant)
-      .log js/console "|watch instant:" instant
+      -- .log js/console "|watch instant:" $ :presence instant
       group ({})
         translate
-          {} :style $ {} :x 0 :y
+          {} :style $ {} :x
+            let
+              (x $ * 0.04 (- (:presence instant) (, 1000)))
+
+              , x
+
+            , :y
             - (* 60 index)
               , 140
 
@@ -84,7 +112,7 @@ defn render (task index)
           translate
             {} :style $ {} :x 280
             rect $ {} :style style-remove :event
-                  {} :click $ handle-remove (:id task)
+              {} :click $ handle-remove (:id task)
 
 def component-task $ create-component :task
   {} (:init-instant init-instant)

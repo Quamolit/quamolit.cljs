@@ -3,7 +3,10 @@ ns quamolit.render.ticking
 
 declare ticking-component
 
-defn merge-children (acc old-children new-children)
+declare ticking-fading
+
+defn merge-children
+  acc old-children new-children coord states build-mutate tick elapsed
   let
     (old-n $ count old-children)
       new-n $ count new-children
@@ -16,8 +19,9 @@ defn merge-children (acc old-children new-children)
             val $ first new-children
           rest old-children
           rest new-children
+          , coord states build-mutate tick elapsed
 
-      (and (> old-n 0) (or (= new-n 0) (and (> old-n 0) (= -1 $ compare (key $ first old-children) (key $ first new-children)))))
+      (and (> old-n 0) (or (= new-n 0) (and (> new-n 0) (= -1 $ compare (key $ first old-children) (key $ first new-children)))))
         recur
           let
             (cursor $ first old-children)
@@ -28,15 +32,17 @@ defn merge-children (acc old-children new-children)
               let
                 (numb? $ get-in this-child ([] :instant :numb?))
 
-                .log js/console "|drop or not:" this-child
-                if numb? acc $ assoc acc this-key this-child
+                -- .log js/console "|drop or not:" this-child
+                if numb? acc $ assoc acc this-key
+                  ticking-fading this-child (conj coord this-key)
+                    , states build-mutate tick elapsed
 
               , acc
 
           rest old-children
-          , new-children
+          , new-children coord states build-mutate tick elapsed
 
-      (and (> new-n 0) (or (= old-n 0) (and (> new-n 0) (= 1 $ compare (key $ first old-children) (key $ first new-children)))))
+      (and (> new-n 0) (or (= old-n 0) (and (> old-n 0) (= 1 $ compare (key $ first old-children) (key $ first new-children)))))
         recur
           let
             (cursor $ first new-children)
@@ -49,11 +55,12 @@ defn merge-children (acc old-children new-children)
 
           , old-children
           rest new-children
+          , coord states build-mutate tick elapsed
 
       :else acc
 
 defn ticking-shape
-  markup old-tree coord c-coord states
+  markup old-tree coord c-coord states build-mutate tick elapsed
   let
     (old-children $ :children old-tree)
       new-children $ ->> (:children markup)
@@ -65,18 +72,47 @@ defn ticking-shape
               old-child-tree $ get old-children child-key
             [] child-key $ if
               = :component $ :type child-markup
-              ticking-component child-markup old-child-tree coord states
-              ticking-shape child-markup old-child-tree child-coord coord states
+              ticking-component child-markup old-child-tree coord states build-mutate tick elapsed
+              ticking-shape child-markup old-child-tree child-coord coord states build-mutate tick elapsed
 
         filter $ fn (child)
           some? $ val child
         into $ sorted-map
 
-    assoc old-tree :children $ merge-children (sorted-map)
-      , old-children new-children
+    assoc old-tree :props (:props markup)
+      , :children
+      into (sorted-map)
+        merge-children (sorted-map)
+          , old-children new-children coord states build-mutate tick elapsed
 
 defn ticking-component
-  markup old-tree coord states
+  markup old-tree coord states build-mutate tick elapsed
+  let
+    (existed? $ some? old-tree)
+    if existed?
+      let
+        (args $ :args markup)
+          state $ or (get states coord)
+            :state old-tree
+          old-instant $ :instant old-tree
+          on-tick $ :on-tick old-tree
+          new-instant $ on-tick old-instant tick elapsed
+          mutate $ build-mutate coord state (:update-state markup)
+          new-shape $ -> (:render markup)
+            apply args
+            apply $ list state mutate
+            apply $ list new-instant
+          new-tree $ ticking-shape new-shape (:tree old-tree)
+            , coord coord states build-mutate tick elapsed
+
+        assoc old-tree :instant new-instant :tree new-tree
+
+      do (.warn js/console old-tree)
+        , nil
+
+defn ticking-fading
+  old-tree coord states build-mutate tick elapsed
+  -- .log js/console "|ticking fading:" tick elapsed
   let
     (existed? $ some? old-tree)
     if existed?
@@ -85,20 +121,21 @@ defn ticking-component
           state $ :state old-tree
           old-instant $ :instant old-tree
           on-tick $ :on-tick old-tree
-          new-instant $ on-tick old-instant args state
-          new-shape $ -> (:render markup)
+          new-instant $ on-tick old-instant tick elapsed
+          new-shape $ -> (:render old-tree)
             apply args
             apply $ list state
             apply $ list new-instant
           new-tree $ ticking-shape new-shape (:tree old-tree)
-            , coord coord states
+            , coord coord states build-mutate tick elapsed
 
         assoc old-tree :instant new-instant :tree new-tree
 
-      do (.log js/console old-tree)
+      do (.warn js/console old-tree)
         , nil
 
-defn ticking-app (markup old-tree states)
+defn ticking-app
+  markup old-tree states build-mutate tick elapsed
   let
     (initial-coord $ [])
-    ticking-component markup old-tree initial-coord states
+    ticking-component markup old-tree initial-coord states build-mutate tick elapsed
