@@ -77,7 +77,7 @@
 (deftask rsync []
   (fn [next-task]
     (fn [fileset]
-      (sh "rsync" "-r" "target/" "tiye:repo/quamolit/quamolit" "--exclude" "main.out" "--delete")
+      (sh "rsync" "-r" "target/" "tiye:repo/Quamolit/quamolit" "--exclude" "main.out" "--delete")
       (next-task fileset))))
 
 (deftask send-tiye []

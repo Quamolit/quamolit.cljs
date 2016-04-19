@@ -35,13 +35,9 @@ defn init-instant (args state)
     (index $ last args)
     {} (:numb? false)
       :presence 0
-      :presence-velocity 0
+      :presence-velocity 3
       :index index
       :index-velocity 0
-
-defn on-mount
-  instant args state at-place?
-  assoc instant :presence-velocity 3
 
 defn on-tick (instant tick elapsed)
   -- .log js/console "|on tick data:" tick elapsed
@@ -119,7 +115,6 @@ defn render (task index)
 
 def component-task $ create-component :task
   {} (:init-instant init-instant)
-    :on-mount on-mount
     :on-tick on-tick
     :on-update on-update
     :on-unmount on-unmount

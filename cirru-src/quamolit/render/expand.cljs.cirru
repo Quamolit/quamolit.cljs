@@ -116,15 +116,13 @@ defn expand-component
         (args $ :args markup)
           init-state $ :init-state markup
           state $ apply init-state args
-          initial-instant $ ->
+          instant $ ->
             or (:init-instant markup)
               fn (some-args state)
                 {} :numb? true
 
-            apply $ list args state
+            apply $ list args state at-place?
 
-          on-mount $ :on-mount markup
-          instant $ on-mount initial-instant args state at-place?
           mutate $ build-mutate coord state (:update-state markup)
           shape $ -> (:render markup)
             apply args

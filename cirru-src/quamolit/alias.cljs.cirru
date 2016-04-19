@@ -49,8 +49,6 @@ defn create-component (component-name details)
           {} :numb? true
 
       :render $ :render details
-      :on-mount $ or (:on-mount details)
-        , no-op-instant
       :on-unmount $ or (:on-unmount details)
         , no-op-instant
       :on-update $ or (:on-update details)
