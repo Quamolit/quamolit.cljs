@@ -3,6 +3,7 @@ ns quamolit.component.task $ :require
   [] hsl.core :refer $ [] hsl
   [] quamolit.alias :refer $ [] create-component group rect
   [] quamolit.render.element :refer $ [] translate input
+  [] quamolit.util.iterate :refer $ [] iterate-instant
 
 def style-block $ {} (:w 300)
   :h 40
@@ -40,9 +41,13 @@ defn handle-remove (task-id)
     dispatch :rm task-id
 
 defn init-instant (args state)
-  {} (:numb? false)
-    :presence 0
-    :presence-velocity 0
+  let
+    (index $ last args)
+    {} (:numb? false)
+      :presence 0
+      :presence-velocity 0
+      :index index
+      :index-velocity 0
 
 defn on-mount
   instant args state at-place?
@@ -52,36 +57,40 @@ defn on-tick (instant tick elapsed)
   -- .log js/console "|on tick data:" tick elapsed
   let
     (v $ :presence-velocity instant)
-    cond
-      (= v 0) instant
-      (> v 0)
-        let
-          (presence $ :presence instant)
-            next-presence $ + presence (* v elapsed)
+      new-instant $ -> instant
+        iterate-instant :presence :presence-velocity elapsed 1000 0
+        iterate-instant :index :index-velocity elapsed (:index-target instant)
+          :index-target instant
 
-          if (>= next-presence 1000)
-            assoc instant :presence 1000 :presence-velocity 0
-            assoc instant :presence next-presence
-
-      :else $ let
-        (presence $ :presence instant)
-          next-p $ + presence (* v elapsed)
-
-        if (<= next-p 0)
-          assoc instant :presence 0 :presence-velocity 0 :numb? true
-          assoc instant :presence next-p
+    if
+      and (< v 0)
+        = 0 $ :presence new-instant
+      assoc new-instant :numb? true
+      , new-instant
 
 defn on-update
   instant old-args args old-state state
-  , instant
+  .log js/console "|on update:" instant old-args args
+  let
+    (old-index $ last old-args)
+      new-index $ last args
+    if (not= old-index new-index)
+      assoc instant :index-velocity
+        /
+          - new-index $ :index instant
+          , 300
+        , :index-target new-index
+
+      , instant
 
 defn on-unmount (instant tick)
+  .log js/console "|calling unmount" instant
   assoc instant :presence-velocity -3
 
 defn render (task index)
   fn (state mutate)
     fn (instant)
-      -- .log js/console "|watch instant:" $ :presence instant
+      -- .log js/console "|watch instant:" instant
       group ({})
         translate
           {} :style $ {} :x
@@ -91,7 +100,8 @@ defn render (task index)
               , x
 
             , :y
-            - (* 60 index)
+            -
+              * 60 $ :index instant
               , 140
 
           translate

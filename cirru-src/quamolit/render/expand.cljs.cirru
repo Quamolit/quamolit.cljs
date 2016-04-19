@@ -29,8 +29,7 @@ defn merge-children
             (child-key $ first new-cursor)
               child $ last new-cursor
               new-acc $ assoc acc child-key child
-            merge-children new-acc (rest old-children)
-              rest new-children
+            merge-children new-acc old-children $ rest new-children
 
         (and (> old-n 0) (or (= new-n 0) (and (> new-n 0) (= -1 $ compare (key old-cursor) (key new-cursor)))))
           let
@@ -51,7 +50,7 @@ defn merge-children
                 , acc
 
             merge-children new-acc (rest old-children)
-              list
+              , new-children
 
         :else acc
 
