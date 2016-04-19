@@ -2,7 +2,7 @@
 ns quamolit.component.digits $ :require
   [] hsl.core :refer $ [] hsl
   [] quamolit.alias :refer $ [] create-component rect group line
-  [] quamolit.render.element :refer $ [] alpha
+  [] quamolit.render.element :refer $ [] alpha translate
   [] quamolit.util.iterate :refer $ [] iterate-instant tween
 
 defn init-instant (args state)
@@ -44,9 +44,9 @@ defn on-tick (instant tick elapsed)
 
 defn on-update
   instant old-args args old-state state
-  .log js/console "|stroke updaete" old-args args
+  -- .log js/console "|stroke updaete" old-args args
   let
-    (check-number $ fn (new-instant the-key the-v the-target) (let ((old-x $ get (into ([]) (, old-args)) (, the-key)) (new-x $ get (into ([]) (, args)) (, the-key))) (if (= old-x new-x) (, new-instant) (assoc new-instant the-v (/ (- new-x old-x) (, 1000)) (, the-target new-x)))))
+    (check-number $ fn (new-instant the-key the-v the-target) (let ((old-x $ get (into ([]) (, old-args)) (, the-key)) (new-x $ get (into ([]) (, args)) (, the-key))) (if (= old-x new-x) (, new-instant) (assoc new-instant the-v (/ (- new-x old-x) (, 600)) (, the-target new-x)))))
 
     -> instant
       check-number 0 :x0-v :x0-target
@@ -56,7 +56,7 @@ defn on-update
 
 defn on-unmount (instant tick)
   .log js/console "|stroke unmount"
-  assoc instant :presence-v -3 :numb? true
+  assoc instant :presence-v -3 :numb? false
 
 defn render
   x0 y0 x1 y1
@@ -118,18 +118,17 @@ defn render-3 ()
         component-stroke 0 0 40 0
         component-stroke 40 0 40 40
         component-stroke 40 40 0 40
-        component-stroke 0 40 0 80
-        component-stroke 0 80 40 80
+        component-stroke 40 40 40 80
+        component-stroke 40 80 0 80
 
 defn render-4 ()
   fn (state mutate)
     fn (instant)
       group ({})
-        component-stroke 0 0 40 0
-        component-stroke 40 0 40 40
-        component-stroke 40 40 0 40
+        component-stroke 0 0 0 40
+        component-stroke 0 40 40 40
+        component-stroke 40 40 40 0
         component-stroke 40 40 40 80
-        component-stroke 40 80 0 80
 
 defn render-5 ()
   fn (state mutate)
@@ -213,21 +212,32 @@ def component-8 $ create-component :eight
 def component-9 $ create-component :nine
   {} $ :render render-9
 
-def style-digit-bg $ {} (:w 80)
-  :h 80
-  :fill-style $ hsl 0 70 80
+def style-digit-bg $ {} (:w 100)
+  :h 100
+  :fill-style $ hsl 0 70 90
 
 defn init-digit-state (n)
   , 0
 
 defn update-digit-state (x)
-  if (< x 9)
-    + 1 x
-    , 0
+  js/Math.floor $ * 100 (js/Math.random)
 
 defn handle-click (mutate)
   fn (event dispatch)
     mutate
+
+defn pick-digit (x)
+  case x (0 $ component-0)
+    1 $ component-1
+    2 $ component-2
+    3 $ component-3
+    4 $ component-4
+    5 $ component-5
+    6 $ component-6
+    7 $ component-7
+    8 $ component-8
+    9 $ component-9
+    component-0
 
 defn render-digit (n)
   fn (state mutate)
@@ -235,18 +245,10 @@ defn render-digit (n)
       -- .log js/console :instant instant
       rect
         {} :style style-digit-bg :event $ {} :click (handle-click mutate)
-        case state
-          0 $ component-0
-          1 $ component-1
-          2 $ component-2
-          3 $ component-3
-          4 $ component-4
-          5 $ component-5
-          6 $ component-6
-          7 $ component-7
-          8 $ component-8
-          9 $ component-9
-          component-0
+        pick-digit $ js/Math.floor (/ state 10)
+        translate
+          {} :style $ {} :x 50
+          pick-digit $ mod state 10
 
 def component-digit $ create-component :digit
   {} (:init-state init-digit-state)
