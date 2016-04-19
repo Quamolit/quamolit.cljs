@@ -72,7 +72,7 @@ defn ticking-shape
               old-child-tree $ get old-children child-key
             [] child-key $ if
               = :component $ :type child-markup
-              ticking-component child-markup old-child-tree coord states build-mutate tick elapsed
+              ticking-component child-markup old-child-tree child-coord states build-mutate tick elapsed
               ticking-shape child-markup old-child-tree child-coord coord states build-mutate tick elapsed
 
         filter $ fn (child)

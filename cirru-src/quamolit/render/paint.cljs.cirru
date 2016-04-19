@@ -2,7 +2,34 @@
 ns quamolit.render.paint $ :require
   [] hsl.core :refer $ [] hsl
 
-defn paint-line $ ctx props
+defn paint-line (ctx style)
+  let
+    (x0 $ or (:x0 style) (, 0))
+      y0 $ or (:y0 style)
+        , 0
+      x1 $ or (:x1 style)
+        , 40
+      y1 $ or (:y1 style)
+        , 40
+      line-width $ or (:line-width style)
+        , 4
+      stroke-style $ or (:stroke-style style)
+        hsl 200 70 50
+      line-cap $ or (:line-cap style)
+        , |round
+      line-join $ or (:line-join style)
+        , |round
+      miter-limit $ or (:miter-limit style)
+        , 8
+
+    .beginPath ctx
+    .moveTo ctx x0 y0
+    .lineTo ctx x1 y1
+    set! ctx.lineWidth line-width
+    set! ctx.strokeStyle stroke-style
+    set! ctx.lineCap line-cap
+    set! ctx.miterLimit miter-limit
+    .stroke ctx
 
 defn paint-path $ ctx props
 

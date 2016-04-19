@@ -44,9 +44,8 @@ defn on-tick (instant tick elapsed)
   let
     (v $ :presence-velocity instant)
       new-instant $ -> instant
-        iterate-instant :presence :presence-velocity elapsed 1000 0
-        iterate-instant :index :index-velocity elapsed (:index-target instant)
-          :index-target instant
+        iterate-instant :presence :presence-velocity elapsed $ [] 0 1000
+        iterate-instant :index :index-velocity elapsed $ repeat 2 (:index-target instant)
 
     if
       and (< v 0)

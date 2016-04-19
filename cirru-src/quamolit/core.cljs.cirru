@@ -28,6 +28,7 @@ defn dispatch (action-type action-data)
 
 defn build-mutate (coord old-state update-state)
   fn (& state-args)
+    -- .log js/console |mutate: coord old-state
     let
       (partial-updater $ partial update-state old-state)
         new-state $ apply partial-updater state-args

@@ -41,7 +41,7 @@ defn on-update
       , instant
 
 defn on-tick (instant tick elapsed)
-  iterate-instant instant :done-value :done-velocity elapsed 1000 0
+  iterate-instant instant :done-value :done-velocity elapsed $ [] 0 1000
 
 defn render (done? task-id)
   fn (state mutate)

@@ -4,6 +4,7 @@ ns quamolit.component.container $ :require
   [] quamolit.alias :refer $ [] create-component group
   [] quamolit.render.element :refer $ [] translate
   [] quamolit.component.todolist :refer $ [] todolist-component
+  [] quamolit.component.digits :refer $ [] component-digit
 
 def container-component $ create-component :container
   {}
@@ -18,3 +19,4 @@ def container-component $ create-component :container
           group
             {} $ :style ({})
             todolist-component store
+            component-digit 0

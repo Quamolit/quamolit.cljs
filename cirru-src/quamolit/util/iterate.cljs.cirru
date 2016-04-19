@@ -12,11 +12,13 @@ defn tween (range-data range-bound x)
       - d c
 
 defn iterate-instant
-  instant data-key velocity-key tick upper-bound lower-bound
+  instant data-key velocity-key tick bound
   let
     (current-data $ get instant data-key)
       velocity $ get instant velocity-key
       next-data $ + current-data (* tick velocity)
+      lower-bound $ first bound
+      upper-bound $ last bound
 
     case (compare velocity 0)
       -1 $ if (< next-data lower-bound)
