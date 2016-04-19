@@ -33,22 +33,30 @@ defn build-mutate (coord old-state update-state)
         new-state $ apply partial-updater state-args
       swap! global-states assoc coord new-state
 
+defn call-paint (directives)
+  -- .log js/console directives @global-directives
+  if (not= directives @global-directives)
+    do
+      let
+        (target $ .querySelector js/document |#app)
+          ctx $ .getContext target |2d
+        paint ctx $ filter
+          fn (directive)
+            not= :group $ get directive 1
+          , directives
+
+      reset! global-directives directives
+
 defn render-page ()
   let
     (tree $ expand-app (container-component @global-store) (, @global-tree @global-states build-mutate))
       directives $ flatten-tree tree
-      target $ .querySelector js/document |#app
-      ctx $ .getContext target |2d
 
     .info js/console "|rendering page..." @global-states
     reset! global-tree tree
-    reset! global-directives directives
-    .log js/console |tree tree
+    call-paint directives
+    -- .log js/console |tree tree
     -- .log js/console |directives directives
-    paint ctx $ filter
-      fn (directive)
-        not= :group $ get directive 1
-      , directives
 
 defn tick-page ()
   let
@@ -57,17 +65,11 @@ defn tick-page ()
       new-tree $ ticking-app (container-component @global-store)
         , @global-tree @global-states build-mutate new-tick elapsed
       directives $ flatten-tree new-tree
-      ctx $ .getContext (.querySelector js/document |#app)
-        , |2d
 
     reset! global-tick new-tick
     reset! global-tree new-tree
     -- .log js/console new-tree
-    paint ctx $ filter
-      fn (directive)
-        not= :group $ get directive 1
-      , directives
-
+    call-paint directives
     -- .info js/console |ticking: new-tick elapsed
     js/requestAnimationFrame tick-page
 

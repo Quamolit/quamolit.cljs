@@ -38,12 +38,12 @@ defn render (store)
           translate
             {} :style $ {} :x -200 :y 0
             input $ {} :style
-              {} :w 200 :h 40 :text $ :draft state
+              {} :w 400 :h 40 :text $ :draft state
               , :event
               {} :click $ handle-input mutate (:draft state)
 
           translate
-            {} :style $ {} :x 40
+            {} :style $ {} :x 220
             button $ {} :style style-button :event
               event-button mutate $ :draft state
 

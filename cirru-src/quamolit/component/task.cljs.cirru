@@ -2,7 +2,7 @@
 ns quamolit.component.task $ :require
   [] hsl.core :refer $ [] hsl
   [] quamolit.alias :refer $ [] create-component group rect
-  [] quamolit.render.element :refer $ [] translate input
+  [] quamolit.render.element :refer $ [] translate alpha input
   [] quamolit.util.iterate :refer $ [] iterate-instant
 
 def style-block $ {} (:w 300)
@@ -70,7 +70,7 @@ defn on-tick (instant tick elapsed)
 
 defn on-update
   instant old-args args old-state state
-  .log js/console "|on update:" instant old-args args
+  -- .log js/console "|on update:" instant old-args args
   let
     (old-index $ last old-args)
       new-index $ last args
@@ -92,37 +92,42 @@ defn render (task index)
     fn (instant)
       -- .log js/console "|watch instant:" instant
       group ({})
-        translate
-          {} :style $ {} :x
-            let
-              (x $ * 0.04 (- (:presence instant) (, 1000)))
-
-              , x
-
-            , :y
-            -
-              * 60 $ :index instant
-              , 140
+        alpha
+          {} :style $ {} :opacity
+            / (:presence instant)
+              , 1000
 
           translate
-            {} :style $ {} :x -200
-            rect $ {} :style
-              style-done $ :done? task
-              , :event
-              {} :click $ handle-toggle (:id task)
+            {} :style $ {} :x
+              let
+                (x $ * 0.04 (- (:presence instant) (, 1000)))
 
-          translate
-            {} :style $ {} :x -140
-            input $ {} :style
-              style-input $ :text task
-              , :event
-              {} :click $ handle-input (:id task)
-                :text task
+                , x
 
-          translate
-            {} :style $ {} :x 280
-            rect $ {} :style style-remove :event
-              {} :click $ handle-remove (:id task)
+              , :y
+              -
+                * 60 $ :index instant
+                , 140
+
+            translate
+              {} :style $ {} :x -200
+              rect $ {} :style
+                style-done $ :done? task
+                , :event
+                {} :click $ handle-toggle (:id task)
+
+            translate
+              {} :style $ {} :x -140
+              input $ {} :style
+                style-input $ :text task
+                , :event
+                {} :click $ handle-input (:id task)
+                  :text task
+
+            translate
+              {} :style $ {} :x 280
+              rect $ {} :style style-remove :event
+                {} :click $ handle-remove (:id task)
 
 def component-task $ create-component :task
   {} (:init-instant init-instant)

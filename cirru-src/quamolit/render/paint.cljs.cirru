@@ -78,10 +78,15 @@ defn paint-translate (ctx style)
 
     .translate ctx x y
 
+defn paint-alpha (ctx style)
+  let
+    (opacity $ or (:opacity style) (, 0.5))
+
+    set! ctx.globalAlpha opacity
+
 defn paint-one (ctx directive)
   let
-    (([] coord op props) directive)
-      style $ :style props
+    (([] coord op style) directive)
 
     -- .log js/console :paint-one op style
     case op
@@ -92,6 +97,7 @@ defn paint-one (ctx directive)
       :native-save $ paint-save ctx style
       :native-restore $ paint-restore ctx style
       :native-translate $ paint-translate ctx style
+      :native-alpha $ paint-alpha ctx style
       .log js/console "|painting not implemented" op
 
 defn paint (ctx directives)

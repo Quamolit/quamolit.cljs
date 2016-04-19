@@ -7,7 +7,7 @@ defn flatten-tree (tree)
     = :component $ :type tree
     recur $ :tree tree
     let
-      (this-directive $ [] (:coord tree) (:name tree) (:props tree))
+      (this-directive $ [] (:coord tree) (:name tree) (:style $ :props tree))
         child-directives $ map
           fn (child)
             flatten-tree $ val child

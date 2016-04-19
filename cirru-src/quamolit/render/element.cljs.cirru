@@ -1,7 +1,7 @@
 
 ns quamolit.render.element $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-component native-translate native-save native-restore group rect text
+  [] quamolit.alias :refer $ [] create-component native-translate native-alpha native-save native-restore group rect text
 
 def translate $ create-component :translate
   {} $ :render
@@ -14,6 +14,23 @@ def translate $ create-component :translate
             group ({})
               native-save $ {}
               native-translate $ assoc props :style style
+              group ({})
+                into ({})
+                  map-indexed vector children
+
+              native-restore $ {}
+
+def alpha $ create-component :alpha
+  {} $ :render
+    fn (props & children)
+      let
+        (style $ merge ({} :opacity 0.5) (:style props))
+
+        fn (state)
+          fn (instant)
+            group ({})
+              native-save $ {}
+              native-alpha $ assoc props :style style
               group ({})
                 into ({})
                   map-indexed vector children
