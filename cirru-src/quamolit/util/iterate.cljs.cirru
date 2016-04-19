@@ -1,6 +1,16 @@
 
 ns quamolit.util.iterate
 
+defn tween (range-data range-bound x)
+  let
+    (([] a b) range-data)
+      ([] c d) range-bound
+
+    + a $ /
+      * (- b a)
+        - x c
+      - d c
+
 defn iterate-instant
   instant data-key velocity-key tick upper-bound lower-bound
   let

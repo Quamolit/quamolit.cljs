@@ -4,21 +4,11 @@ ns quamolit.component.task $ :require
   [] quamolit.alias :refer $ [] create-component group rect
   [] quamolit.render.element :refer $ [] translate alpha input
   [] quamolit.util.iterate :refer $ [] iterate-instant
+  [] quamolit.component.task-toggler :refer $ [] component-toggler
 
 def style-block $ {} (:w 300)
   :h 40
   :fill-style $ hsl 40 80 80
-
-defn style-done (done?)
-  {} (:w 40)
-    :h 40
-    :fill-style $ if done?
-      hsl 200 80 70
-      hsl 20 80 70
-
-defn handle-toggle (task-id)
-  fn (event dispatch)
-    dispatch :toggle task-id
 
 defn handle-input (task-id task-text)
   fn (event dispatch)
@@ -111,10 +101,8 @@ defn render (task index)
 
             translate
               {} :style $ {} :x -200
-              rect $ {} :style
-                style-done $ :done? task
-                , :event
-                {} :click $ handle-toggle (:id task)
+              component-toggler (:done? task)
+                :id task
 
             translate
               {} :style $ {} :x -140
