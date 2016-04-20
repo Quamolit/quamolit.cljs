@@ -31,7 +31,7 @@ boot dev # start develop workspace at target/index.html
 (defn on-unmount [instant tick])
 (defn render [arg1 arg2]
   (fn [state mutate]
-    (fn [instant])))
+    (fn [instant tick])))
 
 (create-comp :demo                                                                 render)
 (create-comp :demo init-state update-state                                         render)

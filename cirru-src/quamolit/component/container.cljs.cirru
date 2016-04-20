@@ -9,6 +9,7 @@ ns quamolit.component.container $ :require
   [] quamolit.component.clock :refer $ [] component-clock
   [] quamolit.component.solar :refer $ [] component-solar
   [] quamolit.component.fade-in-out :refer $ [] component-fade-in-out
+  [] quamolit.component.binary-tree :refer $ [] component-binary-tree
 
 defn init-state ()
   , :portal
@@ -29,7 +30,7 @@ defn handle-back (mutate)
 
 defn render (store)
   fn (state mutate)
-    fn (instant)
+    fn (instant tick)
       -- .log js/console state
       group
         {} $ :style ({})
@@ -58,5 +59,11 @@ defn render (store)
             translate
               {} :style $ {} :x 0 :y 0
               component-solar 8
+
+        if (= state :binary-tree)
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x 0 :y 240
+              component-binary-tree 5
 
 def container-component $ create-comp :container init-state update-state render
