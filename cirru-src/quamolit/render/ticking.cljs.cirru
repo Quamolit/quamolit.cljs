@@ -1,5 +1,6 @@
 
-ns quamolit.render.ticking
+ns quamolit.render.ticking $ :require
+  [] quamolit.alias :refer $ [] Component
 
 declare ticking-component
 
@@ -28,7 +29,7 @@ defn merge-children
               this-key $ key cursor
               this-child $ val cursor
             if
-              = :component $ :type this-child
+              = Component $ type this-child
               let
                 (numb? $ get-in this-child ([] :instant :numb?))
 
@@ -49,7 +50,7 @@ defn merge-children
               this-key $ key cursor
               this-child $ val cursor
             if
-              = :component $ :type this-child
+              = Component $ type this-child
               , acc
               assoc acc this-key this-child
 
@@ -71,7 +72,7 @@ defn ticking-shape
               child-coord $ conj coord child-key
               old-child-tree $ get old-children child-key
             [] child-key $ if
-              = :component $ :type child-markup
+              = Component $ type child-markup
               ticking-component child-markup old-child-tree child-coord states build-mutate tick elapsed
               ticking-shape child-markup old-child-tree child-coord coord states build-mutate tick elapsed
 

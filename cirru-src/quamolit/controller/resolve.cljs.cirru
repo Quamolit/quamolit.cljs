@@ -1,10 +1,11 @@
 
-ns quamolit.controller.resolve
+ns quamolit.controller.resolve $ :require
+  [] quamolit.alias :refer $ [] Component
 
 defn locate-target (tree coord)
   -- .log js/console |locating coord tree
   if
-    = :component $ :type tree
+    = Component $ type tree
     recur (:tree tree)
       , coord
     if

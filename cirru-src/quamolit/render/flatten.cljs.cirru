@@ -1,10 +1,11 @@
 
 ns quamolit.render.flatten $ :require
   [] quamolit.util.order :refer $ [] by-coord
+  [] quamolit.alias :refer $ [] Component
 
 defn flatten-tree (tree)
   if
-    = :component $ :type tree
+    = Component $ type tree
     recur $ :tree tree
     let
       (this-directive $ [] (:coord tree) (:name tree) (:style $ :props tree))

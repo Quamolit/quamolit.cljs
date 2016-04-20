@@ -1,5 +1,6 @@
 
-ns quamolit.render.expand
+ns quamolit.render.expand $ :require
+  [] quamolit.alias :refer $ [] Component
 
 declare expand-component
 
@@ -35,7 +36,7 @@ defn merge-children
           let
             (child-key $ first old-cursor)
               child $ last old-cursor
-              component? $ = :component (:type child)
+              component? $ = Component (type child)
               new-acc $ if component?
                 if (:fading? child)
                   assoc acc child-key child
@@ -67,8 +68,8 @@ defn expand-shape
                 child-coord $ conj coord child-key
                 old-child-tree $ get old-children child-key
               [] child-key $ if
-                = (:type child-markup)
-                  , :component
+                = (type child-markup)
+                  , Component
                 expand-component child-markup old-child-tree child-coord states build-mutate at-place?
                 expand-shape child-markup old-child-tree child-coord coord states build-mutate at-place?
 
@@ -80,7 +81,7 @@ defn expand-shape
         , :coord coord :c-coord c-coord
 
     let
-      (new-children $ ->> (:children markup) (map $ fn (child) (let ((child-key $ key child) (child-markup $ val child) (child-coord $ conj coord child-key)) ([] child-key $ if (= (:type child-markup) (, :component)) (expand-component child-markup nil child-coord states build-mutate at-place?) (expand-shape child-markup nil child-coord coord states build-mutate at-place?)))) (into $ sorted-map))
+      (new-children $ ->> (:children markup) (map $ fn (child) (let ((child-key $ key child) (child-markup $ val child) (child-coord $ conj coord child-key)) ([] child-key $ if (= (type child-markup) (, Component)) (expand-component child-markup nil child-coord states build-mutate at-place?) (expand-shape child-markup nil child-coord coord states build-mutate at-place?)))) (into $ sorted-map))
 
       assoc markup :children new-children :coord coord :c-coord c-coord
 
@@ -130,19 +131,16 @@ defn expand-component
             apply $ list instant
           tree $ expand-shape shape nil coord coord states build-mutate false
 
-        {}
-          :name $ :name markup
-          :args args
-          :state state
-          :instant instant
-          :type :component
-          :coord coord
-          :tree tree
-          :fading? false
-          :render $ :render markup
-          :on-unmount $ :on-unmount markup
-          :on-update $ :on-update markup
-          :on-tick $ :on-tick markup
+        Component. (:name markup)
+          , coord args state instant
+          :render markup
+          :init-state markup
+          :update-state markup
+          :init-instant markup
+          :on-tick markup
+          :on-update markup
+          :on-unmount markup
+          , tree false
 
 defn expand-app
   markup old-tree states build-mutate

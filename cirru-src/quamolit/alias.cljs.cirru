@@ -1,12 +1,7 @@
 
 ns quamolit.alias
 
-defn no-op-instant (instant & args)
-  , instant
-
-defn no-op-instant-log (instant & args)
-  .log js/console "|with log" instant
-  , instant
+defrecord Component $ name coord args state instant render init-state update-state init-instant on-tick on-update on-unmount tree fading?
 
 defn create-shape
   shape-name props & children
@@ -17,44 +12,41 @@ defn create-shape
     :type :shape
     :props props
     :children $ into (sorted-map)
-      case (count children)
-        0 $ list
-        1 $ let
-          (cursor $ first children)
-            all-keys $ keys cursor
-            all-values $ vals cursor
-          if (every? number? all-keys)
-            , cursor
-            let
-              (maybe-type $ :type cursor)
-              if (keyword? maybe-type)
-                [] $ [] 0 cursor
-                , cursor
+      if
+        and
+          = (count children)
+            , 1
+          not= Component $ type (first children)
 
+        first children
         map-indexed vector children
 
 defn create-component (component-name details)
   fn (& args)
-    {} (:name component-name)
-      :type :component
-      :args args
-      :init-state $ or (:init-state details)
-        fn (& args)
-          {}
+    let
+      (init-state $ or (:init-state details) (fn (& args) ({})))
+        update-state $ or (:update-state details)
+          , merge
+        init-instant $ or (:init-instant details)
+          fn (args state)
+            {} :numb? false
 
-      :update-state $ or (:update-state details)
-        , merge
-      :init-instant $ or (:init-instant details)
-        fn (args state)
-          {} :numb? true
+        on-tick $ or (:on-tick details)
+          fn (instant tick elapsed)
+            , instant
 
-      :render $ :render details
-      :on-unmount $ or (:on-unmount details)
-        , no-op-instant
-      :on-update $ or (:on-update details)
-        , no-op-instant
-      :on-tick $ or (:on-tick details)
-        , no-op-instant
+        on-update $ or (:on-update details)
+          fn
+            instant old-args args old-state state
+            , instant
+
+        on-unmount $ or (:on-unmount details)
+          fn (instant tick)
+            assoc instant :numb? true
+
+      Component. component-name nil args nil ({})
+        :render details
+        , init-state update-state init-instant on-tick on-update on-unmount nil false
 
 def line $ partial create-shape :line
 
