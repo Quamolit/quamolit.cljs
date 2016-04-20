@@ -5,90 +5,90 @@ ns quamolit.render.expand $ :require
 declare expand-component
 
 defn merge-children
-  (old-children new-children tick)
-    merge-children (sorted-map)
-      , old-children new-children tick
+  acc old-children new-children tick
+  let
+    (new-n $ count new-children)
+      old-n $ count old-children
+      old-cursor $ first old-children
+      new-cursor $ first new-children
+    cond
+      (and (= old-n 0) (= new-n 0)) acc
 
-  (acc old-children new-children tick)
-    let
-      (new-n $ count new-children)
-        old-n $ count old-children
-        old-cursor $ first old-children
-        new-cursor $ first new-children
-      cond
-        (and (= old-n 0) (= new-n 0)) acc
+      (and (> old-n 0) (> new-n 0) (= (key old-cursor) (key new-cursor)))
+        recur
+          assoc acc (key new-cursor)
+            val new-cursor
+          rest old-children
+          rest new-children
+          , tick
 
-        (and (> old-n 0) (> new-n 0) (= (key old-cursor) (key new-cursor)))
-          recur
-            assoc acc (key new-cursor)
-              val new-cursor
-            rest old-children
-            rest new-children
+      (and (> new-n 0) (or (= old-n 0) (and (> old-n 0) (= 1 $ compare (key old-cursor) (key new-cursor)))))
+        let
+          (child-key $ first new-cursor)
+            child $ last new-cursor
+            new-acc $ assoc acc child-key child
+          recur new-acc old-children (rest new-children)
             , tick
 
-        (and (> new-n 0) (or (= old-n 0) (and (> old-n 0) (= 1 $ compare (key old-cursor) (key new-cursor)))))
-          let
-            (child-key $ first new-cursor)
-              child $ last new-cursor
-              new-acc $ assoc acc child-key child
-            recur new-acc old-children (rest new-children)
-              , tick
-
-        (and (> old-n 0) (or (= new-n 0) (and (> new-n 0) (= -1 $ compare (key old-cursor) (key new-cursor)))))
-          let
-            (child-key $ first old-cursor)
-              child $ last old-cursor
-              component? $ = Component (type child)
-              new-acc $ if component?
-                if (:fading? child)
+      (and (> old-n 0) (or (= new-n 0) (and (> new-n 0) (= -1 $ compare (key old-cursor) (key new-cursor)))))
+        let
+          (child-key $ first old-cursor)
+            child $ last old-cursor
+            component? $ = Component (type child)
+            new-acc $ if component?
+              if (:fading? child)
+                if
+                  get-in child $ [] :instant :numb?
+                  , acc
                   assoc acc child-key child
-                  let
-                    (args $ :args child)
-                      state $ :state child
-                      old-instant $ :instant child
-                      on-unmount $ :on-unmount child
-                      new-instant $ on-unmount old-instant
-                    assoc acc child-key $ assoc child :instant new-instant :fading? true
+                let
+                  (args $ :args child)
+                    state $ :state child
+                    old-instant $ :instant child
+                    on-unmount $ :on-unmount child
+                    new-instant $ on-unmount old-instant
+                  assoc acc child-key $ assoc child :instant new-instant :fading? true
 
-                , acc
+              , acc
 
-            recur new-acc (rest old-children)
-              , new-children tick
+          recur new-acc (rest old-children)
+            , new-children tick
 
-        :else acc
+      :else acc
 
 defn expand-shape
-  markup old-tree coord c-coord states build-mutate at-place? tick
-  if (some? old-tree)
-    let
-      (old-children $ :children old-tree)
-        new-children $ ->> (:children markup)
-          map $ fn (child)
-            let
-              (child-key $ key child)
-                child-markup $ val child
-                child-coord $ conj coord child-key
-                old-child-tree $ get old-children child-key
-              [] child-key $ if
-                = (type child-markup)
-                  , Component
-                expand-component child-markup old-child-tree child-coord states build-mutate at-place? tick
-                expand-shape child-markup old-child-tree child-coord coord states build-mutate at-place? tick
+  markup old-tree coord c-coord states build-mutate at-place? tick elapsed
+  let
+    (old-children $ :children old-tree)
+      new-children $ ->> (:children markup)
+        map $ fn (child)
+          let
+            (child-key $ key child)
+              child-markup $ val child
+              child-coord $ conj coord child-key
+              old-child-tree $ if (some? old-tree)
+                get old-children child-key
+                , nil
 
-          into $ sorted-map
+            [] child-key $ if
+              = (type child-markup)
+                , Component
+              expand-component child-markup old-child-tree child-coord states build-mutate at-place? tick elapsed
+              expand-shape child-markup old-child-tree child-coord coord states build-mutate at-place? tick elapsed
 
-      assoc markup :children
-        into (sorted-map)
-          merge-children old-children new-children tick
-        , :coord coord :c-coord c-coord
+        filter $ fn (entry)
+          some? $ val entry
+        into $ sorted-map
 
-    let
-      (new-children $ ->> (:children markup) (map $ fn (child) (let ((child-key $ key child) (child-markup $ val child) (child-coord $ conj coord child-key)) ([] child-key $ if (= (type child-markup) (, Component)) (expand-component child-markup nil child-coord states build-mutate at-place? tick) (expand-shape child-markup nil child-coord coord states build-mutate at-place? tick)))) (into $ sorted-map))
+    if (some? old-tree)
+      assoc markup :coord coord :c-coord c-coord :children $ into (sorted-map)
+        merge-children ({})
+          , old-children new-children tick
 
-      assoc markup :children new-children :coord coord :c-coord c-coord
+      assoc markup :children new-children :coord coord :coord c-coord
 
 defn expand-component
-  markup old-tree coord states build-mutate at-place? tick
+  markup old-tree coord states build-mutate at-place? tick elapsed
   let
     (existed? $ some? old-tree)
     -- .log js/console |component (:name markup)
@@ -102,15 +102,17 @@ defn expand-component
           new-args $ :args markup
           new-state $ or (get states coord)
             , old-state
+          on-tick $ :on-tick markup
           on-update $ :on-update markup
-          new-instant $ on-update old-instant old-args new-args old-state new-state
+          new-instant $ -> old-instant (on-tick tick elapsed)
+            on-update old-args new-args old-state new-state
           mutate $ build-mutate coord old-state (:update-state markup)
           new-shape $ -> (:render markup)
             apply new-args
             apply $ list new-state mutate
-            apply $ list new-instant
+            apply $ list new-instant tick
           new-tree $ expand-shape new-shape (:tree old-tree)
-            , coord coord states build-mutate at-place? tick
+            , coord coord states build-mutate at-place? tick elapsed
 
         -- .log js/console "|existing state" coord $ get states coord
         assoc old-tree :args new-args :state new-state :instant new-instant :tree new-tree
@@ -131,7 +133,7 @@ defn expand-component
             apply args
             apply $ list state mutate
             apply $ list instant tick
-          tree $ expand-shape shape nil coord coord states build-mutate false tick
+          tree $ expand-shape shape nil coord coord states build-mutate false tick elapsed
 
         Component. (:name markup)
           , coord args state instant
@@ -145,7 +147,7 @@ defn expand-component
           , tree false
 
 defn expand-app
-  markup old-tree states build-mutate tick
+  markup old-tree states build-mutate tick elapsed
   let
     (initial-coord $ [])
-    expand-component markup old-tree initial-coord states build-mutate true tick
+    expand-component markup old-tree initial-coord states build-mutate true tick elapsed

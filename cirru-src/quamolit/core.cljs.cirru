@@ -3,7 +3,6 @@ ns quamolit.core $ :require (cljs.reader :as reader)
   [] devtools.core :as devtools
   [] quamolit.component.container :refer $ [] container-component
   [] quamolit.render.expand :refer $ [] expand-app
-  [] quamolit.render.ticking :refer $ [] ticking-app
   [] quamolit.util.time :refer $ [] get-tick
   [] quamolit.render.flatten :refer $ [] flatten-tree
   [] quamolit.render.paint :refer $ [] paint
@@ -51,30 +50,18 @@ defn call-paint (directives)
 defn render-page ()
   let
     (new-tick $ get-tick)
+      elapsed $ - new-tick @global-tick
       tree $ expand-app (container-component @global-store)
-        , @global-tree @global-states build-mutate new-tick
+        , @global-tree @global-states build-mutate new-tick elapsed
       directives $ flatten-tree tree
 
     -- .info js/console "|rendering page..." @global-states
     reset! global-tree tree
+    reset! global-tick new-tick
     call-paint directives
     -- .log js/console |tree tree
     -- .log js/console |directives directives
-
-defn tick-page ()
-  let
-    (new-tick $ get-tick)
-      elapsed $ - new-tick @global-tick
-      new-tree $ ticking-app (container-component @global-store)
-        , @global-tree @global-states build-mutate new-tick elapsed
-      directives $ flatten-tree new-tree
-
-    reset! global-tick new-tick
-    reset! global-tree new-tree
-    -- .log js/console new-tree
-    call-paint directives
-    -- .info js/console |ticking: new-tick elapsed
-    js/requestAnimationFrame tick-page
+    js/requestAnimationFrame render-page
 
 defn handle-event (event-name coord)
   let
@@ -103,14 +90,10 @@ defn -main ()
         if (some? hit-region)
           handle-event :click $ reader/read-string hit-region
 
-  add-watch global-store :rerender render-page
-  add-watch global-states :rerender render-page
   render-page
-  tick-page
 
 set! js/window.onload -main
 
 set! js/window.onresize configure-canvas
 
-defn on-jsload ()
-  render-page
+defn on-jsload $
