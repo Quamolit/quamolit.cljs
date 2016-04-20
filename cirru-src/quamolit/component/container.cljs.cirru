@@ -7,6 +7,7 @@ ns quamolit.component.container $ :require
   [] quamolit.component.digits :refer $ [] component-digit
   [] quamolit.component.portal :refer $ [] component-portal
   [] quamolit.component.clock :refer $ [] component-clock
+  [] quamolit.component.solar :refer $ [] component-solar
 
 defn init-state ()
   , :portal
@@ -46,5 +47,10 @@ defn render (store)
           translate
             {} :style $ {} :x 0 :y 0
             component-clock
+
+        if (= state :solar)
+          translate
+            {} :style $ {} :x 0 :y 0
+            component-solar
 
 def container-component $ create-comp :container init-state update-state render

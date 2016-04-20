@@ -5,23 +5,23 @@ ns quamolit.controller.resolve $ :require
 defn locate-target (tree coord)
   -- .log js/console |locating coord tree
   if
-    = Component $ type tree
-    recur (:tree tree)
-      subvec coord 1
-    if
-      = coord $ :coord tree
-      , tree
+    = 0 $ count coord
+    , tree
+    let
+      (first-pos $ first coord)
       if
-        = 0 $ count coord
-        , tree
-        let
-          (this-key $ first coord)
-            rest-coord $ subvec coord 1
-            possible-child $ get-in tree ([] :children this-key)
+        = Component $ type tree
+        if (= first-pos 0)
+          recur (:tree tree)
+            subvec coord 1
+          , nil
 
-          if (nil? possible-child)
+        let
+          (picked $ get-in tree ([] :children first-pos))
+
+          if (some? picked)
+            recur picked $ subvec coord 1
             , nil
-            recur possible-child rest-coord
 
 defn resolve-target (tree event-name coord)
   let

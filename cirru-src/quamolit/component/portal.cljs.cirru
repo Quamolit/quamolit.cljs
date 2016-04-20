@@ -12,7 +12,7 @@ defn handle-navigate (mutate-navigate next-page)
 defn style-button (page-name bg-color)
   {} (:w 200)
     :h 80
-    :surface-collor bg-color
+    :surface-color bg-color
     :text page-name
     :text-color $ hsl 0 0 100
 
@@ -33,5 +33,12 @@ defn render (mutate-navigate)
             style-button |Clock $ hsl 300 80 80
             , :event
             {} :click $ handle-navigate mutate-navigate :clock
+
+        translate
+          {} :style $ {} :x 200 :y -100
+          button $ {} :style
+            style-button |Solar $ hsl 140 80 80
+            , :event
+            {} :click $ handle-navigate mutate-navigate :solar
 
 def component-portal $ create-comp :portal render
