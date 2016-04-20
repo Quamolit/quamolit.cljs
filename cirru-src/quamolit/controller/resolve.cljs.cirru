@@ -7,7 +7,7 @@ defn locate-target (tree coord)
   if
     = Component $ type tree
     recur (:tree tree)
-      , coord
+      subvec coord 1
     if
       = coord $ :coord tree
       , tree

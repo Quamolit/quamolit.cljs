@@ -5,7 +5,7 @@ ns quamolit.render.expand $ :require
 declare expand-component
 
 defn merge-children
-  acc old-children new-children tick
+  acc old-children new-children coord states build-mutate at-place? tick elapsed
   let
     (new-n $ count new-children)
       old-n $ count old-children
@@ -20,7 +20,7 @@ defn merge-children
             val new-cursor
           rest old-children
           rest new-children
-          , tick
+          , coord states build-mutate at-place? tick elapsed
 
       (and (> new-n 0) (or (= old-n 0) (and (> old-n 0) (= 1 $ compare (key old-cursor) (key new-cursor)))))
         let
@@ -28,19 +28,20 @@ defn merge-children
             child $ last new-cursor
             new-acc $ assoc acc child-key child
           recur new-acc old-children (rest new-children)
-            , tick
+            , coord states build-mutate at-place? tick elapsed
 
       (and (> old-n 0) (or (= new-n 0) (and (> new-n 0) (= -1 $ compare (key old-cursor) (key new-cursor)))))
         let
           (child-key $ first old-cursor)
             child $ last old-cursor
             component? $ = Component (type child)
+            child-coord $ conj coord child-key
             new-acc $ if component?
               if (:fading? child)
                 if
                   get-in child $ [] :instant :numb?
                   , acc
-                  assoc acc child-key child
+                  assoc acc child-key $ expand-component child child child-coord states build-mutate at-place? tick elapsed
                 let
                   (args $ :args child)
                     state $ :state child
@@ -52,7 +53,7 @@ defn merge-children
               , acc
 
           recur new-acc (rest old-children)
-            , new-children tick
+            , new-children coord states build-mutate at-place? tick elapsed
 
       :else acc
 
@@ -83,14 +84,15 @@ defn expand-shape
     if (some? old-tree)
       assoc markup :coord coord :c-coord c-coord :children $ into (sorted-map)
         merge-children ({})
-          , old-children new-children tick
+          , old-children new-children coord states build-mutate at-place? tick elapsed
 
       assoc markup :children new-children :coord coord :coord c-coord
 
 defn expand-component
   markup old-tree coord states build-mutate at-place? tick elapsed
   let
-    (existed? $ some? old-tree)
+    (child-coord $ conj coord 0)
+      existed? $ some? old-tree
     -- .log js/console |component (:name markup)
       , coord
     -- .log js/console states
@@ -104,15 +106,20 @@ defn expand-component
             , old-state
           on-tick $ :on-tick markup
           on-update $ :on-update markup
+          update-state $ :update-state markup
           new-instant $ -> old-instant (on-tick tick elapsed)
             on-update old-args new-args old-state new-state
-          mutate $ build-mutate coord old-state (:update-state markup)
+          mutate $ build-mutate coord old-state update-state
           new-shape $ -> (:render markup)
             apply new-args
             apply $ list new-state mutate
             apply $ list new-instant tick
-          new-tree $ expand-shape new-shape (:tree old-tree)
-            , coord coord states build-mutate at-place? tick elapsed
+          new-tree $ if
+            = Component $ type new-shape
+            expand-component new-shape (:tree old-tree)
+              , child-coord states build-mutate at-place? tick elapsed
+            expand-shape new-shape (:tree old-tree)
+              , child-coord child-coord states build-mutate at-place? tick elapsed
 
         -- .log js/console "|existing state" coord $ get states coord
         assoc old-tree :args new-args :state new-state :instant new-instant :tree new-tree
@@ -120,20 +127,19 @@ defn expand-component
       let
         (args $ :args markup)
           init-state $ :init-state markup
+          init-instant $ :init-instant markup
+          update-state $ :update-state markup
           state $ apply init-state args
-          instant $ ->
-            or (:init-instant markup)
-              fn (some-args state)
-                {} :numb? true
-
-            apply $ list args state at-place?
-
-          mutate $ build-mutate coord state (:update-state markup)
+          instant $ init-instant args state
+          mutate $ build-mutate coord state update-state
           shape $ -> (:render markup)
             apply args
             apply $ list state mutate
             apply $ list instant tick
-          tree $ expand-shape shape nil coord coord states build-mutate false tick elapsed
+          tree $ if
+            = Component $ type shape
+            expand-component shape nil child-coord states build-mutate at-place? tick elapsed
+            expand-shape shape nil child-coord child-coord states build-mutate false tick elapsed
 
         Component. (:name markup)
           , coord args state instant

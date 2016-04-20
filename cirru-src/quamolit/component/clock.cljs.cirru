@@ -19,19 +19,19 @@ defn render ()
 
         -- .log js/console secs
         group ({})
-          -- $ translate
+          translate
             {} :style $ {} :x -200
             component-digit $ get-ten hrs
-          -- $ translate
+          translate
             {} :style $ {} :x -140
             component-digit $ get-one hrs
-          -- $ translate
+          translate
             {} :style $ {} :x -60
             component-digit $ get-ten mins
-          -- $ translate
+          translate
             {} :style $ {} :x 0
             component-digit $ get-one mins
-          -- $ translate
+          translate
             {} :style $ {} :x 80
             component-digit $ get-ten secs
           translate

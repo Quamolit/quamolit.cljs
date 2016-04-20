@@ -214,7 +214,6 @@ defn render-digit (n)
   fn (state mutate)
     fn (instant)
       -- .log js/console :n n
-      group ({})
-        pick-digit n
+      pick-digit n
 
 def component-digit $ create-comp :digit render-digit

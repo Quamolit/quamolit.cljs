@@ -40,7 +40,7 @@ defn init-instant (args state)
       :index-velocity 0
 
 defn on-tick (instant tick elapsed)
-  -- .log js/console "|on tick data:" tick elapsed
+  -- .log js/console "|on tick data:" instant tick elapsed
   let
     (v $ :presence-velocity instant)
       new-instant $ -> instant
@@ -76,40 +76,39 @@ defn render (task index)
   fn (state mutate)
     fn (instant)
       -- .log js/console "|watch instant:" instant
-      group ({})
-        alpha
-          {} :style $ {} :opacity
-            / (:presence instant)
-              , 1000
+      alpha
+        {} :style $ {} :opacity
+          / (:presence instant)
+            , 1000
+
+        translate
+          {} :style $ {} :x
+            let
+              (x $ * 0.04 (- (:presence instant) (, 1000)))
+
+              , x
+
+            , :y
+            -
+              * 60 $ :index instant
+              , 140
 
           translate
-            {} :style $ {} :x
-              let
-                (x $ * 0.04 (- (:presence instant) (, 1000)))
+            {} :style $ {} :x -200
+            component-toggler (:done? task)
+              :id task
 
-                , x
+          translate
+            {} :style $ {} :x -140
+            input $ {} :style
+              style-input $ :text task
+              , :event
+              {} :click $ handle-input (:id task)
+                :text task
 
-              , :y
-              -
-                * 60 $ :index instant
-                , 140
-
-            translate
-              {} :style $ {} :x -200
-              component-toggler (:done? task)
-                :id task
-
-            translate
-              {} :style $ {} :x -140
-              input $ {} :style
-                style-input $ :text task
-                , :event
-                {} :click $ handle-input (:id task)
-                  :text task
-
-            translate
-              {} :style $ {} :x 280
-              rect $ {} :style style-remove :event
-                {} :click $ handle-remove (:id task)
+          translate
+            {} :style $ {} :x 280
+            rect $ {} :style style-remove :event
+              {} :click $ handle-remove (:id task)
 
 def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount render
