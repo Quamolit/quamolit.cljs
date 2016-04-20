@@ -3,23 +3,22 @@ ns quamolit.alias
 
 defrecord Component $ name coord args state instant render init-state update-state init-instant on-tick on-update on-unmount tree fading?
 
+defrecord Shape $ name props children
+
 defn create-shape
   shape-name props & children
   if
     not $ map? props
     throw $ js/Error. "|Props expeced to be a map!"
-  {} (:name shape-name)
-    :type :shape
-    :props props
-    :children $ into (sorted-map)
-      if
-        and
-          = (count children)
-            , 1
-          not= Component $ type (first children)
+  ->Shape shape-name props $ into (sorted-map)
+    if
+      and
+        = (count children)
+          , 1
+        not= Component $ type (first children)
 
-        first children
-        map-indexed vector children
+      first children
+      map-indexed vector children
 
 defn create-component (component-name details)
   fn (& args)
