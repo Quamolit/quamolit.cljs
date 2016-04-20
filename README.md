@@ -34,9 +34,10 @@ boot dev # start develop workspace at target/index.html
   (fn [state mutate]
     (fn [instant])))
 
-(create-comp :demo-name init-state update-state                                         render)
-(create-comp :demo-name                         init-instant on-tick on-update on-mount render)
-(create-comp :demo-name init-state update-state init-instant on-tick on-update on-mount render)
+(create-comp :demo                                                                 render)
+(create-comp :demo init-state update-state                                         render)
+(create-comp :demo                         init-instant on-tick on-update on-mount render)
+(create-comp :demo init-state update-state init-instant on-tick on-update on-mount render)
 
 (mutate state-arg1 state-arg2)
 (dispatch op op-data)

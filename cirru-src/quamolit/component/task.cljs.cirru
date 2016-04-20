@@ -69,7 +69,7 @@ defn on-update
       , instant
 
 defn on-unmount (instant tick)
-  .log js/console "|calling unmount" instant
+  -- .log js/console "|calling unmount" instant
   assoc instant :presence-velocity -3
 
 defn render (task index)

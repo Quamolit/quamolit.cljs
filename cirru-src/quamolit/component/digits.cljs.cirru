@@ -197,20 +197,6 @@ def component-8 $ create-comp :eight render-8
 
 def component-9 $ create-comp :nine render-9
 
-def style-digit-bg $ {} (:w 100)
-  :h 100
-  :fill-style $ hsl 0 70 90
-
-defn init-digit-state (n)
-  , 0
-
-defn update-digit-state (x)
-  js/Math.floor $ * 100 (js/Math.random)
-
-defn handle-click (mutate)
-  fn (event dispatch)
-    mutate
-
 defn pick-digit (x)
   case x (0 $ component-0)
     1 $ component-1
@@ -227,12 +213,8 @@ defn pick-digit (x)
 defn render-digit (n)
   fn (state mutate)
     fn (instant)
-      -- .log js/console :instant instant
-      rect
-        {} :style style-digit-bg :event $ {} :click (handle-click mutate)
-        pick-digit $ js/Math.floor (/ state 10)
-        translate
-          {} :style $ {} :x 50
-          pick-digit $ mod state 10
+      -- .log js/console :n n
+      group ({})
+        pick-digit n
 
-def component-digit $ create-comp :digit init-digit-state update-digit-state render-digit
+def component-digit $ create-comp :digit render-digit

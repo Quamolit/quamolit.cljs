@@ -18,7 +18,9 @@ defn create-shape
         not= Component $ type (first children)
 
       first children
-      map-indexed vector children
+      ->> children (map-indexed vector)
+        filter $ fn (entry)
+          some? $ val entry
 
 defn default-init-state (& args)
   {}
@@ -53,6 +55,37 @@ defn create-comp
         or on-tick default-on-tick
         or on-update default-on-update
         or on-unmount default-on-unmount
+        , nil false
+
+defn create-component (component-name details)
+  fn (& args)
+    let
+      (init-state $)
+        update-state $ or (:update-state details)
+          , merge
+        init-instant $ or (:init-instant details)
+          , default-init-instant
+        on-tick $ or (:on-tick details)
+          , default-on-tick
+        on-update $ or (:on-update details)
+          , default-on-update
+        on-unmount $ or (:on-unmount details)
+          , default-on-unmount
+
+      Component. component-name nil args nil ({})
+        :render details
+        or (:init-state details)
+          , default-init-state
+        or (:update-state details)
+          , merge
+        or (:init-instant details)
+          , default-init-instant
+        or (:on-tick details)
+          , default-on-tick
+        or (:on-update details)
+          , default-on-update
+        or (:on-unmount details)
+          , default-on-unmount
         , nil false
 
 def line $ partial create-shape :line

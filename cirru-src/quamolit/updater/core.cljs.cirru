@@ -36,7 +36,7 @@ defn task-rm (store op-data tick)
 
 defn updater-fn
   store op op-data tick
-  .log js/console "|store update:" op op-data tick
+  -- .log js/console "|store update:" op op-data tick
   case op
     :add $ task-add store op-data tick
     :rm $ task-rm store op-data tick

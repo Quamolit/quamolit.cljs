@@ -50,7 +50,9 @@ defn call-paint (directives)
 
 defn render-page ()
   let
-    (tree $ expand-app (container-component @global-store) (, @global-tree @global-states build-mutate))
+    (new-tick $ get-tick)
+      tree $ expand-app (container-component @global-store)
+        , @global-tree @global-states build-mutate new-tick
       directives $ flatten-tree tree
 
     -- .info js/console "|rendering page..." @global-states
@@ -97,7 +99,7 @@ defn -main ()
     fn (event)
       let
         (hit-region $ aget event |region)
-        .log js/console |hit: hit-region
+        -- .log js/console |hit: hit-region
         if (some? hit-region)
           handle-event :click $ reader/read-string hit-region
 
@@ -110,4 +112,5 @@ set! js/window.onload -main
 
 set! js/window.onresize configure-canvas
 
-defn on-jsload $
+defn on-jsload ()
+  render-page

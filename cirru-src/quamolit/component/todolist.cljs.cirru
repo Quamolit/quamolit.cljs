@@ -46,7 +46,7 @@ defn render (store)
               {} :click $ handle-input mutate (:draft state)
 
           translate
-            {} :style $ {} :x 220
+            {} :style $ {} :x 260 :y 20
             button $ {} :style style-button :event
               event-button mutate $ :draft state
 
