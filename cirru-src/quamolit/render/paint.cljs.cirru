@@ -32,6 +32,52 @@ defn paint-line (ctx style eff)
     .stroke ctx
     , eff
 
+def pi-ratio $ / js/Math.PI 180
+
+defn paint-arc (ctx style eff)
+  let
+    (x $ or (:x style) (, 0))
+      y $ or (:y style)
+        , 0
+      r $ or (:r style)
+        , 40
+      s-angle $ * pi-ratio
+        or (:s-angle style)
+          , 0
+
+      e-angle $ * pi-ratio
+        or (:e-angle style)
+          , 60
+
+      line-width $ or (:line-width style)
+        , 4
+      counterclockwise $ or (:counterclockwise style)
+        , true
+      line-cap $ or (:line-cap style)
+        , |round
+      line-join $ or (:line-join style)
+        , |round
+      miter-limit $ or (:miter-limit style)
+        , 8
+
+    .beginPath ctx
+    .arc ctx x y r s-angle e-angle counterclockwise
+    if
+      some? $ :fill-style style
+      do
+        set! ctx.fillStyle $ :fill-style style
+        .fill ctx
+
+    if
+      some? $ :stroke-style style
+      do (set! ctx.lineWidth line-width)
+        set! ctx.strokeStyle $ :stroke-style style
+        set! ctx.lineCap line-cap
+        set! ctx.miterLimit miter-limit
+        .stroke ctx
+
+    , eff
+
 defn paint-path (ctx props eff)
   , eff
 
@@ -116,6 +162,13 @@ defn paint-translate (ctx style eff)
     .translate ctx x y
     , eff
 
+defn paint-scale (ctx style eff)
+  let
+    (ratio $ or (:ratio style) (, 1.2))
+
+    .scale ctx ratio ratio
+    , eff
+
 defn paint-alpha (ctx style eff)
   let
     (inherent-opacity $ first (:alpha-stack eff))
@@ -149,6 +202,8 @@ defn paint-one (ctx directive eff)
       :native-translate $ paint-translate ctx style eff
       :native-alpha $ paint-alpha ctx style eff
       :native-rotate $ paint-rotate ctx style eff
+      :native-scale $ paint-scale ctx style eff
+      :arc $ paint-arc ctx style eff
       do
         .log js/console "|painting not implemented" op
         , eff

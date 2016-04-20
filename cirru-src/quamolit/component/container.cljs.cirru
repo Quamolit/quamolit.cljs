@@ -59,6 +59,6 @@ defn render (store)
           component-fade-in-out ({})
             translate
               {} :style $ {} :x 0 :y 0
-              component-solar
+              component-solar 8
 
 def container-component $ create-comp :container init-state update-state render

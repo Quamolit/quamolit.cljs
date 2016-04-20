@@ -99,8 +99,6 @@ def group $ partial create-shape :group
 
 def path $ partial create-shape :path
 
-def circle $ partial create-shape :circle
-
 def text $ partial create-shape :text
 
 def arc $ partial create-shape :arc

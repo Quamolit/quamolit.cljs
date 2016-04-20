@@ -1,7 +1,7 @@
 
 ns quamolit.render.element $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-component native-translate native-alpha native-save native-restore native-rotate group rect text arrange-children
+  [] quamolit.alias :refer $ [] create-component native-translate native-alpha native-save native-restore native-rotate native-scale group rect text arrange-children
 
 def translate $ create-component :translate
   {} $ :render
@@ -14,6 +14,23 @@ def translate $ create-component :translate
             group ({})
               native-save $ {}
               native-translate $ assoc props :style style
+              group ({})
+                into ({})
+                  map-indexed vector children
+
+              native-restore $ {}
+
+def scale $ create-component :scale
+  {} $ :render
+    fn (props & children)
+      let
+        (style $ merge ({} :x 0 :y 0) (:style props))
+
+        fn (state)
+          fn (instant)
+            group ({})
+              native-save $ {}
+              native-scale $ assoc props :style style
               group ({})
                 into ({})
                   map-indexed vector children
@@ -35,7 +52,7 @@ def alpha $ create-component :alpha
                 arrange-children children
               native-restore $ {}
 
-def degree-ratio $ / js/Math.PI 180
+def pi-ratio $ / js/Math.PI 180
 
 def rotate $ create-component :rotate
   {} $ :render
@@ -44,7 +61,7 @@ def rotate $ create-component :rotate
         fn (instant)
           let
             (style $ :style props)
-              angle $ * degree-ratio
+              angle $ * pi-ratio
                 or (:angle style)
                   , 30
 
