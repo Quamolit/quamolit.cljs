@@ -5,22 +5,27 @@ defrecord Component $ name coord args state instant render init-state update-sta
 
 defrecord Shape $ name props children
 
-defn create-shape
-  shape-name props & children
-  if
-    not $ map? props
-    throw $ js/Error. "|Props expeced to be a map!"
-  ->Shape shape-name props $ into (sorted-map)
+defn arrange-children (children)
+  into (sorted-map)
     if
       and
         = (count children)
           , 1
-        not= Component $ type (first children)
+        not $ or
+          = Component $ type (first children)
+          = Shape $ type (first children)
 
       first children
       ->> children (map-indexed vector)
         filter $ fn (entry)
           some? $ val entry
+
+defn create-shape
+  shape-name props & children
+  if
+    not $ map? props
+    throw $ js/Error. "|Props expeced to be a map!"
+  ->Shape shape-name props $ arrange-children children
 
 defn default-init-state (& args)
   {}

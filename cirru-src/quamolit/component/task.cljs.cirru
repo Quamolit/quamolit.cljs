@@ -99,7 +99,7 @@ defn render (task index)
               :id task
 
           translate
-            {} :style $ {} :x -140
+            {} :style $ {} :x 40
             input $ {} :style
               style-input $ :text task
               , :event

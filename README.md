@@ -27,7 +27,6 @@ boot dev # start develop workspace at target/index.html
 (defn update-state [old-state state-arg1 state-arg2])
 (defn init-instant [args state])
 (defn on-tick [instant tick elapsed])
-(defn on-tick [instant tick elapsed])
 (defn on-update [instant old-args args old-state state])
 (defn on-unmount [instant tick])
 (defn render [arg1 arg2]

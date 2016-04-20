@@ -13,7 +13,7 @@ def style-button $ {} (:w 80)
   :text |add
 
 def position-body $ {} (:x 0)
-  :y 0
+  :y 40
 
 defn event-button (mutate draft)
   {} :click $ fn (simple-event dispatch)
@@ -39,14 +39,14 @@ defn render (store)
       group ({})
         translate ({} :style position-header)
           translate
-            {} :style $ {} :x -200 :y 0
+            {} :style $ {} :x -20 :y 40
             input $ {} :style
               {} :w 400 :h 40 :text $ :draft state
               , :event
               {} :click $ handle-input mutate (:draft state)
 
           translate
-            {} :style $ {} :x 260 :y 20
+            {} :style $ {} :x 240 :y 40
             button $ {} :style style-button :event
               event-button mutate $ :draft state
 

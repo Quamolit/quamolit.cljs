@@ -8,6 +8,7 @@ ns quamolit.component.container $ :require
   [] quamolit.component.portal :refer $ [] component-portal
   [] quamolit.component.clock :refer $ [] component-clock
   [] quamolit.component.solar :refer $ [] component-solar
+  [] quamolit.component.fade-in-out :refer $ [] component-fade-in-out
 
 defn init-state ()
   , :portal
@@ -33,24 +34,31 @@ defn render (store)
       group
         {} $ :style ({})
         if (= state :portal)
-          component-portal mutate
+          component-fade-in-out ({})
+            component-portal mutate
+
         if (not= state :portal)
-          translate
-            {} :style $ {} :x -400 :y -140
-            button $ {} :style (style-button |Back)
-              , :event
-              {} :click $ handle-back mutate
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x -400 :y -140
+              button $ {} :style (style-button |Back)
+                , :event
+                {} :click $ handle-back mutate
 
         if (= state :todolist)
-          component-todolist store
+          component-fade-in-out ({})
+            component-todolist store
+
         if (= state :clock)
-          translate
-            {} :style $ {} :x 0 :y 0
-            component-clock
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x 0 :y 0
+              component-clock
 
         if (= state :solar)
-          translate
-            {} :style $ {} :x 0 :y 0
-            component-solar
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x 0 :y 0
+              component-solar
 
 def container-component $ create-comp :container init-state update-state render

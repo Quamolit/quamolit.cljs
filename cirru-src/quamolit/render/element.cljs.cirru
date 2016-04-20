@@ -1,7 +1,7 @@
 
 ns quamolit.render.element $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-component native-translate native-alpha native-save native-restore group rect text
+  [] quamolit.alias :refer $ [] create-component native-translate native-alpha native-save native-restore native-rotate group rect text arrange-children
 
 def translate $ create-component :translate
   {} $ :render
@@ -32,9 +32,28 @@ def alpha $ create-component :alpha
               native-save $ {}
               native-alpha $ assoc props :style style
               group ({})
-                into ({})
-                  map-indexed vector children
+                arrange-children children
+              native-restore $ {}
 
+def degree-ratio $ / js/Math.PI 180
+
+def rotate $ create-component :rotate
+  {} $ :render
+    fn (props & children)
+      fn (state)
+        fn (instant)
+          let
+            (style $ :style props)
+              angle $ * degree-ratio
+                or (:angle style)
+                  , 30
+
+            -- .log js/console "|actual degree:" angle
+            group ({})
+              native-save $ {}
+              native-rotate $ {} :style ({} :angle angle)
+              group ({})
+                arrange-children children
               native-restore $ {}
 
 def button $ create-component :button
@@ -85,13 +104,12 @@ def input $ create-component :input
             :fill-style $ hsl 0 50 80
             :stroke-style $ hsl 0 0 50
             :line-width 2
-            :x 0
-            :y 0
+            :x $ - 0 (/ w 2)
+            :y $ - 0 (/ h 2)
             :w w
             :h h
+
           style-place-text $ {}
-            :x $ / w 2
-            :y $ / h 2
           style-text $ {} (:text-align |center)
             :text $ :text style
             :font-family |Optima

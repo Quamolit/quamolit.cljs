@@ -2,7 +2,7 @@
 ns quamolit.render.paint $ :require
   [] hsl.core :refer $ [] hsl
 
-defn paint-line (ctx style)
+defn paint-line (ctx style eff)
   let
     (x0 $ or (:x0 style) (, 0))
       y0 $ or (:y0 style)
@@ -30,18 +30,21 @@ defn paint-line (ctx style)
     set! ctx.lineCap line-cap
     set! ctx.miterLimit miter-limit
     .stroke ctx
+    , eff
 
-defn paint-path $ ctx props
+defn paint-path (ctx props eff)
+  , eff
 
-defn paint-rect (ctx style coord)
+defn paint-rect
+  ctx style coord eff
   let
-    (x $ or (:x style) (, 0))
-      y $ or (:y style)
-        , 0
-      w $ or (:w style)
-        , 100
+    (w $ or (:w style) (, 100))
       h $ or (:h style)
         , 40
+      x $ or (:x style)
+        - 0 $ / w 2
+      y $ or (:y style)
+        - 0 $ / h 2
       line-width $ or (:line-width style)
         , 2
 
@@ -60,7 +63,9 @@ defn paint-rect (ctx style coord)
         set! ctx.lineWidth line-width
         .stroke ctx
 
-defn paint-text (ctx style)
+    , eff
+
+defn paint-text (ctx style eff)
   set! ctx.fillStyle $ or (:fill-style style)
     hsl 0 0 0
   set! ctx.textAlign $ or (:text-align style)
@@ -91,41 +96,62 @@ defn paint-text (ctx style)
       or (:max-width style)
         , 400
 
-defn paint-save (ctx style)
+  , eff
+
+defn paint-save (ctx style eff)
   .save ctx
+  update eff :alpha-stack $ fn (alpha-stack)
+    cons ctx.globalAlpha alpha-stack
 
-defn paint-restore (ctx style)
+defn paint-restore (ctx style eff)
   .restore ctx
+  update eff :alpha-stack rest
 
-defn paint-translate (ctx style)
+defn paint-translate (ctx style eff)
   let
     (x $ or (:x style) (, 0))
       y $ or (:y style)
         , 0
 
     .translate ctx x y
+    , eff
 
-defn paint-alpha (ctx style)
+defn paint-alpha (ctx style eff)
   let
-    (opacity $ or (:opacity style) (, 0.5))
+    (inherent-opacity $ first (:alpha-stack eff))
+      opacity $ * inherent-opacity
+        or (:opacity style)
+          , 0.5
 
     set! ctx.globalAlpha opacity
+    update eff :alpha-stack $ fn (alpha-stack)
+      cons opacity $ rest alpha-stack
 
-defn paint-one (ctx directive)
+defn paint-rotate (ctx style eff)
+  let
+    (angle $ or (:angle style) (, 30))
+
+    .rotate ctx angle
+    , eff
+
+defn paint-one (ctx directive eff)
   let
     (([] coord op style) directive)
 
     -- .log js/console :paint-one op style
     case op
-      :line $ paint-line ctx style
-      :path $ paint-path ctx style
-      :text $ paint-text ctx style
-      :rect $ paint-rect ctx style coord
-      :native-save $ paint-save ctx style
-      :native-restore $ paint-restore ctx style
-      :native-translate $ paint-translate ctx style
-      :native-alpha $ paint-alpha ctx style
-      .log js/console "|painting not implemented" op
+      :line $ paint-line ctx style eff
+      :path $ paint-path ctx style eff
+      :text $ paint-text ctx style eff
+      :rect $ paint-rect ctx style coord eff
+      :native-save $ paint-save ctx style eff
+      :native-restore $ paint-restore ctx style eff
+      :native-translate $ paint-translate ctx style eff
+      :native-alpha $ paint-alpha ctx style eff
+      :native-rotate $ paint-rotate ctx style eff
+      do
+        .log js/console "|painting not implemented" op
+        , eff
 
 defn paint (ctx directives)
   let
@@ -134,12 +160,13 @@ defn paint (ctx directives)
     .save ctx
     .translate ctx (/ w 2)
       / h 2
-    loop ([] ds directives)
+    loop
+      [] ds directives eff $ {} :alpha-stack (list 1)
       if
         > (count ds)
           , 0
-        do
-          paint-one ctx $ first ds
-          recur $ rest ds
+        do $ recur (rest ds)
+          paint-one ctx (first ds)
+            , eff
 
     .restore ctx
