@@ -22,6 +22,32 @@ boot build-simple # build app at target/
 boot dev # start develop workspace at target/index.html
 ```
 
+```clj
+(defn init-state [arg1 arg2])
+(defn update-state [old-state state-arg1 state-arg2])
+(defn init-instant [args state])
+(defn on-tick [instant tick elapsed])
+(defn on-tick [instant tick elapsed])
+(defn on-update [instant old-args args old-state state])
+(defn on-unmount [instant tick])
+(defn render [arg1 arg2]
+  (fn [state mutate]
+    (fn [instant])))
+(create-component :demo {
+  :init-state init-state
+  :update-state update-state
+  :init-instant init-instant
+  :on-tick on-tick
+  :on-update on-update
+  :on-unmount on-unmount
+  :render render
+})
+
+(mutate state-arg1 state-arg2)
+(dispatch op op-data)
+(defn updater-fn [old-store op op-data op-id])
+```
+
 ### License
 
 MIT
