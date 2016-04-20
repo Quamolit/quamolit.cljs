@@ -46,9 +46,7 @@ defn render (store)
                 {} :click $ handle-back mutate
 
         if (= state :todolist)
-          component-fade-in-out ({})
-            component-todolist store
-
+          component-todolist store
         if (= state :clock)
           component-fade-in-out ({})
             translate

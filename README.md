@@ -25,7 +25,7 @@ boot dev # start develop workspace at target/index.html
 ```clj
 (defn init-state [arg1 arg2])
 (defn update-state [old-state state-arg1 state-arg2])
-(defn init-instant [args state])
+(defn init-instant [args state at-place?])
 (defn on-tick [instant tick elapsed])
 (defn on-update [instant old-args args old-state state])
 (defn on-unmount [instant tick])

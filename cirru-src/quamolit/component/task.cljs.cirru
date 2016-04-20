@@ -30,12 +30,14 @@ defn handle-remove (task-id)
   fn (event dispatch)
     dispatch :rm task-id
 
-defn init-instant (args state)
+defn init-instant (args state at-place?)
   let
-    (index $ last args)
+    (index $ get args 1)
     {} (:numb? false)
       :presence 0
       :presence-velocity 3
+      :left $ if at-place? -40 0
+      :left-velocity $ if at-place? 0.09 0
       :index index
       :index-velocity 0
 
@@ -46,6 +48,7 @@ defn on-tick (instant tick elapsed)
       new-instant $ -> instant
         iterate-instant :presence :presence-velocity elapsed $ [] 0 1000
         iterate-instant :index :index-velocity elapsed $ repeat 2 (:index-target instant)
+        iterate-instant :left :left-velocity elapsed $ [] -40 0
 
     if
       and (< v 0)
@@ -57,8 +60,8 @@ defn on-update
   instant old-args args old-state state
   -- .log js/console "|on update:" instant old-args args
   let
-    (old-index $ last old-args)
-      new-index $ last args
+    (old-index $ get old-args 1)
+      new-index $ get args 1
     if (not= old-index new-index)
       assoc instant :index-velocity
         /
@@ -70,12 +73,11 @@ defn on-update
 
 defn on-unmount (instant tick)
   -- .log js/console "|calling unmount" instant
-  assoc instant :presence-velocity -3
+  assoc instant :presence-velocity -3 :left-velocity -0.09
 
-defn render (task index)
+defn render (task index shift-x)
   fn (state mutate)
     fn (instant)
-      -- .log js/console "|watch instant:" instant
       alpha
         {} :style $ {} :opacity
           / (:presence instant)
@@ -83,11 +85,7 @@ defn render (task index)
 
         translate
           {} :style $ {} :x
-            let
-              (x $ * 0.04 (- (:presence instant) (, 1000)))
-
-              , x
-
+            + shift-x $ :left instant
             , :y
             -
               * 60 $ :index instant

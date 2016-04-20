@@ -2,8 +2,9 @@
 ns quamolit.component.todolist $ :require
   [] hsl.core :refer $ [] hsl
   [] quamolit.alias :refer $ [] create-comp group rect text
-  [] quamolit.render.element :refer $ [] translate button input
+  [] quamolit.render.element :refer $ [] translate button input alpha
   [] quamolit.component.task :refer $ [] component-task
+  [] quamolit.util.iterate :refer $ [] iterate-instant tween
 
 def position-header $ {} (:x 0)
   :y -200
@@ -32,11 +33,39 @@ defn handle-input (mutate default-text)
 defn init-state (store)
   {} :draft |
 
+defn init-instant (args state at-place?)
+  {} :presence 0 :presence-v 3 :numb? false
+
+defn on-tick (instant tick elapsed)
+  let
+    (new-instant $ iterate-instant instant :presence :presence-v elapsed ([] 0 1000))
+
+    if
+      and
+        < (:presence-v instant)
+          , 0
+        = (:presence new-instant)
+          , 0
+
+      assoc new-instant :numb? true
+      , new-instant
+
+defn on-update
+  instant old-args args old-state state
+  , instant
+
+defn on-unmount (instant tick)
+  assoc instant :presence-v -3
+
 defn render (store)
   fn (state mutate)
     fn (instant)
       -- .info js/console |todolist: store state
-      group ({})
+      alpha
+        {} :style $ {} :opacity
+          / (:presence instant)
+            , 1000
+
         translate ({} :style position-header)
           translate
             {} :style $ {} :x -20 :y 40
@@ -54,9 +83,12 @@ defn render (store)
           group ({})
             ->> store (reverse)
               map-indexed $ fn (index task)
-                [] (:id task)
-                  component-task task index
+                let
+                  (shift-x $ max -40 (min 0 $ * -40 (+ (if (> (:presence-v instant) (, 0)) (/ index $ - (count store) (, 1)) (- 1 $ if (= index 0) (, 0) (/ index $ - (count store) (, 1)))) (- 1 $ / (:presence instant) (, 500)))))
+
+                  [] (:id task)
+                    component-task task index shift-x
 
               into $ sorted-map
 
-def component-todolist $ create-comp :todolist init-state merge render
+def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount render

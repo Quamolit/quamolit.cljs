@@ -108,7 +108,13 @@ defn expand-component
           on-update $ :on-update markup
           update-state $ :update-state markup
           new-instant $ -> old-instant (on-tick tick elapsed)
-            on-update old-args new-args old-state new-state
+            on-update
+              into ([])
+                , old-args
+              into ([])
+                , new-args
+              , old-state new-state
+
           mutate $ build-mutate coord old-state update-state
           new-shape $ -> (:render markup)
             apply new-args
@@ -130,7 +136,11 @@ defn expand-component
           init-instant $ :init-instant markup
           update-state $ :update-state markup
           state $ apply init-state args
-          instant $ init-instant args state
+          instant $ init-instant
+            into ([])
+              , args
+            , state at-place?
+
           mutate $ build-mutate coord state update-state
           shape $ -> (:render markup)
             apply args
@@ -138,7 +148,7 @@ defn expand-component
             apply $ list instant tick
           tree $ if
             = Component $ type shape
-            expand-component shape nil child-coord states build-mutate at-place? tick elapsed
+            expand-component shape nil child-coord states build-mutate false tick elapsed
             expand-shape shape nil child-coord child-coord states build-mutate false tick elapsed
 
         Component. (:name markup)
