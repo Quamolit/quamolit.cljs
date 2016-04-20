@@ -1,7 +1,7 @@
 
 ns quamolit.component.task $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-component group rect
+  [] quamolit.alias :refer $ [] create-comp group rect
   [] quamolit.render.element :refer $ [] translate alpha input
   [] quamolit.util.iterate :refer $ [] iterate-instant
   [] quamolit.component.task-toggler :refer $ [] component-toggler
@@ -112,9 +112,4 @@ defn render (task index)
               rect $ {} :style style-remove :event
                 {} :click $ handle-remove (:id task)
 
-def component-task $ create-component :task
-  {} (:init-instant init-instant)
-    :on-tick on-tick
-    :on-update on-update
-    :on-unmount on-unmount
-    :render render
+def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount render

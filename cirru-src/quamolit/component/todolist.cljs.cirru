@@ -1,7 +1,7 @@
 
 ns quamolit.component.todolist $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-component group rect text
+  [] quamolit.alias :refer $ [] create-comp group rect text
   [] quamolit.render.element :refer $ [] translate button input
   [] quamolit.component.task :refer $ [] component-task
 
@@ -28,6 +28,9 @@ defn handle-input (mutate default-text)
     let
       (user-text $ js/prompt "|input to canvas:" default-text)
       mutate $ {} :draft user-text
+
+defn init-state (store)
+  {} :draft |
 
 defn render (store)
   fn (state mutate)
@@ -56,13 +59,4 @@ defn render (store)
 
               into $ sorted-map
 
-def todolist-component $ create-component :todolist
-  {}
-    :init-state $ fn ()
-      {} (:draft |)
-        :show-done? false
-
-    :update-state merge
-    :init-instant $ fn ()
-      {}
-    :render render
+def component-todolist $ create-comp :todolist init-state merge render

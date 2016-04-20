@@ -2,7 +2,7 @@
 ns quamolit.component.task-toggler $ :require
   [] hsl.core :refer $ [] hsl
   [] quamolit.util.iterate :refer $ [] iterate-instant tween
-  [] quamolit.alias :refer $ [] create-component group rect
+  [] quamolit.alias :refer $ [] create-comp group rect
 
 defn style-toggler (done-value)
   {} (:w 40)
@@ -52,8 +52,4 @@ defn render (done? task-id)
         , :event
         {} :click $ handle-click task-id
 
-def component-toggler $ create-component :task-toggler
-  {} (:init-instant init-instant)
-    :on-update on-update
-    :on-tick on-tick
-    :render render
+def component-toggler $ create-comp :task-toggler nil nil init-instant on-tick on-update nil render

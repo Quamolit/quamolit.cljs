@@ -1,7 +1,7 @@
 
 ns quamolit.component.digits $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-component rect group line
+  [] quamolit.alias :refer $ [] create-comp rect group line
   [] quamolit.render.element :refer $ [] alpha translate
   [] quamolit.util.iterate :refer $ [] iterate-instant tween
 
@@ -76,12 +76,7 @@ defn render
               :x1 $ :x1 instant
               :y1 $ :y1 instant
 
-def component-stroke $ create-component :stroke
-  {} (:init-instant init-instant)
-    :on-update on-update
-    :on-tick on-tick
-    :on-unmount on-unmount
-    :render render
+def component-stroke $ create-comp :stroke init-instant on-tick on-update on-unmount render
 
 defn render-0 ()
   fn (state mutate)
@@ -182,35 +177,25 @@ defn render-9 ()
         component-stroke 40 40 40 80
         component-stroke 40 80 0 80
 
-def component-0 $ create-component :zero
-  {} $ :render render-0
+def component-0 $ create-comp :zero render-0
 
-def component-1 $ create-component :one
-  {} $ :render render-1
+def component-1 $ create-comp :one render-1
 
-def component-2 $ create-component :two
-  {} $ :render render-2
+def component-2 $ create-comp :two render-2
 
-def component-3 $ create-component :three
-  {} $ :render render-3
+def component-3 $ create-comp :three render-3
 
-def component-4 $ create-component :four
-  {} $ :render render-4
+def component-4 $ create-comp :four render-4
 
-def component-5 $ create-component :five
-  {} $ :render render-5
+def component-5 $ create-comp :five render-5
 
-def component-6 $ create-component :six
-  {} $ :render render-6
+def component-6 $ create-comp :six render-6
 
-def component-7 $ create-component :seven
-  {} $ :render render-7
+def component-7 $ create-comp :seven render-7
 
-def component-8 $ create-component :eight
-  {} $ :render render-8
+def component-8 $ create-comp :eight render-8
 
-def component-9 $ create-component :nine
-  {} $ :render render-9
+def component-9 $ create-comp :nine render-9
 
 def style-digit-bg $ {} (:w 100)
   :h 100
@@ -250,7 +235,4 @@ defn render-digit (n)
           {} :style $ {} :x 50
           pick-digit $ mod state 10
 
-def component-digit $ create-component :digit
-  {} (:init-state init-digit-state)
-    :update-state update-digit-state
-    :render render-digit
+def component-digit $ create-comp :digit init-digit-state update-digit-state render-digit
