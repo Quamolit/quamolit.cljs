@@ -10,6 +10,7 @@ ns quamolit.component.container $ :require
   [] quamolit.component.solar :refer $ [] component-solar
   [] quamolit.component.fade-in-out :refer $ [] component-fade-in-out
   [] quamolit.component.binary-tree :refer $ [] component-binary-tree
+  [] quamolit.component.code-table :refer $ [] component-code-table
 
 defn init-state ()
   , :portal
@@ -65,5 +66,11 @@ defn render (store)
             translate
               {} :style $ {} :x 0 :y 240
               component-binary-tree 5
+
+        if (= state :code-table)
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x 0 :y 40
+              component-code-table 5
 
 def container-component $ create-comp :container init-state update-state render

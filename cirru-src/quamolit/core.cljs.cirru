@@ -19,6 +19,8 @@ defonce global-directives $ atom ([])
 
 defonce global-tick $ atom (get-tick)
 
+defonce global-focus $ atom ([])
+
 defn dispatch (action-type action-data)
   let
     (new-tick $ get-tick)
@@ -63,12 +65,12 @@ defn render-page ()
     -- .log js/console |directives directives
     js/requestAnimationFrame render-page
 
-defn handle-event (event-name coord)
+defn handle-event (coord event-name event)
   let
     (maybe-listener $ resolve-target @global-tree event-name coord)
     if (some? maybe-listener)
-      maybe-listener nil dispatch
-      .log js/console "|no target"
+      maybe-listener event dispatch
+      -- .log js/console "|no target"
 
 defn configure-canvas ()
   let
@@ -81,17 +83,30 @@ defn -main ()
   devtools/install! $ [] :custom-formatters :santy-hints
   enable-console-print!
   configure-canvas
-  .addEventListener (.querySelector js/document |#app)
-    , |click
-    fn (event)
+  let
+    (root-element $ .querySelector js/document |#app)
+      ctx $ .getContext root-element |2d
+    .addEventListener root-element |click $ fn (event)
       let
         (hit-region $ aget event |region)
         -- .log js/console |hit: hit-region
         if (some? hit-region)
-          handle-event :click $ reader/read-string hit-region
+          let
+            (coord $ reader/read-string hit-region)
+            reset! global-focus coord
+            handle-event coord :click event
 
-  let
-    (ctx $ -> js/document (.querySelector |#app) (.getContext |2d))
+          reset! global-focus $ []
+
+    .addEventListener root-element |keypress $ fn (event)
+      let
+        (coord @global-focus)
+        handle-event coord :keypress event
+
+    .addEventListener root-element |keydown $ fn (event)
+      let
+        (coord @global-focus)
+        handle-event coord :keydown event
 
     if
       nil? $ .-addHitRegion ctx

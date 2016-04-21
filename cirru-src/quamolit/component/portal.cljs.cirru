@@ -44,8 +44,15 @@ defn render (mutate-navigate)
         translate
           {} :style $ {} :x -240 :y 20
           button $ {} :style
-            style-button "|Binary Tree" $ hsl 140 80 80
+            style-button "|Binary Tree" $ hsl 140 20 30
             , :event
             {} :click $ handle-navigate mutate-navigate :binary-tree
+
+        translate
+          {} :style $ {} :x -20 :y 20
+          button $ {} :style
+            style-button |Table $ hsl 340 80 80
+            , :event
+            {} :click $ handle-navigate mutate-navigate :code-table
 
 def component-portal $ create-comp :portal render

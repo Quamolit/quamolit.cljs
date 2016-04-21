@@ -26,7 +26,7 @@ defn locate-target (tree coord)
 defn resolve-target (tree event-name coord)
   let
     (maybe-target $ locate-target tree coord)
-    -- .log js/console |target maybe-target
+    -- .log js/console |target maybe-target event-name coord
     if (nil? maybe-target)
       , nil
       let

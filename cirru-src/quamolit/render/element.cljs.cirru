@@ -1,7 +1,8 @@
 
 ns quamolit.render.element $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-component native-translate native-alpha native-save native-restore native-rotate native-scale group rect text arrange-children
+  [] quamolit.alias :refer $ [] create-component create-comp native-translate native-alpha native-save native-restore native-rotate native-scale group rect text arrange-children
+  [] quamolit.util.keyboard :refer $ [] keycode->key
 
 def translate $ create-component :translate
   {} $ :render
@@ -15,9 +16,7 @@ def translate $ create-component :translate
               native-save $ {}
               native-translate $ assoc props :style style
               group ({})
-                into ({})
-                  map-indexed vector children
-
+                arrange-children children
               native-restore $ {}
 
 def scale $ create-component :scale
@@ -142,3 +141,36 @@ def input $ create-component :input
               rect $ {} :style style-bg :event event-collection
               translate ({} :style style-place-text)
                 text $ {} :style style-text
+
+defn init-textbox (props)
+  , |default
+
+defn update-textbox (state keycode shift?)
+  -- .log js/console keycode
+  let
+    (guess $ keycode->key keycode shift?)
+    if (some? guess)
+      str state guess
+      case keycode
+        8 $ if (= state |)
+          , |
+          subs state 0 $ - (count state)
+            , 1
+
+        , state
+
+defn handle-keydown (mutate)
+  fn (event dispatch)
+    mutate (.-keyCode event)
+      .-shiftKey event
+
+defn render-textbox (props)
+  fn (state mutate)
+    fn (instant tick)
+      let
+        (style $ assoc (:style props) (, :text state))
+
+        input $ {} :style style :event
+          {} :keydown $ handle-keydown mutate
+
+def textbox $ create-comp :textbox init-textbox update-textbox render-textbox
