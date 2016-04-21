@@ -90,6 +90,13 @@ defn -main ()
         if (some? hit-region)
           handle-event :click $ reader/read-string hit-region
 
+  let
+    (ctx $ -> js/document (.querySelector |#app) (.getContext |2d))
+
+    if
+      nil? $ .-addHitRegion ctx
+      js/alert "|You need to enable experimental canvas features to view this app"
+
   render-page
 
 set! js/window.onload -main

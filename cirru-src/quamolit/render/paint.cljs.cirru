@@ -96,8 +96,10 @@ defn paint-rect
 
     .beginPath ctx
     .rect ctx x y w h
-    .addHitRegion ctx $ clj->js
-      {} :id $ pr-str coord
+    if (some? ctx.addHitRegion)
+      .addHitRegion ctx $ clj->js
+        {} :id $ pr-str coord
+
     if (contains? style :fill-style)
       do
         set! ctx.fillStyle $ :fill-style style
