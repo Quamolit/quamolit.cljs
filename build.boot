@@ -70,7 +70,7 @@
 (deftask build-advanced []
   (comp
     (compile-cirru)
-    (cljs :optimizations :advanced)
+    (cljs :optimizations :advanced :compiler-options {})
     (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")
     (target)))
 
@@ -82,7 +82,7 @@
 
 (deftask send-tiye []
   (comp
-    (build-simple)
+    (build-advanced)
     (rsync)))
 
 (deftask build []

@@ -32,7 +32,8 @@ defn build-mutate (coord old-state update-state)
   fn (& state-args)
     -- .log js/console |mutate: coord old-state
     let
-        new-state $ apply update-state (cons old-state state-args)
+      (new-state $ apply update-state (cons old-state state-args))
+
       swap! global-states assoc coord new-state
       let
         (clean-states $ states-gc @global-states @global-tree)
@@ -113,7 +114,7 @@ defn -main ()
         handle-event coord :keydown event
 
     if
-      nil? $ .-addHitRegion ctx
+      nil? $ aget ctx |addHitRegion
       js/alert "|You need to enable experimental canvas features to view this app"
 
   render-page
