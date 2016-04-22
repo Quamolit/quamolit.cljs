@@ -102,7 +102,8 @@ defn expand-component
           old-state $ :state old-tree
           old-instant $ :instant old-tree
           new-args $ :args markup
-          new-state $ or (get states coord)
+          new-state $ if (contains? states coord)
+            get states coord
             , old-state
           on-tick $ :on-tick markup
           on-update $ :on-update markup

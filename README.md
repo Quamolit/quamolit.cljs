@@ -79,8 +79,9 @@ boot dev # start develop workspace at target/index.html
   :text-align "center"
   :base-linee "middle"
   :size 20
-  :font-family nil
+  :font-family "Optima"
   :max-width 400
+  :text ""
 }})
 ```
 

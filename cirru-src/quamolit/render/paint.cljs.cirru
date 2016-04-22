@@ -128,7 +128,8 @@ defn paint-text (ctx style eff)
     or (:size style)
       , 20
     , "|px "
-    :font-family style
+    or (:font-family style)
+      , |Optima
 
   if (contains? style :fill-style)
     do $ .fillText ctx (:text style)

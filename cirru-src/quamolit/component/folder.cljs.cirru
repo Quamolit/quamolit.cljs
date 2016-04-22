@@ -4,6 +4,14 @@ ns quamolit.component.folder $ :require
   [] quamolit.alias :refer $ [] create-comp rect text group
   [] quamolit.render.element :refer $ [] translate scale alpha
   [] quamolit.util.iterate :refer $ [] iterate-instant tween
+  [] quamolit.component.file-card :refer $ [] component-file-card
+
+defn init-state
+  cards position _ index popup?
+  , nil
+
+defn update-state (state target)
+  , target
 
 defn init-instant (args state at-place?)
   {} :presence 0 :presence-v 3 :popup 0 :popup-v 0
@@ -39,10 +47,10 @@ defn handle-back (mutate-navitate index)
     mutate-navitate index
 
 defn render
-  cards position navitate index popup?
+  cards position navigate index popup?
   fn (state mutate)
     fn (instant tick)
-      -- .log js/console position
+      -- .log js/console state
       let
         (shift-x $ first position)
           shift-y $ last position
@@ -51,43 +59,53 @@ defn render
           place-x $ * shift-x (- 1 popup-ratio)
           place-y $ * shift-y (- 1 popup-ratio)
           ratio $ + 0.2 (* 0.8 popup-ratio)
-          bg-light $ tween ([] 60 80)
+          bg-light $ tween ([] 60 82)
             [] 0 1
             , popup-ratio
 
-        alpha
-          {} :style $ {} :opacity
-            * 0.6 $ / (:presence instant)
-              , 1000
+        translate
+          {} :style $ {} :x place-x :y place-y
+          scale
+            {} :style $ {} :ratio ratio
+            alpha
+              {} :style $ {} :opacity
+                * 0.6 $ / (:presence instant)
+                  , 1000
 
-          translate
-            {} :style $ {} :x place-x :y place-y
-            scale
-              {} :style $ {} :ratio ratio
               rect $ {} :style
                 {} :w 600 :h 400 :fill-style $ hsl 0 80 bg-light
                 , :event
-                {} :click $ handle-back navitate index
-              group ({})
-                ->> cards
-                  map-indexed $ fn (index card-name)
-                    [] index $ let
-                      (jx $ mod index 4)
-                        jy $ js/Math.floor (/ index 4)
-                        card-x $ * (- jx 1.5)
-                          * 200 $ + 0.1 (* 0.9 popup-ratio)
+                {} :click $ handle-back navigate index
 
-                        card-y $ * (- jy 1.5)
-                          * 100 $ + 0.1 (* 0.9 popup-ratio)
+            group ({})
+              ->> cards
+                map-indexed $ fn (index card-name)
+                  [] index $ let
+                    (jx $ mod index 4)
+                      jy $ js/Math.floor (/ index 4)
+                      card-x $ * (- jx 1.5)
+                        * 200 $ + 0.1 (* 0.9 popup-ratio)
 
-                      translate
-                        {} $ :style
-                          {} :x card-x :y card-y
-                        rect
-                          {} :style $ {} :w 160 :h 80 :fill-style
-                            hsl 200 80 80
-                          text $ {} :style ({} :text card-name)
+                      card-y $ * (- jy 1.5)
+                        * 100 $ + 0.1 (* 0.9 popup-ratio)
 
-                  into $ sorted-map
+                    component-file-card card-name ([] card-x card-y)
+                      , mutate index ratio
+                      = state index
 
-def component-folder $ create-comp :folder init-instant on-tick on-update on-unmount render
+                filter $ fn (entry)
+                  let
+                    (index $ first entry)
+                    if (some? state)
+                      = index state
+                      , true
+
+                into $ sorted-map
+
+            if (not popup?)
+              rect $ {} :style
+                {} :w 600 :h 400 :fill-style $ hsl 0 80 0 0
+                , :event
+                {} :click $ handle-back navigate index
+
+def component-folder $ create-comp :folder init-state update-state init-instant on-tick on-update on-unmount render
