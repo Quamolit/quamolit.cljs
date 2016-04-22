@@ -55,4 +55,11 @@ defn render (mutate-navigate)
             , :event
             {} :click $ handle-navigate mutate-navigate :code-table
 
+        translate
+          {} :style $ {} :x 200 :y 20
+          button $ {} :style
+            style-button |Finder $ hsl 60 80 80
+            , :event
+            {} :click $ handle-navigate mutate-navigate :finder
+
 def component-portal $ create-comp :portal render

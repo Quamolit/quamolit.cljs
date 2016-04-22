@@ -11,6 +11,7 @@ ns quamolit.component.container $ :require
   [] quamolit.component.fade-in-out :refer $ [] component-fade-in-out
   [] quamolit.component.binary-tree :refer $ [] component-binary-tree
   [] quamolit.component.code-table :refer $ [] component-code-table
+  [] quamolit.component.finder :refer $ [] component-finder
 
 defn init-state ()
   , :portal
@@ -39,14 +40,6 @@ defn render (store)
           component-fade-in-out ({})
             component-portal mutate
 
-        if (not= state :portal)
-          component-fade-in-out ({})
-            translate
-              {} :style $ {} :x -400 :y -140
-              button $ {} :style (style-button |Back)
-                , :event
-                {} :click $ handle-back mutate
-
         if (= state :todolist)
           component-todolist store
         if (= state :clock)
@@ -72,5 +65,19 @@ defn render (store)
             translate
               {} :style $ {} :x 0 :y 40
               component-code-table 5
+
+        if (= state :finder)
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x 0 :y 40
+              component-finder
+
+        if (not= state :portal)
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x -400 :y -140
+              button $ {} :style (style-button |Back)
+                , :event
+                {} :click $ handle-back mutate
 
 def container-component $ create-comp :container init-state update-state render
