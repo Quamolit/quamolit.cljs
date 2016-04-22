@@ -8,6 +8,7 @@ ns quamolit.core $ :require (cljs.reader :as reader)
   [] quamolit.render.paint :refer $ [] paint
   [] quamolit.controller.resolve :refer $ [] resolve-target
   [] quamolit.updater.core :refer $ [] updater-fn
+  [] quamolit.controller.gc :refer $ [] states-gc
 
 defonce global-store $ atom ([])
 
@@ -34,6 +35,9 @@ defn build-mutate (coord old-state update-state)
       (partial-updater $ partial update-state old-state)
         new-state $ apply partial-updater state-args
       swap! global-states assoc coord new-state
+      let
+        (clean-states $ states-gc @global-states @global-tree)
+        reset! global-states $ assoc clean-states coord new-state
 
 defn call-paint (directives)
   -- .log js/console directives @global-directives
@@ -69,7 +73,8 @@ defn handle-event (coord event-name event)
   let
     (maybe-listener $ resolve-target @global-tree event-name coord)
     if (some? maybe-listener)
-      maybe-listener event dispatch
+      do (.preventDefault event)
+        maybe-listener event dispatch
       -- .log js/console "|no target"
 
 defn configure-canvas ()
