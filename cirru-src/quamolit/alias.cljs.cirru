@@ -21,7 +21,7 @@ defn arrange-children (children)
           some? $ val entry
 
 defn create-shape
-  shape-name props & children
+  shape-name props children
   if
     not $ map? props
     throw $ js/Error. "|Props expeced to be a map!"
@@ -64,63 +64,50 @@ defn create-comp
 
 defn create-component (component-name details)
   fn (& args)
-    let
-      (init-state $)
-        update-state $ or (:update-state details)
-          , merge
-        init-instant $ or (:init-instant details)
-          , default-init-instant
-        on-tick $ or (:on-tick details)
-          , default-on-tick
-        on-update $ or (:on-update details)
-          , default-on-update
-        on-unmount $ or (:on-unmount details)
-          , default-on-unmount
+    Component. component-name nil args nil ({})
+      :render details
+      or (:init-state details)
+        , default-init-state
+      or (:update-state details)
+        , merge
+      or (:init-instant details)
+        , default-init-instant
+      or (:on-tick details)
+        , default-on-tick
+      or (:on-update details)
+        , default-on-update
+      or (:on-unmount details)
+        , default-on-unmount
+      , nil false
 
-      Component. component-name nil args nil ({})
-        :render details
-        or (:init-state details)
-          , default-init-state
-        or (:update-state details)
-          , merge
-        or (:init-instant details)
-          , default-init-instant
-        or (:on-tick details)
-          , default-on-tick
-        or (:on-update details)
-          , default-on-update
-        or (:on-unmount details)
-          , default-on-unmount
-        , nil false
+defn line (props & children) (create-shape :line props children)
 
-def line $ partial create-shape :line
+defn group (props & children) (create-shape :group props children)
 
-def group $ partial create-shape :group
+defn path (props & children) (create-shape :path props children)
 
-def path $ partial create-shape :path
+defn text (props & children) (create-shape :text props children)
 
-def text $ partial create-shape :text
+defn arc (props & children) (create-shape :arc props children)
 
-def arc $ partial create-shape :arc
+defn rect (props & children) (create-shape :rect props children)
 
-def rect $ partial create-shape :rect
+defn image (props & children) (create-shape :image props children)
 
-def image $ partial create-shape :image
+defn bezier (props & children) (create-shape :bezier props children)
 
-def bezier $ partial create-shape :bezier
+defn native-save (props & children) (create-shape :native-save props children)
 
-def native-save $ partial create-shape :native-save
+defn native-restore (props & children) (create-shape :native-restore props children)
 
-def native-restore $ partial create-shape :native-restore
+defn native-rotate (props & children) (create-shape :native-rotate props children)
 
-def native-rotate $ partial create-shape :native-rotate
+defn native-scale (props & children) (create-shape :native-scale props children)
 
-def native-scale $ partial create-shape :native-scale
+defn native-clip (props & children) (create-shape :native-clip props children)
 
-def native-clip $ partial create-shape :native-clip
+defn native-translate (props & children) (create-shape :native-translate props children)
 
-def native-translate $ partial create-shape :native-translate
+defn native-transform (props & children) (create-shape :native-transform props children)
 
-def native-transform $ partial create-shape :native-transform
-
-def native-alpha $ partial create-shape :native-alpha
+defn native-alpha (props & children) (create-shape :native-alpha props children)

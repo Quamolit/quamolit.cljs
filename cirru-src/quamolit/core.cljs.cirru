@@ -32,8 +32,7 @@ defn build-mutate (coord old-state update-state)
   fn (& state-args)
     -- .log js/console |mutate: coord old-state
     let
-      (partial-updater $ partial update-state old-state)
-        new-state $ apply partial-updater state-args
+        new-state $ apply update-state (cons old-state state-args)
       swap! global-states assoc coord new-state
       let
         (clean-states $ states-gc @global-states @global-tree)
