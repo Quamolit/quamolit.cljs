@@ -58,8 +58,15 @@ defn render (mutate-navigate)
         translate
           {} :style $ {} :x 200 :y 20
           button $ {} :style
-            style-button |Finder $ hsl 60 80 80
+            style-button |Finder $ hsl 60 80 45
             , :event
             {} :click $ handle-navigate mutate-navigate :finder
+
+        translate
+          {} :style $ {} :x -240 :y 140
+          button $ {} :style
+            style-button |Raining $ hsl 260 80 80
+            , :event
+            {} :click $ handle-navigate mutate-navigate :raining
 
 def component-portal $ create-comp :portal render
