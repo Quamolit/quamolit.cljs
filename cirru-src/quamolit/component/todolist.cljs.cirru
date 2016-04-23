@@ -91,4 +91,4 @@ defn render (store)
 
               into $ sorted-map
 
-def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount render
+def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount render nil

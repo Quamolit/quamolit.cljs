@@ -52,4 +52,4 @@ defn render (done? task-id)
         , :event
         {} :click $ handle-click task-id
 
-def component-toggler $ create-comp :task-toggler nil nil init-instant on-tick on-update nil render
+def component-toggler $ create-comp :task-toggler nil nil init-instant on-tick on-update nil render nil

@@ -76,7 +76,7 @@ defn render
               :x1 $ :x1 instant
               :y1 $ :y1 instant
 
-def component-stroke $ create-comp :stroke init-instant on-tick on-update on-unmount render
+def component-stroke $ create-comp :stroke init-instant on-tick on-update on-unmount render nil
 
 defn render-0 ()
   fn (state mutate)

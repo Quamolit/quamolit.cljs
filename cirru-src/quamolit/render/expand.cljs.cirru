@@ -39,9 +39,13 @@ defn merge-children
             new-acc $ if component?
               if (:fading? child)
                 if
-                  get-in child $ [] :instant :numb?
+                  let
+                    (removable? $ :removable? child)
+                    removable? $ :instant child
+
                   , acc
                   assoc acc child-key $ expand-component child child child-coord states build-mutate at-place? tick elapsed
+
                 let
                   (args $ :args child)
                     state $ :state child
@@ -62,6 +66,8 @@ defn expand-shape
   let
     (old-children $ :children old-tree)
       new-children $ ->> (:children markup)
+        filter $ fn (entry)
+          some? $ val entry
         map $ fn (child)
           let
             (child-key $ key child)
@@ -77,8 +83,6 @@ defn expand-shape
               expand-component child-markup old-child-tree child-coord states build-mutate at-place? tick elapsed
               expand-shape child-markup old-child-tree child-coord coord states build-mutate at-place? tick elapsed
 
-        filter $ fn (entry)
-          some? $ val entry
         into $ sorted-map
 
     if (some? old-tree)
@@ -162,6 +166,7 @@ defn expand-component
           :on-update markup
           :on-unmount markup
           , tree false
+          :removable? markup
 
 defn expand-app
   markup old-tree states build-mutate tick elapsed

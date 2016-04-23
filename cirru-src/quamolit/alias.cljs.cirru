@@ -1,7 +1,7 @@
 
 ns quamolit.alias
 
-defrecord Component $ name coord args state instant render init-state update-state init-instant on-tick on-update on-unmount tree fading?
+defrecord Component $ name coord args state instant render init-state update-state init-instant on-tick on-update on-unmount tree fading? removable?
 
 defrecord Shape $ name props children
 
@@ -43,14 +43,17 @@ defn default-on-update
 defn default-on-unmount (instant tick)
   assoc instant :numb? true
 
+defn default-removable? (instant)
+  :numb? instant
+
 defn create-comp
   (component-name render)
-    create-comp component-name nil nil nil nil nil nil render
+    create-comp component-name nil nil nil nil nil nil render nil
   (component-name init-state update-state render)
-    create-comp component-name init-state update-state nil nil nil nil render
-  (component-name init-instant on-tick on-update on-unmount render)
-    create-comp component-name nil nil init-instant on-tick on-update on-unmount render
-  (component-name init-state update-state init-instant on-tick on-update on-unmount render)
+    create-comp component-name init-state update-state nil nil nil nil render nil
+  (component-name init-instant on-tick on-update on-unmount render removable?)
+    create-comp component-name nil nil init-instant on-tick on-update on-unmount render removable?
+  (component-name init-state update-state init-instant on-tick on-update on-unmount render removable?)
     fn (& args)
       Component. component-name nil args nil ({})
         , render
@@ -61,6 +64,7 @@ defn create-comp
         or on-update default-on-update
         or on-unmount default-on-unmount
         , nil false
+        or removable? default-removable?
 
 defn create-component (component-name details)
   fn (& args)
@@ -79,6 +83,8 @@ defn create-component (component-name details)
       or (:on-unmount details)
         , default-on-unmount
       , nil false
+      or (:removable? details)
+        , default-removable?
 
 defn line (props & children) (create-shape :line props children)
 
