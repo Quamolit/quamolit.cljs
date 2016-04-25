@@ -40,8 +40,8 @@ defn merge-children
               if (:fading? child)
                 if
                   let
-                    (removable? $ :removable? child)
-                    removable? $ :instant child
+                    (remove? $ :remove? child)
+                    remove? $ :instant child
 
                   , acc
                   assoc acc child-key $ expand-component child child child-coord states build-mutate at-place? tick elapsed
@@ -156,17 +156,7 @@ defn expand-component
             expand-component shape nil child-coord states build-mutate false tick elapsed
             expand-shape shape nil child-coord child-coord states build-mutate false tick elapsed
 
-        Component. (:name markup)
-          , coord args state instant
-          :render markup
-          :init-state markup
-          :update-state markup
-          :init-instant markup
-          :on-tick markup
-          :on-update markup
-          :on-unmount markup
-          , tree false
-          :removable? markup
+        assoc markup :coord coord :args args :state state :instant instant :tree tree
 
 defn expand-app
   markup old-tree states build-mutate tick elapsed

@@ -108,4 +108,4 @@ defn render
                 , :event
                 {} :click $ handle-back navigate index
 
-def component-folder $ create-comp :folder init-state update-state init-instant on-tick on-update on-unmount render nil
+def component-folder $ create-comp :folder init-state update-state init-instant on-tick on-update on-unmount nil nil render

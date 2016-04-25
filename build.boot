@@ -71,7 +71,7 @@
 (deftask build-advanced []
   (comp
     (compile-cirru)
-    (cljs :optimizations :advanced :compiler-options {})
+    (cljs :optimizations :advanced :compiler-options {:pseudo-names true})
     (html-entry :dsl (html-dsl {:env :build}) :html-name "index.html")
     (target)))
 

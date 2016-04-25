@@ -1,9 +1,9 @@
 
 ns quamolit.alias
 
-defrecord Component $ name coord args state instant render init-state update-state init-instant on-tick on-update on-unmount tree fading? removable?
+defrecord Component $ name coord args state instant init-state update-state init-instant on-tick on-update on-unmount animate? remove? render tree fading?
 
-defrecord Shape $ name props children
+defrecord Shape $ name props children animating?
 
 defn arrange-children (children)
   into (sorted-map)
@@ -20,18 +20,21 @@ defn arrange-children (children)
         filter $ fn (entry)
           some? $ val entry
 
-defn create-shape
-  shape-name props children
+defn create-shape (shape-name props children)
   if
     not $ map? props
     throw $ js/Error. "|Props expeced to be a map!"
-  ->Shape shape-name props $ arrange-children children
+  ->Shape shape-name props (arrange-children children)
+    , true
 
 defn default-init-state (& args)
   {}
 
 defn default-init-instant (args state)
   {} :numb? false
+
+defn default-animate? (instant)
+  , true
 
 defn default-on-tick (instant tick elapsed)
   , instant
@@ -43,33 +46,31 @@ defn default-on-update
 defn default-on-unmount (instant tick)
   assoc instant :numb? true
 
-defn default-removable? (instant)
+defn default-remove? (instant)
   :numb? instant
 
 defn create-comp
   (component-name render)
-    create-comp component-name nil nil nil nil nil nil render nil
+    create-comp component-name nil nil nil nil nil nil nil nil render
   (component-name init-state update-state render)
-    create-comp component-name init-state update-state nil nil nil nil render nil
-  (component-name init-instant on-tick on-update on-unmount render removable?)
-    create-comp component-name nil nil init-instant on-tick on-update on-unmount render removable?
-  (component-name init-state update-state init-instant on-tick on-update on-unmount render removable?)
+    create-comp component-name init-state update-state nil nil nil nil nil nil render
+  (component-name init-instant on-tick on-update on-unmount animate? remove? render)
+    create-comp component-name nil nil init-instant on-tick on-update on-unmount animate? remove? render
+  (component-name init-state update-state init-instant on-tick on-update on-unmount animate? remove? render)
     fn (& args)
-      Component. component-name nil args nil ({})
-        , render
-        or init-state default-init-state
+      Component. component-name nil args nil nil (or init-state default-init-state)
         or update-state merge
         or init-instant default-init-instant
         or on-tick default-on-tick
         or on-update default-on-update
         or on-unmount default-on-unmount
-        , nil false
-        or removable? default-removable?
+        or animate? default-animate?
+        or remove? default-remove?
+        , render nil false
 
 defn create-component (component-name details)
   fn (& args)
     Component. component-name nil args nil ({})
-      :render details
       or (:init-state details)
         , default-init-state
       or (:update-state details)
@@ -82,38 +83,57 @@ defn create-component (component-name details)
         , default-on-update
       or (:on-unmount details)
         , default-on-unmount
+      or (:animate? details)
+        , default-animate?
+      or (:remove? details)
+        , default-remove?
+      :render details
       , nil false
-      or (:removable? details)
-        , default-removable?
 
-defn line (props & children) (create-shape :line props children)
+defn line (props & children)
+  create-shape :line props children
 
-defn group (props & children) (create-shape :group props children)
+defn group (props & children)
+  create-shape :group props children
 
-defn path (props & children) (create-shape :path props children)
+defn path (props & children)
+  create-shape :path props children
 
-defn text (props & children) (create-shape :text props children)
+defn text (props & children)
+  create-shape :text props children
 
-defn arc (props & children) (create-shape :arc props children)
+defn arc (props & children)
+  create-shape :arc props children
 
-defn rect (props & children) (create-shape :rect props children)
+defn rect (props & children)
+  create-shape :rect props children
 
-defn image (props & children) (create-shape :image props children)
+defn image (props & children)
+  create-shape :image props children
 
-defn bezier (props & children) (create-shape :bezier props children)
+defn bezier (props & children)
+  create-shape :bezier props children
 
-defn native-save (props & children) (create-shape :native-save props children)
+defn native-save (props & children)
+  create-shape :native-save props children
 
-defn native-restore (props & children) (create-shape :native-restore props children)
+defn native-restore (props & children)
+  create-shape :native-restore props children
 
-defn native-rotate (props & children) (create-shape :native-rotate props children)
+defn native-rotate (props & children)
+  create-shape :native-rotate props children
 
-defn native-scale (props & children) (create-shape :native-scale props children)
+defn native-scale (props & children)
+  create-shape :native-scale props children
 
-defn native-clip (props & children) (create-shape :native-clip props children)
+defn native-clip (props & children)
+  create-shape :native-clip props children
 
-defn native-translate (props & children) (create-shape :native-translate props children)
+defn native-translate (props & children)
+  create-shape :native-translate props children
 
-defn native-transform (props & children) (create-shape :native-transform props children)
+defn native-transform (props & children)
+  create-shape :native-transform props children
 
-defn native-alpha (props & children) (create-shape :native-alpha props children)
+defn native-alpha (props & children)
+  create-shape :native-alpha props children

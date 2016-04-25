@@ -109,4 +109,4 @@ defn render (task index shift-x)
             rect $ {} :style style-remove :event
               {} :click $ handle-remove (:id task)
 
-def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount render nil
+def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount nil nil render

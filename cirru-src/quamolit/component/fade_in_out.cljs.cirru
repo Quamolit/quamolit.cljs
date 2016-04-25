@@ -42,4 +42,4 @@ defn render (props & children)
         into (sorted-map)
           map-indexed vector children
 
-def component-fade-in-out $ create-comp :fade-in-out init-instant on-tick on-update on-unmount render nil
+def component-fade-in-out $ create-comp :fade-in-out init-instant on-tick on-update on-unmount nil nil render

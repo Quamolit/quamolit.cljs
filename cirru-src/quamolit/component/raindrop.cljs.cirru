@@ -42,9 +42,9 @@ defn render (position)
                 :w 4
                 :h 30
 
-defn removable? (instant)
+defn remove? (instant)
   and
     = 0 $ :presence instant
     = 0 $ :presence-v instant
 
-def component-raindrop $ create-comp :raindrop init-instant on-tick on-update on-unmount render removable?
+def component-raindrop $ create-comp :raindrop init-instant on-tick on-update on-unmount nil remove? render
