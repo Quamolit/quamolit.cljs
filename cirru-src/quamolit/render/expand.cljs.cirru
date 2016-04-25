@@ -12,9 +12,9 @@ defn add-cache! (data-path data)
 defn hit-cache! (data-path)
   swap! component-caches update-in ([] data-path :value)
     fn (value)
-      if (< value 40)
+      if (< value 10)
         + value 3
-        , 40
+        , 10
 
 defn dec-cache! ()
   reset! component-caches $ ->> @component-caches
@@ -40,7 +40,6 @@ defn detect-animating? (markup)
       (animate? $ :animate? markup)
       or
         animate? $ :instant markup
-        :fading? markup
         detect-animating? $ :tree markup
 
     :animating? markup
@@ -168,7 +167,6 @@ defn expand-component
           old-state $ :state old-tree
           old-instant $ :instant old-tree
           new-args $ :args markup
-          markup-in-args? $ contain-markups? new-args
           new-state $ if (contains? states coord)
             get states coord
             , old-state
@@ -186,19 +184,15 @@ defn expand-component
           animate? $ :animate? markup
           animating? $ or (animate? new-instant)
             detect-animating? $ :tree old-tree
-            :fading? markup
-          cache-path $ [] coord new-args new-state new-instant
+          cache-path $ [] (:name markup)
+            , coord new-args states new-instant
           maybe-cache $ get-cache cache-path
 
         -- .log js/console "|try caching" (not animating?)
           some? maybe-cache
         if
-          and (not markup-in-args?)
-            not animating?
+          and (not animating?)
             some? maybe-cache
-            and (= old-args new-args)
-              = old-state new-state
-
           do (hit-cache! cache-path)
             -- .log js/console "|user caching:" $ pr-str coord
             :data maybe-cache
@@ -217,20 +211,17 @@ defn expand-component
 
               result $ assoc old-tree :args new-args :state new-state :instant new-instant :tree new-tree
 
-            if (not markup-in-args?)
-              do (add-cache! cache-path result)
-                -- .log js/console "|no cache" cache-path (:name markup)
-                  some? maybe-cache
-                  animate? new-instant
-                  detect-animating? $ :tree old-tree
-                  :tree old-tree
-
+            add-cache! cache-path result
+            -- .log js/console "|no cache" cache-path (:name markup)
+              some? maybe-cache
+              animate? new-instant
+              detect-animating? $ :tree old-tree
+              :tree old-tree
             -- .log js/console "|existing state" coord $ get states coord
             , result
 
       let
         (args $ :args markup)
-          markup-in-args? $ contain-markups? args
           init-state $ :init-state markup
           init-instant $ :init-instant markup
           update-state $ :update-state markup
@@ -250,12 +241,10 @@ defn expand-component
             expand-component shape nil child-coord states build-mutate false tick elapsed
             expand-shape shape nil child-coord child-coord states build-mutate false tick elapsed
           result $ assoc markup :coord coord :args args :state state :instant instant :tree tree
+          cache-path $ [] (:name markup)
+            , coord args states instant
 
-        if (not markup-in-args?)
-          add-cache!
-            [] coord args state instant
-            , result
-
+        add-cache! cache-path result
         , result
 
 defn expand-app

@@ -67,7 +67,7 @@ defn animate? (instant)
 defn render (store)
   fn (state mutate)
     fn (instant)
-      .info js/console |todolist: store state
+      -- .info js/console |todolist: store state
       alpha
         {} :style $ {} :opacity
           / (:presence instant)

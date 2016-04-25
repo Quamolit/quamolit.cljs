@@ -42,9 +42,12 @@ defn render (position)
                 :w 4
                 :h 30
 
+defn animate? (instant)
+  , true
+
 defn remove? (instant)
   and
     = 0 $ :presence instant
     = 0 $ :presence-v instant
 
-def component-raindrop $ create-comp :raindrop init-instant on-tick on-update on-unmount nil remove? render
+def component-raindrop $ create-comp :raindrop init-instant on-tick on-update on-unmount animate? remove? render

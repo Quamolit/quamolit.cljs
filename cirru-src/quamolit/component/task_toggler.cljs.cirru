@@ -45,6 +45,9 @@ defn on-update
 defn on-tick (instant tick elapsed)
   iterate-instant instant :done-value :done-velocity elapsed $ [] 0 1000
 
+defn animate? (instant)
+  not= 0 $ :done-velocity instant
+
 defn render (done? task-id)
   fn (state mutate)
     fn (instant)
@@ -54,4 +57,4 @@ defn render (done? task-id)
         , :event
         {} :click $ m-handle-click task-id
 
-def component-toggler $ create-comp :task-toggler nil nil init-instant on-tick on-update nil nil nil render
+def component-toggler $ create-comp :task-toggler nil nil init-instant on-tick on-update nil animate? nil render

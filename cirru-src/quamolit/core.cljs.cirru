@@ -31,11 +31,9 @@ defn dispatch (action-type action-data)
 defn build-mutate (coord)
   -- .log js/console "|build new mutate" coord
   fn (& state-args)
-    .log js/console |mutate: coord @global-states (get @global-states coord)
+    -- .log js/console |mutate: coord state-args (get @global-states coord)
       , state-args
-      cons (get @global-states coord)
-        , state-args
-
+    -- .log js/console |old-state $ get @global-states coord
     let
       (component $ locate-target @global-tree coord)
         old-state $ if (contains? @global-states coord)
@@ -46,7 +44,8 @@ defn build-mutate (coord)
         new-states $ assoc @global-states coord new-state
         clean-states $ states-gc new-states @global-tree
 
-      reset! global-states $ assoc clean-states coord new-state
+      -- .log js/console |new-states new-states
+      reset! global-states clean-states
 
 def m-build-mutate $ memoize build-mutate
 

@@ -15,7 +15,7 @@ defn init-state ()
   [] card-collection nil
 
 defn update-state (state target)
-  .log js/console state target
+  -- .log js/console state target
   assoc state 1 target
 
 defn handle-back (mutate)
@@ -30,7 +30,7 @@ defn animate? (instant)
 defn render ()
   fn (state mutate)
     fn (instant tick)
-      .log js/console instant state
+      -- .log js/console instant state
       rect
         {} :style
           {} :w 1000 :h 600 :fill-style $ hsl 100 40 90

@@ -34,6 +34,11 @@ defn on-update
 defn on-unmount (instant tick)
   assoc instant :presence-v -3
 
+defn animate? (instant)
+  or
+    not= 0 $ :presence-v instant
+    not= 0 $ :popup-v instant
+
 defn handle-click (navigate-this index popup?)
   fn (event dispatch)
     navigate-this $ if popup? nil index
@@ -79,4 +84,4 @@ defn render
                       hsl 0 0 100
                       , :text card-name :size 60
 
-def component-file-card $ create-comp :file-card init-instant on-tick on-update on-unmount nil nil render
+def component-file-card $ create-comp :file-card init-instant on-tick on-update on-unmount animate? nil render

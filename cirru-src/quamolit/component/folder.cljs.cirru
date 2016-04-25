@@ -32,6 +32,7 @@ defn on-tick (instant tick elapsed)
 
 defn on-update
   instant old-args args old-state state
+  -- .log js/console "|update folder..." args
   let
     (old-popup? $ last old-args)
       popup? $ last args
@@ -41,6 +42,11 @@ defn on-update
 
 defn on-unmount (instant tick)
   assoc instant :presence-v -3
+
+defn animate? (instant)
+  or
+    not= 0 $ :presence-v instant
+    not= 0 $ :popup-v instant
 
 defn handle-back (mutate-navitate index)
   fn (event dispatch)
@@ -110,4 +116,4 @@ defn render
                 , :event
                 {} :click $ handle-back navigate index
 
-def component-folder $ create-comp :folder init-state update-state init-instant on-tick on-update on-unmount nil nil render
+def component-folder $ create-comp :folder init-state update-state init-instant on-tick on-update on-unmount animate? nil render

@@ -41,6 +41,9 @@ defn on-update
 defn on-unmount (instant tick)
   , instant
 
+defn animate? (instant)
+  , true
+
 defn remove? (instant)
   , true
 
@@ -58,4 +61,4 @@ defn render ()
 
           into $ sorted-map
 
-def component-raining $ create-comp :raining init-instant on-tick on-update on-unmount nil remove? render
+def component-raining $ create-comp :raining init-instant on-tick on-update on-unmount animate? remove? render

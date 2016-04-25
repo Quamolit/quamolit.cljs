@@ -34,7 +34,7 @@ defn default-init-instant (args state)
   {} :numb? false
 
 defn default-animate? (instant)
-  , true
+  , false
 
 defn default-on-tick (instant tick elapsed)
   , instant

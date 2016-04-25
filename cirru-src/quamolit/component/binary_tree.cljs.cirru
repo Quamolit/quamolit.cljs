@@ -12,6 +12,9 @@ defn init-state ()
 
 declare component-binary-tree
 
+defn animate? (instant)
+  , true
+
 defn render (level)
   fn (state mutate)
     fn (instant tick)
@@ -66,4 +69,4 @@ defn render (level)
 
                   component-binary-tree $ dec level
 
-def component-binary-tree $ create-comp :binary-tree init-state merge nil render
+def component-binary-tree $ create-comp :binary-tree init-state merge animate? render

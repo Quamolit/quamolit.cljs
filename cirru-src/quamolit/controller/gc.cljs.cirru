@@ -5,12 +5,12 @@ ns quamolit.controller.gc $ :require
 defn find-component-coords (markup)
   if
     = Component $ type markup
-    cons
+    cons (:coord markup)
       find-component-coords $ :tree markup
-      :coord markup
     ->> (:children markup)
-      fn (child-entry)
+      map $ fn (child-entry)
         find-component-coords $ val child-entry
+      apply concat
 
 defn states-gc (states tree)
   let
