@@ -24,11 +24,15 @@ defn event-button (mutate draft)
 defn handle-click (simple-event dispatch set-state)
   .log js/console simple-event
 
+def m-handle-click $ memoize handle-click
+
 defn handle-input (mutate default-text)
   fn (simple-event dispatch)
     let
       (user-text $ js/prompt "|input to canvas:" default-text)
       mutate $ {} :draft user-text
+
+def m-handle-input $ memoize handle-input
 
 defn init-state (store)
   {} :draft |
@@ -57,10 +61,13 @@ defn on-update
 defn on-unmount (instant tick)
   assoc instant :presence-v -3
 
+defn animate? (instant)
+  not= 0 $ :presence-v instant
+
 defn render (store)
   fn (state mutate)
     fn (instant)
-      -- .info js/console |todolist: store state
+      .info js/console |todolist: store state
       alpha
         {} :style $ {} :opacity
           / (:presence instant)
@@ -72,7 +79,7 @@ defn render (store)
             input $ {} :style
               {} :w 400 :h 40 :text $ :draft state
               , :event
-              {} :click $ handle-input mutate (:draft state)
+              {} :click $ m-handle-input mutate (:draft state)
 
           translate
             {} :style $ {} :x 240 :y 40
@@ -91,4 +98,4 @@ defn render (store)
 
               into $ sorted-map
 
-def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount nil nil render
+def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount animate? nil render

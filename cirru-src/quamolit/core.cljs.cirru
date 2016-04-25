@@ -6,7 +6,7 @@ ns quamolit.core $ :require (cljs.reader :as reader)
   [] quamolit.util.time :refer $ [] get-tick
   [] quamolit.render.flatten :refer $ [] flatten-tree
   [] quamolit.render.paint :refer $ [] paint
-  [] quamolit.controller.resolve :refer $ [] resolve-target
+  [] quamolit.controller.resolve :refer $ [] resolve-target locate-target
   [] quamolit.updater.core :refer $ [] updater-fn
   [] quamolit.controller.gc :refer $ [] states-gc
 
@@ -28,16 +28,27 @@ defn dispatch (action-type action-data)
       new-store $ updater-fn @global-store action-type action-data new-tick
     reset! global-store new-store
 
-defn build-mutate (coord old-state update-state)
+defn build-mutate (coord)
+  -- .log js/console "|build new mutate" coord
   fn (& state-args)
-    -- .log js/console |mutate: coord old-state
-    let
-      (new-state $ apply update-state (cons old-state state-args))
+    .log js/console |mutate: coord @global-states (get @global-states coord)
+      , state-args
+      cons (get @global-states coord)
+        , state-args
 
-      swap! global-states assoc coord new-state
-      let
-        (clean-states $ states-gc @global-states @global-tree)
-        reset! global-states $ assoc clean-states coord new-state
+    let
+      (component $ locate-target @global-tree coord)
+        old-state $ if (contains? @global-states coord)
+          get @global-states coord
+          :state component
+        update-state $ :update-state component
+        new-state $ apply update-state (cons old-state state-args)
+        new-states $ assoc @global-states coord new-state
+        clean-states $ states-gc new-states @global-tree
+
+      reset! global-states $ assoc clean-states coord new-state
+
+def m-build-mutate $ memoize build-mutate
 
 defn call-paint (directives)
   -- .log js/console directives @global-directives
@@ -58,7 +69,7 @@ defn render-page ()
     (new-tick $ get-tick)
       elapsed $ - new-tick @global-tick
       tree $ expand-app (container-component @global-store)
-        , @global-tree @global-states build-mutate new-tick elapsed
+        , @global-tree @global-states m-build-mutate new-tick elapsed
       directives $ flatten-tree tree
 
     -- .info js/console "|rendering page..." @global-states
@@ -66,12 +77,18 @@ defn render-page ()
     reset! global-tick new-tick
     call-paint directives
     -- .log js/console |tree tree
-    -- .log js/console |directives directives
+    -- doall $ map
+      fn (d)
+        .log js/console |directives $ pr-str d
+      , directives
+
+    set! js/window.tree @global-tree
     js/requestAnimationFrame render-page
 
 defn handle-event (coord event-name event)
   let
     (maybe-listener $ resolve-target @global-tree event-name coord)
+    -- .log js.console "|handle event" maybe-listener coord event-name @global-tree
     if (some? maybe-listener)
       do (.preventDefault event)
         maybe-listener event dispatch

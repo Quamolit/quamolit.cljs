@@ -25,7 +25,7 @@ defn create-shape (shape-name props children)
     not $ map? props
     throw $ js/Error. "|Props expeced to be a map!"
   ->Shape shape-name props (arrange-children children)
-    , true
+    , false
 
 defn default-init-state (& args)
   {}
@@ -50,10 +50,10 @@ defn default-remove? (instant)
   :numb? instant
 
 defn create-comp
-  (component-name render)
-    create-comp component-name nil nil nil nil nil nil nil nil render
-  (component-name init-state update-state render)
-    create-comp component-name init-state update-state nil nil nil nil nil nil render
+  (component-name animate? render)
+    create-comp component-name nil nil nil nil nil nil animate? nil render
+  (component-name init-state update-state animate? render)
+    create-comp component-name init-state update-state nil nil nil nil animate? nil render
   (component-name init-instant on-tick on-update on-unmount animate? remove? render)
     create-comp component-name nil nil init-instant on-tick on-update on-unmount animate? remove? render
   (component-name init-state update-state init-instant on-tick on-update on-unmount animate? remove? render)
@@ -67,28 +67,6 @@ defn create-comp
         or animate? default-animate?
         or remove? default-remove?
         , render nil false
-
-defn create-component (component-name details)
-  fn (& args)
-    Component. component-name nil args nil ({})
-      or (:init-state details)
-        , default-init-state
-      or (:update-state details)
-        , merge
-      or (:init-instant details)
-        , default-init-instant
-      or (:on-tick details)
-        , default-on-tick
-      or (:on-update details)
-        , default-on-update
-      or (:on-unmount details)
-        , default-on-unmount
-      or (:animate? details)
-        , default-animate?
-      or (:remove? details)
-        , default-remove?
-      :render details
-      , nil false
 
 defn line (props & children)
   create-shape :line props children

@@ -1,6 +1,6 @@
 
 ns quamolit.render.expand $ :require
-  [] quamolit.alias :refer $ [] Component
+  [] quamolit.alias :refer $ [] Component Shape
 
 declare expand-component
 
@@ -10,10 +10,11 @@ defn add-cache! (data-path data)
   swap! component-caches assoc data-path $ {} :data data :value 10
 
 defn hit-cache! (data-path)
-  .log js/console |hit data-path
-  update-in component-caches (conj data-path :value)
+  swap! component-caches update-in ([] data-path :value)
     fn (value)
-      + value 4
+      if (< value 40)
+        + value 3
+        , 40
 
 defn dec-cache! ()
   reset! component-caches $ ->> @component-caches
@@ -30,7 +31,7 @@ defn dec-cache! ()
     into $ {}
 
 defn get-cache (data-path)
-  get-in @component-caches data-path
+  get @component-caches data-path
 
 defn detect-animating? (markup)
   if
@@ -39,6 +40,7 @@ defn detect-animating? (markup)
       (animate? $ :animate? markup)
       or
         animate? $ :instant markup
+        :fading? markup
         detect-animating? $ :tree markup
 
     :animating? markup
@@ -109,8 +111,8 @@ defn expand-shape
           some? $ val entry
         map $ fn (child)
           let
-            (child-key $ key child)
-              child-markup $ val child
+            (child-key $ first child)
+              child-markup $ last child
               child-coord $ conj coord child-key
               old-child-tree $ if (some? old-tree)
                 get old-children child-key
@@ -124,20 +126,33 @@ defn expand-shape
 
         into $ sorted-map
 
-      animating? $ every?
-        fn (entry)
-          detect-animating? $ val entry
-        , new-children
-
     if (some? old-tree)
-      assoc markup :coord coord :c-coord c-coord :children
-        into (sorted-map)
-          merge-children ({})
-            , old-children new-children coord states build-mutate at-place? tick elapsed
+      let
+        (merged-children $ merge-children ({}) (, old-children new-children coord states build-mutate at-place? tick elapsed))
+          animating? $ some
+            fn (entry)
+              detect-animating? $ val entry
+            , merged-children
 
-        , :animating? animating?
+        assoc markup :coord coord :c-coord c-coord :children
+          into (sorted-map)
+            merge-children ({})
+              , old-children new-children coord states build-mutate at-place? tick elapsed
 
-      assoc markup :children new-children :coord coord :coord c-coord
+          , :animating? animating?
+
+      let
+        (animating? $ some (fn (entry) (detect-animating? $ val entry)) (, new-children))
+
+        assoc markup :children new-children :coord coord :c-coord c-coord :animating? animating?
+
+defn contain-markups? (items)
+  let
+    (result $ some (fn (item) (if (or (= Component $ type item) (= Shape $ type item)) (, true) (if (and (map? item) (> (count item) (, 0))) (some (fn (child) (or (= Component $ type child) (= Shape $ type child))) (vals item)) (, false)))) (, items))
+
+    -- if (not result)
+      .log js/console result items
+    , result
 
 defn expand-component
   markup old-tree coord states build-mutate at-place? tick elapsed
@@ -153,6 +168,7 @@ defn expand-component
           old-state $ :state old-tree
           old-instant $ :instant old-tree
           new-args $ :args markup
+          markup-in-args? $ contain-markups? new-args
           new-state $ if (contains? states coord)
             get states coord
             , old-state
@@ -170,16 +186,24 @@ defn expand-component
           animate? $ :animate? markup
           animating? $ or (animate? new-instant)
             detect-animating? $ :tree old-tree
+            :fading? markup
           cache-path $ [] coord new-args new-state new-instant
           maybe-cache $ get-cache cache-path
 
-        -- .log js/console "|try caching" animating? $ some? maybe-cache
+        -- .log js/console "|try caching" (not animating?)
+          some? maybe-cache
         if
-          and animating? $ some? maybe-cache
+          and (not markup-in-args?)
+            not animating?
+            some? maybe-cache
+            and (= old-args new-args)
+              = old-state new-state
+
           do (hit-cache! cache-path)
-            , maybe-cache
+            -- .log js/console "|user caching:" $ pr-str coord
+            :data maybe-cache
           let
-            (mutate $ build-mutate coord old-state update-state)
+            (mutate $ build-mutate coord)
               new-shape $ -> (:render markup)
                 apply new-args
                 apply $ list new-state mutate
@@ -193,12 +217,20 @@ defn expand-component
 
               result $ assoc old-tree :args new-args :state new-state :instant new-instant :tree new-tree
 
+            if (not markup-in-args?)
+              do (add-cache! cache-path result)
+                -- .log js/console "|no cache" cache-path (:name markup)
+                  some? maybe-cache
+                  animate? new-instant
+                  detect-animating? $ :tree old-tree
+                  :tree old-tree
+
             -- .log js/console "|existing state" coord $ get states coord
-            add-cache! cache-path result
             , result
 
       let
         (args $ :args markup)
+          markup-in-args? $ contain-markups? args
           init-state $ :init-state markup
           init-instant $ :init-instant markup
           update-state $ :update-state markup
@@ -208,7 +240,7 @@ defn expand-component
               , args
             , state at-place?
 
-          mutate $ build-mutate coord state update-state
+          mutate $ build-mutate coord
           shape $ -> (:render markup)
             apply args
             apply $ list state mutate
@@ -219,14 +251,18 @@ defn expand-component
             expand-shape shape nil child-coord child-coord states build-mutate false tick elapsed
           result $ assoc markup :coord coord :args args :state state :instant instant :tree tree
 
-        add-cache!
-          [] coord args state instant
-          , result
+        if (not markup-in-args?)
+          add-cache!
+            [] coord args state instant
+            , result
+
         , result
 
 defn expand-app
   markup old-tree states build-mutate tick elapsed
   dec-cache!
+  set! js/window.componentcaches @component-caches
+  -- .log js/console |caches: $ map first (map key @component-caches)
   let
     (initial-coord $ [])
     expand-component markup old-tree initial-coord states build-mutate true tick elapsed

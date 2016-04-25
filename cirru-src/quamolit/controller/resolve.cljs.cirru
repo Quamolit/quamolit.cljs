@@ -32,7 +32,7 @@ defn resolve-target (tree event-name coord)
       let
         (maybe-listener $ get-in maybe-target ([] :props :event event-name))
 
-        -- .log js/console |listener maybe-listener
+        -- .log js/console |listener maybe-listener maybe-target
         if (some? maybe-listener)
           , maybe-listener
           if

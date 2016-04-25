@@ -46,6 +46,8 @@ defn handle-back (mutate-navitate index)
   fn (event dispatch)
     mutate-navitate index
 
+defn m-handle-back $ memoize handle-back
+
 defn render
   cards position navigate index popup?
   fn (state mutate)
@@ -75,7 +77,7 @@ defn render
               rect $ {} :style
                 {} :w 600 :h 400 :fill-style $ hsl 0 80 bg-light
                 , :event
-                {} :click $ handle-back navigate index
+                {} :click $ m-handle-back navigate index
 
             group ({})
               ->> cards

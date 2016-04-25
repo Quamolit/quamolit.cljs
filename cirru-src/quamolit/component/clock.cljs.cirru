@@ -40,4 +40,4 @@ defn render ()
               -- .log js/console secs
               component-digit $ get-one secs
 
-def component-clock $ create-comp :clock render
+def component-clock $ create-comp :clock nil render

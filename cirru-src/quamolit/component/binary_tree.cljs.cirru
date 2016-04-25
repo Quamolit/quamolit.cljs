@@ -66,4 +66,4 @@ defn render (level)
 
                   component-binary-tree $ dec level
 
-def component-binary-tree $ create-comp :binary-tree init-state merge render
+def component-binary-tree $ create-comp :binary-tree init-state merge nil render

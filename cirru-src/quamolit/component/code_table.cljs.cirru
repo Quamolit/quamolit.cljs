@@ -10,6 +10,9 @@ defn init-state ()
     repeat 3 $ into ([])
       repeat 3 |
 
+defn animate? (instant)
+  , false
+
 defn render ()
   fn (state mutate)
     fn (instant tick)
@@ -33,4 +36,4 @@ defn render ()
 
           into $ sorted-map
 
-def component-code-table $ create-comp :code-table init-state nil render
+def component-code-table $ create-comp :code-table init-state nil animate? render

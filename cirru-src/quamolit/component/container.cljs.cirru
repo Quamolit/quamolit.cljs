@@ -20,6 +20,9 @@ defn init-state ()
 defn update-state (old-state new-page)
   , new-page
 
+defn animate? (instant)
+  , false
+
 defn style-button (guide-text)
   {} (:text guide-text)
     :surface-color $ hsl 200 80 50
@@ -30,6 +33,8 @@ defn style-button (guide-text)
 defn handle-back (mutate)
   fn (event dispatch)
     mutate :portal
+
+def m-handle-back $ memoize handle-back
 
 defn render (store)
   fn (state mutate)
@@ -85,6 +90,6 @@ defn render (store)
               {} :style $ {} :x -400 :y -140
               button $ {} :style (style-button |Back)
                 , :event
-                {} :click $ handle-back mutate
+                {} :click $ m-handle-back mutate
 
-def container-component $ create-comp :container init-state update-state render
+def container-component $ create-comp :container init-state update-state animate? render

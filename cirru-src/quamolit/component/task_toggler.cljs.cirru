@@ -20,6 +20,8 @@ defn handle-click (task-id)
   fn (event dispatch)
     dispatch :toggle task-id
 
+def m-handle-click $ memoize handle-click
+
 defn init-instant (args state)
   let
     (done? $ first args)
@@ -50,6 +52,6 @@ defn render (done? task-id)
       rect $ {} :style
         style-toggler $ :done-value instant
         , :event
-        {} :click $ handle-click task-id
+        {} :click $ m-handle-click task-id
 
 def component-toggler $ create-comp :task-toggler nil nil init-instant on-tick on-update nil nil nil render

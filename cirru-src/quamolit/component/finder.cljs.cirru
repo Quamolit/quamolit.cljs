@@ -15,21 +15,27 @@ defn init-state ()
   [] card-collection nil
 
 defn update-state (state target)
+  .log js/console state target
   assoc state 1 target
 
 defn handle-back (mutate)
   fn (event dispatch)
     mutate nil
 
+def m-handle-back $ memoize handle-back
+
+defn animate? (instant)
+  , false
+
 defn render ()
   fn (state mutate)
     fn (instant tick)
-      -- .log js/console instant state
+      .log js/console instant state
       rect
         {} :style
           {} :w 1000 :h 600 :fill-style $ hsl 100 40 90
           , :event
-          {} :click $ handle-back mutate
+          {} :click $ m-handle-back mutate
         group ({})
           ->> (first state)
             map-indexed $ fn (index folder)
@@ -57,4 +63,4 @@ defn render ()
 
             into $ sorted-map
 
-def component-finder $ create-comp :finder init-state update-state render
+def component-finder $ create-comp :finder init-state update-state animate? render

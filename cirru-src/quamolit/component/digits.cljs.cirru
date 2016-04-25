@@ -58,6 +58,14 @@ defn on-unmount (instant tick)
   -- .log js/console "|stroke unmount"
   assoc instant :presence-v -3 :numb? false
 
+defn animate? (instant)
+  or
+    not= 0 $ :presence-v instant
+    not= 0 $ :x0-v instant
+    not= 0 $ :x1-v instant
+    not= 0 $ :y0-v instant
+    not= 0 $ :y1-v instant
+
 defn render
   x0 y0 x1 y1
   fn (state mutate)
@@ -76,7 +84,7 @@ defn render
               :x1 $ :x1 instant
               :y1 $ :y1 instant
 
-def component-stroke $ create-comp :stroke init-instant on-tick on-update on-unmount nil nil render
+def component-stroke $ create-comp :stroke init-instant on-tick on-update on-unmount animate? nil render
 
 defn render-0 ()
   fn (state mutate)
@@ -177,25 +185,25 @@ defn render-9 ()
         component-stroke 40 40 40 80
         component-stroke 40 80 0 80
 
-def component-0 $ create-comp :zero render-0
+def component-0 $ create-comp :zero nil render-0
 
-def component-1 $ create-comp :one render-1
+def component-1 $ create-comp :one nil render-1
 
-def component-2 $ create-comp :two render-2
+def component-2 $ create-comp :two nil render-2
 
-def component-3 $ create-comp :three render-3
+def component-3 $ create-comp :three nil render-3
 
-def component-4 $ create-comp :four render-4
+def component-4 $ create-comp :four nil render-4
 
-def component-5 $ create-comp :five render-5
+def component-5 $ create-comp :five nil render-5
 
-def component-6 $ create-comp :six render-6
+def component-6 $ create-comp :six nil render-6
 
-def component-7 $ create-comp :seven render-7
+def component-7 $ create-comp :seven nil render-7
 
-def component-8 $ create-comp :eight render-8
+def component-8 $ create-comp :eight nil render-8
 
-def component-9 $ create-comp :nine render-9
+def component-9 $ create-comp :nine nil render-9
 
 defn pick-digit (x)
   case x (0 $ component-0)
@@ -216,4 +224,4 @@ defn render-digit (n)
       -- .log js/console :n n
       pick-digit n
 
-def component-digit $ create-comp :digit render-digit
+def component-digit $ create-comp :digit nil render-digit

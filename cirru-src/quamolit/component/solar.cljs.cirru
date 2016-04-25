@@ -34,4 +34,4 @@ defn render (level)
               {} :style $ {} :x 20 :y 180
               component-solar $ - level 1
 
-def component-solar $ create-comp :solar render
+def component-solar $ create-comp :solar nil render
