@@ -43,11 +43,6 @@ defn on-update
 defn on-unmount (instant tick)
   assoc instant :presence-v -3
 
-defn animate? (instant)
-  or
-    not= 0 $ :presence-v instant
-    not= 0 $ :popup-v instant
-
 defn handle-back (mutate-navitate index)
   fn (event dispatch)
     mutate-navitate index
@@ -116,4 +111,4 @@ defn render
                 , :event
                 {} :click $ handle-back navigate index
 
-def component-folder $ create-comp :folder init-state update-state init-instant on-tick on-update on-unmount animate? nil render
+def component-folder $ create-comp :folder init-state update-state init-instant on-tick on-update on-unmount nil render

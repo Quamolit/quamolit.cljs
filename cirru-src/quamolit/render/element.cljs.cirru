@@ -4,9 +4,6 @@ ns quamolit.render.element $ :require
   [] quamolit.alias :refer $ [] create-comp native-translate native-alpha native-save native-restore native-rotate native-scale group rect text arrange-children
   [] quamolit.util.keyboard :refer $ [] keycode->key
 
-defn animate?-no (instant)
-  , false
-
 defn render-translate (props & children)
   let
     (style $ merge ({} :x 0 :y 0) (:style props))
@@ -20,7 +17,7 @@ defn render-translate (props & children)
             arrange-children children
           native-restore $ {}
 
-def translate $ create-comp :translate animate?-no render-translate
+def translate $ create-comp :translate render-translate
 
 defn render-scale (props & children)
   let
@@ -37,7 +34,7 @@ defn render-scale (props & children)
 
           native-restore $ {}
 
-def scale $ create-comp :scale animate?-no render-scale
+def scale $ create-comp :scale render-scale
 
 defn render-alpha (props & children)
   let
@@ -52,7 +49,7 @@ defn render-alpha (props & children)
             arrange-children children
           native-restore $ {}
 
-def alpha $ create-comp :alpha animate?-no render-alpha
+def alpha $ create-comp :alpha render-alpha
 
 def pi-ratio $ / js/Math.PI 180
 
@@ -73,7 +70,7 @@ defn render-rotate (props & children)
             arrange-children children
           native-restore $ {}
 
-def rotate $ create-comp :rotate animate?-no render-rotate
+def rotate $ create-comp :rotate render-rotate
 
 defn render-button (props)
   let
@@ -109,7 +106,7 @@ defn render-button (props)
             {} :style $ {} :x 0 :y 0
             text $ {} :style style-text
 
-def button $ create-comp :button animate?-no render-button
+def button $ create-comp :button render-button
 
 defn render-input (props)
   let
@@ -143,7 +140,7 @@ defn render-input (props)
           translate ({} :style style-place-text)
             text $ {} :style style-text
 
-def input $ create-comp :input animate?-no render-input
+def input $ create-comp :input render-input
 
 defn init-textbox (props)
   , |default
@@ -176,4 +173,4 @@ defn render-textbox (props)
         input $ {} :style style :event
           {} :keydown $ handle-keydown mutate
 
-def textbox $ create-comp :textbox init-textbox update-textbox animate?-no render-textbox
+def textbox $ create-comp :textbox init-textbox update-textbox render-textbox

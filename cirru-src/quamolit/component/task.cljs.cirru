@@ -79,12 +79,6 @@ defn on-unmount (instant tick)
   -- .log js/console "|calling unmount" instant
   assoc instant :presence-velocity -3 :left-velocity -0.09
 
-defn animate? (instant)
-  or
-    not= 0 $ :presence-v instant
-    not= 0 $ :index-v instant
-    not= 0 $ :left-v instant
-
 defn render (task index shift-x)
   fn (state mutate)
     fn (instant)
@@ -119,4 +113,4 @@ defn render (task index shift-x)
             rect $ {} :style style-remove :event
               {} :click $ m-handle-remove (:id task)
 
-def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount animate? nil render
+def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount nil render

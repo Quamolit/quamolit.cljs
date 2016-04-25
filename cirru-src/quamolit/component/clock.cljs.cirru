@@ -4,9 +4,6 @@ ns quamolit.component.clock $ :require
   [] quamolit.render.element :refer $ [] translate
   [] quamolit.component.digits :refer $ [] component-digit
 
-defn animate? (instant)
-  , true
-
 defn render ()
   fn (state mutate)
     fn (instant)
@@ -43,4 +40,4 @@ defn render ()
               -- .log js/console secs
               component-digit $ get-one secs
 
-def component-clock $ create-comp :clock animate? render
+def component-clock $ create-comp :clock render

@@ -18,9 +18,6 @@ defn style-button (page-name bg-color)
     :text page-name
     :text-color $ hsl 0 0 100
 
-defn animate? (instant)
-  , false
-
 defn render (mutate-navigate)
   fn (state mutate)
     fn (instant)
@@ -74,4 +71,4 @@ defn render (mutate-navigate)
             , :event
             {} :click $ m-handle-navigate mutate-navigate :raining
 
-def component-portal $ create-comp :portal animate? render
+def component-portal $ create-comp :portal render

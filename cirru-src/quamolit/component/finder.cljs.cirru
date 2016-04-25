@@ -24,9 +24,6 @@ defn handle-back (mutate)
 
 def m-handle-back $ memoize handle-back
 
-defn animate? (instant)
-  , false
-
 defn render ()
   fn (state mutate)
     fn (instant tick)
@@ -63,4 +60,4 @@ defn render ()
 
             into $ sorted-map
 
-def component-finder $ create-comp :finder init-state update-state animate? render
+def component-finder $ create-comp :finder init-state update-state render

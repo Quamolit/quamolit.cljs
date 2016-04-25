@@ -6,9 +6,6 @@ ns quamolit.component.solar $ :require
 
 declare component-solar
 
-defn animate? (instant)
-  , true
-
 def style-large $ {}
   :fill-style $ hsl 80 80 80
   :r 60
@@ -37,4 +34,4 @@ defn render (level)
               {} :style $ {} :x 20 :y 180
               component-solar $ - level 1
 
-def component-solar $ create-comp :solar animate? render
+def component-solar $ create-comp :solar render

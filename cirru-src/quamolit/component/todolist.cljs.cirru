@@ -61,9 +61,6 @@ defn on-update
 defn on-unmount (instant tick)
   assoc instant :presence-v -3
 
-defn animate? (instant)
-  not= 0 $ :presence-v instant
-
 defn render (store)
   fn (state mutate)
     fn (instant)
@@ -98,4 +95,4 @@ defn render (store)
 
               into $ sorted-map
 
-def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount animate? nil render
+def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount nil render

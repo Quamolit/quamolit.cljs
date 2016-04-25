@@ -30,11 +30,6 @@ defn on-update
 defn on-unmount (instant tick)
   assoc instant :presence-v -3
 
-defn animate? (instant)
-  or (:numb? instant)
-    not= (:presence-v instant)
-      , 0
-
 defn render (props & children)
   fn (state mutate)
     fn (instant tick)
@@ -47,4 +42,4 @@ defn render (props & children)
         into (sorted-map)
           map-indexed vector children
 
-def component-fade-in-out $ create-comp :fade-in-out init-instant on-tick on-update on-unmount animate? nil render
+def component-fade-in-out $ create-comp :fade-in-out init-instant on-tick on-update on-unmount nil render
