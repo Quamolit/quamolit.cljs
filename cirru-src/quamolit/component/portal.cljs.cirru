@@ -9,8 +9,6 @@ defn handle-navigate (mutate-navigate next-page)
   fn (event dispatch)
     mutate-navigate next-page
 
-def m-handle-navigate $ memoize handle-navigate
-
 defn style-button (page-name bg-color)
   {} (:w 200)
     :h 80
@@ -27,48 +25,48 @@ defn render (mutate-navigate)
           button $ {} :style
             style-button |Todolist $ hsl 0 120 60
             , :event
-            {} :click $ m-handle-navigate mutate-navigate :todolist
+            {} :click $ handle-navigate mutate-navigate :todolist
 
         translate
           {} :style $ {} :x -20 :y -100
           button $ {} :style
             style-button |Clock $ hsl 300 80 80
             , :event
-            {} :click $ m-handle-navigate mutate-navigate :clock
+            {} :click $ handle-navigate mutate-navigate :clock
 
         translate
           {} :style $ {} :x 200 :y -100
           button $ {} :style
             style-button |Solar $ hsl 140 80 80
             , :event
-            {} :click $ m-handle-navigate mutate-navigate :solar
+            {} :click $ handle-navigate mutate-navigate :solar
 
         translate
           {} :style $ {} :x -240 :y 20
           button $ {} :style
             style-button "|Binary Tree" $ hsl 140 20 30
             , :event
-            {} :click $ m-handle-navigate mutate-navigate :binary-tree
+            {} :click $ handle-navigate mutate-navigate :binary-tree
 
         translate
           {} :style $ {} :x -20 :y 20
           button $ {} :style
             style-button |Table $ hsl 340 80 80
             , :event
-            {} :click $ m-handle-navigate mutate-navigate :code-table
+            {} :click $ handle-navigate mutate-navigate :code-table
 
         translate
           {} :style $ {} :x 200 :y 20
           button $ {} :style
             style-button |Finder $ hsl 60 80 45
             , :event
-            {} :click $ m-handle-navigate mutate-navigate :finder
+            {} :click $ handle-navigate mutate-navigate :finder
 
         translate
           {} :style $ {} :x -240 :y 140
           button $ {} :style
             style-button |Raining $ hsl 260 80 80
             , :event
-            {} :click $ m-handle-navigate mutate-navigate :raining
+            {} :click $ handle-navigate mutate-navigate :raining
 
 def component-portal $ create-comp :portal render

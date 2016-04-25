@@ -38,8 +38,6 @@ defn handle-click (navigate-this index popup?)
   fn (event dispatch)
     navigate-this $ if popup? nil index
 
-def m-handle-click $ memoize handle-click
-
 defn render
   card-name position navigate-this index parent-ratio popup?
   fn (state mutate)
@@ -73,7 +71,7 @@ defn render
                   {} :style
                     {} :w 520 :h 360 :fill-style $ hsl 200 80 80
                     , :event
-                    {} :click $ m-handle-click navigate-this index popup?
+                    {} :click $ handle-click navigate-this index popup?
                   text $ {} :style
                     {} :fill-style
                       hsl 0 0 100

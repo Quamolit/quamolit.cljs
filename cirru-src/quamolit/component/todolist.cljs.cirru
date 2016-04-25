@@ -24,15 +24,11 @@ defn event-button (mutate draft)
 defn handle-click (simple-event dispatch set-state)
   .log js/console simple-event
 
-def m-handle-click $ memoize handle-click
-
 defn handle-input (mutate default-text)
   fn (simple-event dispatch)
     let
       (user-text $ js/prompt "|input to canvas:" default-text)
       mutate $ {} :draft user-text
-
-def m-handle-input $ memoize handle-input
 
 defn init-state (store)
   {} :draft |
@@ -76,7 +72,7 @@ defn render (store)
             input $ {} :style
               {} :w 400 :h 40 :text $ :draft state
               , :event
-              {} :click $ m-handle-input mutate (:draft state)
+              {} :click $ handle-input mutate (:draft state)
 
           translate
             {} :style $ {} :x 240 :y 40

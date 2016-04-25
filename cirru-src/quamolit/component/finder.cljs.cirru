@@ -22,8 +22,6 @@ defn handle-back (mutate)
   fn (event dispatch)
     mutate nil
 
-def m-handle-back $ memoize handle-back
-
 defn render ()
   fn (state mutate)
     fn (instant tick)
@@ -32,7 +30,7 @@ defn render ()
         {} :style
           {} :w 1000 :h 600 :fill-style $ hsl 100 40 90
           , :event
-          {} :click $ m-handle-back mutate
+          {} :click $ handle-back mutate
         group ({})
           ->> (first state)
             map-indexed $ fn (index folder)

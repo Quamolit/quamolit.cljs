@@ -47,8 +47,6 @@ defn build-mutate (coord)
       -- .log js/console |new-states new-states
       reset! global-states clean-states
 
-def m-build-mutate $ memoize build-mutate
-
 defn call-paint (directives)
   -- .log js/console directives @global-directives
   if (not= directives @global-directives)
@@ -68,7 +66,7 @@ defn render-page ()
     (new-tick $ get-tick)
       elapsed $ - new-tick @global-tick
       tree $ expand-app (container-component @global-store)
-        , @global-tree @global-states m-build-mutate new-tick elapsed
+        , @global-tree @global-states build-mutate new-tick elapsed
       directives $ flatten-tree tree
 
     -- .info js/console "|rendering page..." @global-states

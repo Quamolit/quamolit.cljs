@@ -16,8 +16,6 @@ defn handle-input (task-id task-text)
       (new-text $ js/prompt "|new content:" task-text)
       dispatch :update $ [] task-id new-text
 
-def m-handle-input $ memoize handle-input
-
 defn style-input (text)
   {} (:w 400)
     :h 40
@@ -31,8 +29,6 @@ def style-remove $ {} (:w 40)
 defn handle-remove (task-id)
   fn (event dispatch)
     dispatch :rm task-id
-
-def m-handle-remove $ memoize handle-remove
 
 defn init-instant (args state at-place?)
   let
@@ -105,12 +101,12 @@ defn render (task index shift-x)
             input $ {} :style
               style-input $ :text task
               , :event
-              {} :click $ m-handle-input (:id task)
+              {} :click $ handle-input (:id task)
                 :text task
 
           translate
             {} :style $ {} :x 280
             rect $ {} :style style-remove :event
-              {} :click $ m-handle-remove (:id task)
+              {} :click $ handle-remove (:id task)
 
 def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount nil render
