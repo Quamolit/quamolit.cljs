@@ -32,6 +32,32 @@ defn paint-line (ctx style eff)
     .stroke ctx
     , eff
 
+defn paint-path (ctx style eff)
+  let
+    (points $ :points style)
+      line-width $ or (:line-width style)
+        , 4
+      stroke-style $ or (:stroke-style style)
+        hsl 200 70 50
+      line-cap $ or (:line-cap style)
+        , |round
+      line-join $ or (:line-join style)
+        , |round
+      miter-limit $ or (:miter-limit style)
+        , 8
+      first-point $ first points
+
+    .beginPath ctx
+    .moveTo ctx (first first-point) (last first-point)
+    doseq ([] point (rest points))
+      .lineTo ctx (first point) (last point)
+    set! ctx.lineWidth line-width
+    set! ctx.strokeStyle stroke-style
+    set! ctx.lineCap line-cap
+    set! ctx.miterLimit miter-limit
+    .stroke ctx
+    , eff
+
 def pi-ratio $ / js/Math.PI 180
 
 defn paint-arc (ctx style eff)
@@ -77,9 +103,6 @@ defn paint-arc (ctx style eff)
         .stroke ctx
 
     , eff
-
-defn paint-path (ctx props eff)
-  , eff
 
 defn paint-rect
   ctx style coord eff

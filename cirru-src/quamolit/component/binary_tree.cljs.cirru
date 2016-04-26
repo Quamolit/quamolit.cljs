@@ -1,7 +1,7 @@
 
 ns quamolit.component.binary-tree $ :require
   [] hsl.core :refer $ [] hsl
-  [] quamolit.alias :refer $ [] create-comp line group
+  [] quamolit.alias :refer $ [] create-comp line group path
   [] quamolit.render.element :refer $ [] rotate scale translate
 
 defn init-state ()
@@ -34,10 +34,11 @@ defn render (level)
               + 1300 $ * 60 r4
 
         group ({})
-          line $ {} :style
-            {} :x1 x1 :y1 y1
-          line $ {} :style
-            {} :x1 x2 :y1 y2
+          path $ {} :style
+            {} :points $ []
+              [] x1 y1
+              [] 0 0
+              [] x2 y2
           if (> level 0)
             translate
               {} :style $ {} :x x1 :y y1
