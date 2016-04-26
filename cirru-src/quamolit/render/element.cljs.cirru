@@ -77,13 +77,19 @@ defn render-button (props)
     (style $ :style props)
       guide-text $ or (:text style)
         , |button
+      x $ or (:x style)
+        , 0
+      y $ or (:y style)
+        , 0
       w $ or (:w style)
         , 100
       h $ or (:h style)
         , 40
       style-bg $ {}
-        :x $ - 0 (/ w 2)
-        :y $ - 0 (/ h 2)
+        :x $ + x
+          - 0 (/ w 2)
+        :y $ + y
+          - 0 (/ h 2)
         :fill-style $ or (:surface-color style)
           hsl 0 80 80
         :w w
@@ -97,14 +103,14 @@ defn render-button (props)
         :size 20
         :font-family |Optima
         :text-align |center
+        :x x
+        :y y
 
     fn (state)
       fn (instant)
         group ({})
           rect $ {} :style style-bg :event event-button
-          translate
-            {} :style $ {} :x 0 :y 0
-            text $ {} :style style-text
+          text $ {} :style style-text
 
 def button $ create-comp :button render-button
 

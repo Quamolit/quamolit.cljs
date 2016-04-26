@@ -13,7 +13,7 @@ defn init-instant (args state)
 
     {} (:numb? false)
       :presence 0
-      :presence-v 3
+      :presence-v 0.003
       :x0 x0
       :x1 x1
       :y0 y0
@@ -31,7 +31,7 @@ defn on-tick (instant tick elapsed)
   let
     (fading? $ < (:presence-v instant) (, 0))
       new-instant $ -> instant
-        iterate-instant :presence :presence-v elapsed $ [] 0 1000
+        iterate-instant :presence :presence-v elapsed $ [] 0 1
         iterate-instant :x0 :x0-v elapsed $ repeat 2 (:x0-target instant)
         iterate-instant :y0 :y0-v elapsed $ repeat 2 (:y0-target instant)
         iterate-instant :x1 :x1-v elapsed $ repeat 2 (:x1-target instant)
@@ -56,7 +56,7 @@ defn on-update
 
 defn on-unmount (instant tick)
   -- .log js/console "|stroke unmount"
-  assoc instant :presence-v -3 :numb? false
+  assoc instant :presence-v -0.003 :numb? false
 
 defn render
   x0 y0 x1 y1
@@ -66,8 +66,7 @@ defn render
       group ({})
         alpha
           {} :style $ {} :opacity
-            / (:presence instant)
-              , 1000
+            :presence instant
 
           line $ {} :style
             {}
