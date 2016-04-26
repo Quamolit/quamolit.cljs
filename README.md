@@ -14,6 +14,20 @@ Features:
 
 > Still working in progress... And Quamolit requires `ctx.addHitRegion(opts)`, which is an experimental technology.
 
+### Design
+
+Quamolit is trying to combine two things:
+
+* declarative programming experience like React
+* pixels manipulating and animations in HTML5 Canvas
+
+![](https://pbs.twimg.com/media/Cgnn_hRU8AIzZfL.jpg)
+![](https://pbs.twimg.com/media/Cg8Cxm4UkAAzDCl.png)
+![](https://pbs.twimg.com/media/CgnoDXAUoAACK4p.jpg)
+![](https://pbs.twimg.com/media/CgnoIH_UcAIlDIg.jpg)
+![](https://pbs.twimg.com/media/Cg8IotoU0AA2rGq.jpg)
+![](https://pbs.twimg.com/media/Cg8NuT1WMAIA3bK.jpg)
+
 ### Usage
 
 ```bash
@@ -47,6 +61,35 @@ boot dev # start develop workspace at target/index.html
 (quamolit.util.iterate/iterate-instant instant :x :x-velovity elapsed [lower-bound upper-bound])
 (quamolit.util.iterate/tween [40 60] [0 1000] 800)
 ```
+
+### Component Specs
+
+Shape records:
+
+* `name` keyword
+* `props` a hashmap of:
+* * `style` a hashmap of styles used in Canvas API
+* * `event` a hashmap of events, mainly `:click` events
+* * `attrs` a hashmap
+* `children` sorted hashmap with values of child nodes
+
+Component record:
+
+* `name` keyword
+* `coord` a vector of numbers(maybe also keywords and strings)
+* `args` props of components are passed in a list, not hashmap
+* `state` any type from `init-state`
+* `instant` any type from `init-instant`, mainly hashmaps
+* `init-state` function to initilize component state
+* `update-state` function to transform component state
+* `init-instant` function to initilize component animation state
+* `on-tick` function to update animation state at every tick
+* `on-update` function to update animation state on every store or states change
+* `on-unmount` function to update animation state when component removed(not destroyed yet)
+* `remove?` function to detect if component totally removed(or destroyed)
+* `render` function to render
+* `tree` cached from render tree
+* `fading?` boolean, whether component unmounted(waiting to be destroyed)
 
 ### Paint Elements
 
