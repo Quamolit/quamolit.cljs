@@ -19,6 +19,8 @@ defn handle-input (task-id task-text)
 defn style-input (text)
   {} (:w 400)
     :h 40
+    :x 40
+    :y 0
     :fill-style $ hsl 0 0 60
     :text text
 
@@ -96,13 +98,11 @@ defn render (task index shift-x)
             component-toggler (:done? task)
               :id task
 
-          translate
-            {} :style $ {} :x 40
-            input $ {} :style
-              style-input $ :text task
-              , :event
-              {} :click $ handle-input (:id task)
-                :text task
+          input $ {} :style
+            style-input $ :text task
+            , :event
+            {} :click $ handle-input (:id task)
+              :text task
 
           translate
             {} :style $ {} :x 280

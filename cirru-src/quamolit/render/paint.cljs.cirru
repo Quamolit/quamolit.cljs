@@ -110,10 +110,10 @@ defn paint-rect
     (w $ or (:w style) (, 100))
       h $ or (:h style)
         , 40
-      x $ or (:x style)
-        - 0 $ / w 2
-      y $ or (:y style)
-        - 0 $ / h 2
+      x $ - (or (:x style) 0)
+        / w 2
+      y $ - (or (:y style) 0)
+        / h 2
       line-width $ or (:line-width style)
         , 2
 

@@ -26,21 +26,19 @@ defn render (position)
       let
         (x $ first position)
           y $ last position
-        translate
-          {} $ :style
-            {} :x x :y $ + y
-              * 0.04 $ - tick (:begin-tick instant)
+        alpha
+          {} :style $ {} :opacity
+            * (:presence instant)
+              , 0.001
 
-          alpha
-            {} :style $ {} :opacity
-              * (:presence instant)
-                , 0.001
-
-            rect $ {} :style
-              {}
-                :fill-style $ hsl 200 80 60
-                :w 4
-                :h 30
+          rect $ {} :style
+            {}
+              :fill-style $ hsl 200 80 60
+              :w 4
+              :h 30
+              :x x
+              :y $ + y
+                * 0.04 $ - tick (:begin-tick instant)
 
 defn remove? (instant)
   and

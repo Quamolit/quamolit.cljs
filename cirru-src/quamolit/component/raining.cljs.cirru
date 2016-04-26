@@ -12,11 +12,11 @@ defn random-point ()
     - (rand-int 1400)
       , 600
     - (rand-int 600)
-      , 500
+      , 400
 
 defn init-instant ()
   let
-    (init-val $ ->> (repeat 60 0) (map-indexed $ fn (index x) ([] index $ random-point)) (into $ []))
+    (init-val $ ->> (repeat 80 0) (map-indexed $ fn (index x) ([] index $ random-point)) (into $ []))
 
     , init-val
 

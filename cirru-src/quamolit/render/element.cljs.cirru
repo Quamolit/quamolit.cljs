@@ -86,10 +86,8 @@ defn render-button (props)
       h $ or (:h style)
         , 40
       style-bg $ {}
-        :x $ + x
-          - 0 (/ w 2)
-        :y $ + y
-          - 0 (/ h 2)
+        :x x
+        :y y
         :fill-style $ or (:surface-color style)
           hsl 0 80 80
         :w w
@@ -124,8 +122,8 @@ defn render-input (props)
         :fill-style $ hsl 0 50 80
         :stroke-style $ hsl 0 0 50
         :line-width 2
-        :x $ - 0 (/ w 2)
-        :y $ - 0 (/ h 2)
+        :x $ or (:x style) 0
+        :y $ or (:y style) 0
         :w w
         :h h
 
