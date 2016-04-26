@@ -78,10 +78,10 @@ defn render
 
 def component-stroke $ create-comp :stroke init-instant on-tick on-update on-unmount nil render
 
-defn render-0 ()
+defn render-0 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 0 0 40 0
         component-stroke 40 0 40 40
         component-stroke 40 40 40 80
@@ -89,56 +89,56 @@ defn render-0 ()
         component-stroke 0 80 0 40
         component-stroke 0 40 0 0
 
-defn render-1 ()
+defn render-1 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 40 0 40 40
         component-stroke 40 40 40 80
 
-defn render-2 ()
+defn render-2 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 0 0 40 0
         component-stroke 40 0 40 40
         component-stroke 40 40 0 40
         component-stroke 0 40 0 80
         component-stroke 0 80 40 80
 
-defn render-3 ()
+defn render-3 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 0 0 40 0
         component-stroke 40 0 40 40
         component-stroke 40 40 40 80
         component-stroke 40 80 0 80
         component-stroke 40 40 0 40
 
-defn render-4 ()
+defn render-4 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 0 0 0 40
         component-stroke 0 40 40 40
         component-stroke 40 40 40 80
         component-stroke 40 40 40 0
 
-defn render-5 ()
+defn render-5 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 40 0 0 0
         component-stroke 0 0 0 40
         component-stroke 0 40 40 40
         component-stroke 40 40 40 80
         component-stroke 40 80 0 80
 
-defn render-6 ()
+defn render-6 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 40 0 0 0
         component-stroke 0 0 0 40
         component-stroke 0 40 40 40
@@ -146,18 +146,18 @@ defn render-6 ()
         component-stroke 40 80 0 80
         component-stroke 0 80 0 40
 
-defn render-7 ()
+defn render-7 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 0 0 40 0
         component-stroke 40 0 40 40
         component-stroke 40 40 40 80
 
-defn render-8 ()
+defn render-8 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 0 0 40 0
         component-stroke 40 0 40 40
         component-stroke 40 40 40 80
@@ -166,10 +166,10 @@ defn render-8 ()
         component-stroke 0 40 0 0
         component-stroke 0 40 40 40
 
-defn render-9 ()
+defn render-9 (props)
   fn (state mutate)
     fn (instant)
-      group ({})
+      translate props
         component-stroke 40 40 0 40
         component-stroke 0 40 0 0
         component-stroke 0 0 40 0
@@ -197,23 +197,19 @@ def component-8 $ create-comp :eight render-8
 
 def component-9 $ create-comp :nine render-9
 
-defn pick-digit (x)
-  case x (0 $ component-0)
-    1 $ component-1
-    2 $ component-2
-    3 $ component-3
-    4 $ component-4
-    5 $ component-5
-    6 $ component-6
-    7 $ component-7
-    8 $ component-8
-    9 $ component-9
-    component-0
-
-defn render-digit (n)
+defn render-digit (n props)
   fn (state mutate)
     fn (instant)
-      -- .log js/console :n n
-      pick-digit n
+      case n (0 $ component-0 props)
+        1 $ component-1 props
+        2 $ component-2 props
+        3 $ component-3 props
+        4 $ component-4 props
+        5 $ component-5 props
+        6 $ component-6 props
+        7 $ component-7 props
+        8 $ component-8 props
+        9 $ component-9 props
+        component-0 props
 
 def component-digit $ create-comp :digit render-digit

@@ -19,25 +19,23 @@ defn render ()
 
         -- .log js/console secs
         group ({})
-          translate
+          component-digit
+            get-ten hrs
             {} :style $ {} :x -200
-            component-digit $ get-ten hrs
-          translate
+          component-digit
+            get-one hrs
             {} :style $ {} :x -140
-            component-digit $ get-one hrs
-          translate
+          component-digit
+            get-ten mins
             {} :style $ {} :x -60
-            component-digit $ get-ten mins
-          translate
+          component-digit
+            get-one mins
             {} :style $ {} :x 0
-            component-digit $ get-one mins
-          translate
+          component-digit
+            get-ten secs
             {} :style $ {} :x 80
-            component-digit $ get-ten secs
-          translate
+          component-digit
+            get-one secs
             {} :style $ {} :x 140
-            let ()
-              -- .log js/console secs
-              component-digit $ get-one secs
 
 def component-clock $ create-comp :clock render
