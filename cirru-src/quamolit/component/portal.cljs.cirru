@@ -9,7 +9,8 @@ defn handle-navigate (mutate-navigate next-page)
   fn (event dispatch)
     mutate-navigate next-page
 
-defn style-button (x y page-name bg-color)
+defn style-button
+  x y page-name bg-color
   {} (:w 200)
     :h 80
     :x x
@@ -26,35 +27,33 @@ defn render (mutate-navigate)
           style-button -240 -100 |Todolist $ hsl 0 120 60
           , :event
           {} :click $ handle-navigate mutate-navigate :todolist
-
         button $ {} :style
           style-button -20 -100 |Clock $ hsl 300 80 80
           , :event
           {} :click $ handle-navigate mutate-navigate :clock
-
         button $ {} :style
           style-button 200 -100 |Solar $ hsl 140 80 80
           , :event
           {} :click $ handle-navigate mutate-navigate :solar
-
         button $ {} :style
           style-button -240 20 "|Binary Tree" $ hsl 140 20 30
           , :event
           {} :click $ handle-navigate mutate-navigate :binary-tree
-
         button $ {} :style
           style-button -20 20 |Table $ hsl 340 80 80
           , :event
           {} :click $ handle-navigate mutate-navigate :code-table
-
         button $ {} :style
           style-button 200 20 |Finder $ hsl 60 80 45
           , :event
           {} :click $ handle-navigate mutate-navigate :finder
-
         button $ {} :style
           style-button -240 140 |Raining $ hsl 260 80 80
           , :event
           {} :click $ handle-navigate mutate-navigate :raining
+        button $ {} :style
+          style-button -20 140 |Icons $ hsl 30 80 80
+          , :event
+          {} :click $ handle-navigate mutate-navigate :icons
 
 def component-portal $ create-comp :portal render

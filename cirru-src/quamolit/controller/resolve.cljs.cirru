@@ -11,7 +11,8 @@ defn locate-target (tree coord)
       (first-pos $ first coord)
       if
         = Component $ type tree
-        if (= first-pos 0)
+        if
+          = first-pos $ :name tree
           recur (:tree tree)
             subvec coord 1
           , nil

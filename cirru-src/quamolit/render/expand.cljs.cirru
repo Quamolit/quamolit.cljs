@@ -105,8 +105,10 @@ defn contain-markups? (items)
 defn expand-component
   markup old-tree coord states build-mutate at-place? tick elapsed
   let
-    (child-coord $ conj coord 0)
+    (child-coord $ conj coord (:name markup))
       existed? $ some? old-tree
+
+    -- .log js/console |child-coord: child-coord
     -- .log js/console |component (:name markup)
       , coord
     -- .log js/console states
@@ -116,8 +118,8 @@ defn expand-component
           old-state $ :state old-tree
           old-instant $ :instant old-tree
           new-args $ :args markup
-          new-state $ if (contains? states coord)
-            get states coord
+          new-state $ if (contains? states child-coord)
+            get states child-coord
             , old-state
           on-tick $ :on-tick markup
           on-update $ :on-update markup
@@ -131,7 +133,7 @@ defn expand-component
               , old-state new-state
 
         let
-          (mutate $ build-mutate coord)
+          (mutate $ build-mutate child-coord)
             new-shape $ -> (:render markup)
               apply new-args
               apply $ list new-state mutate
@@ -159,7 +161,7 @@ defn expand-component
               , args
             , state at-place?
 
-          mutate $ build-mutate coord
+          mutate $ build-mutate child-coord
           shape $ -> (:render markup)
             apply args
             apply $ list state mutate
@@ -168,7 +170,7 @@ defn expand-component
             = Component $ type shape
             expand-component shape nil child-coord states build-mutate false tick elapsed
             expand-shape shape nil child-coord child-coord states build-mutate false tick elapsed
-          result $ assoc markup :coord coord :args args :state state :instant instant :tree tree
+          result $ assoc markup :coord child-coord :args args :state state :instant instant :tree tree
 
         , result
 

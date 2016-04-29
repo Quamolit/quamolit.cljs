@@ -48,9 +48,13 @@ defn paint-path (ctx style eff)
       first-point $ first points
 
     .beginPath ctx
-    .moveTo ctx (first first-point) (last first-point)
-    doseq ([] point (rest points))
-      .lineTo ctx (first point) (last point)
+    .moveTo ctx (first first-point)
+      last first-point
+    doseq
+      [] point $ rest points
+      .lineTo ctx (first point)
+        last point
+
     set! ctx.lineWidth line-width
     set! ctx.strokeStyle stroke-style
     set! ctx.lineCap line-cap
@@ -110,10 +114,16 @@ defn paint-rect
     (w $ or (:w style) (, 100))
       h $ or (:h style)
         , 40
-      x $ - (or (:x style) 0)
+      x $ -
+        or (:x style)
+          , 0
         / w 2
-      y $ - (or (:y style) 0)
+
+      y $ -
+        or (:y style)
+          , 0
         / h 2
+
       line-width $ or (:line-width style)
         , 2
 
@@ -124,6 +134,7 @@ defn paint-rect
         options $ clj->js
           {} :id $ pr-str coord
 
+      -- .log js/console "|hit region" coord $ some? caller
       if (some? caller)
         .call caller ctx options
 

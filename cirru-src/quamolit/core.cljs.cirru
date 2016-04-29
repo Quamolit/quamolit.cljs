@@ -22,6 +22,8 @@ defonce global-tick $ atom (get-tick)
 
 defonce global-focus $ atom ([])
 
+defonce global-loop $ atom nil
+
 defn dispatch (action-type action-data)
   let
     (new-tick $ get-tick)
@@ -31,11 +33,11 @@ defn dispatch (action-type action-data)
 defn build-mutate (coord)
   -- .log js/console "|build new mutate" coord
   fn (& state-args)
-    -- .log js/console |mutate: coord state-args (get @global-states coord)
-      , state-args
+    -- .log js/console |coord: coord
+    -- .log js/console |global-states @global-states
     -- .log js/console |old-state $ get @global-states coord
     let
-      (component $ locate-target @global-tree coord)
+      (component $ locate-target @global-tree (subvec coord 0 $ - (count coord) (, 1)))
         old-state $ if (contains? @global-states coord)
           get @global-states coord
           :state component
@@ -44,6 +46,7 @@ defn build-mutate (coord)
         new-states $ assoc @global-states coord new-state
         clean-states $ states-gc new-states @global-tree
 
+      -- .log js/console |component component
       -- .log js/console |new-states new-states
       reset! global-states clean-states
 
@@ -80,7 +83,7 @@ defn render-page ()
       , directives
 
     set! js/window.tree @global-tree
-    js/requestAnimationFrame render-page
+    reset! global-loop $ js/requestAnimationFrame render-page
 
 defn handle-event (coord event-name event)
   let
@@ -108,7 +111,7 @@ defn -main ()
     .addEventListener root-element |click $ fn (event)
       let
         (hit-region $ aget event |region)
-        -- .log js/console |hit: hit-region
+        -- .log js/console |hit: event hit-region
         if (some? hit-region)
           let
             (coord $ reader/read-string hit-region)
@@ -137,4 +140,7 @@ set! js/window.onload -main
 
 set! js/window.onresize configure-canvas
 
-defn on-jsload $
+defn on-jsload ()
+  js/cancelAnimationFrame @global-loop
+  js/requestAnimationFrame render-page
+  .log js/console "|code updated..."

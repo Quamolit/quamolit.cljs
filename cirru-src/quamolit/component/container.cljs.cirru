@@ -13,6 +13,7 @@ ns quamolit.component.container $ :require
   [] quamolit.component.code-table :refer $ [] component-code-table
   [] quamolit.component.finder :refer $ [] component-finder
   [] quamolit.component.raining :refer $ [] component-raining
+  [] quamolit.component.icons-table :refer $ [] component-icons-table
 
 defn init-state ()
   , :portal
@@ -78,6 +79,12 @@ defn render (store)
             translate
               {} :style $ {} :x 0 :y 40
               component-raining
+
+        if (= state :icons)
+          component-fade-in-out ({})
+            translate
+              {} :style $ {} :x 0 :y 40
+              component-icons-table
 
         if (not= state :portal)
           component-fade-in-out ({})
