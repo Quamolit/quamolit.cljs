@@ -35,18 +35,7 @@ defn paint-line (ctx style eff)
 defn paint-path (ctx style eff)
   let
     (points $ :points style)
-      line-width $ or (:line-width style)
-        , 4
-      stroke-style $ or (:stroke-style style)
-        hsl 200 70 50
-      line-cap $ or (:line-cap style)
-        , |round
-      line-join $ or (:line-join style)
-        , |round
-      miter-limit $ or (:miter-limit style)
-        , 8
       first-point $ first points
-
     .beginPath ctx
     .moveTo ctx (first first-point)
       last first-point
@@ -55,11 +44,25 @@ defn paint-path (ctx style eff)
       .lineTo ctx (first point)
         last point
 
-    set! ctx.lineWidth line-width
-    set! ctx.strokeStyle stroke-style
-    set! ctx.lineCap line-cap
-    set! ctx.miterLimit miter-limit
-    .stroke ctx
+    if (contains? style :stroke-style)
+      do
+        set! ctx.lineWidth $ or (:line-width style)
+          , 4
+        set! ctx.strokeStyle $ :stroke-style style
+        set! ctx.lineCap $ or (:line-cap style)
+          , |round
+        set! ctx.lineJoin $ or (:line-join style)
+          , |round
+        set! ctx.milterLimit $ or (:milter-limit style)
+          , 8
+        .stroke ctx
+
+    if (contains? style :fill-style)
+      do
+        set! ctx.fillStyle $ :fill-style style
+        .closePath ctx
+        .fill ctx
+
     , eff
 
 def pi-ratio $ / js/Math.PI 180

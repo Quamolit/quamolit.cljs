@@ -35,10 +35,12 @@ defn render (level)
 
         group ({})
           path $ {} :style
-            {} :points $ []
-              [] x1 y1
-              [] 0 0
-              [] x2 y2
+            {}
+              :points $ [] ([] x1 y1)
+                [] 0 0
+                [] x2 y2
+              :stroke-style $ hsl 200 80 50
+
           if (> level 0)
             translate
               {} :style $ {} :x x1 :y y1
