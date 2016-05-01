@@ -5,6 +5,7 @@ ns quamolit.component.task $ :require
   [] quamolit.render.element :refer $ [] translate alpha input
   [] quamolit.util.iterate :refer $ [] iterate-instant
   [] quamolit.component.task-toggler :refer $ [] component-toggler
+  [] quamolit.component.debug :refer $ [] comp-debug
 
 def style-block $ {} (:w 300)
   :h 40
@@ -108,5 +109,7 @@ defn render (task index shift-x)
             {} :style $ {} :x 280
             rect $ {} :style style-remove :event
               {} :click $ handle-remove (:id task)
+
+          comp-debug task $ {}
 
 def component-task $ create-comp :task nil nil init-instant on-tick on-update on-unmount nil render

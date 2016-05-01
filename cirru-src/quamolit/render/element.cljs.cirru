@@ -73,6 +73,7 @@ defn render-rotate (props & children)
 def rotate $ create-comp :rotate render-rotate
 
 defn render-button (props)
+  -- .log js/console $ :style props
   let
     (style $ :style props)
       guide-text $ or (:text style)
@@ -85,8 +86,7 @@ defn render-button (props)
         , 100
       h $ or (:h style)
         , 40
-      style-bg $ {}
-        :x x
+      style-bg $ {} (:x x)
         :y y
         :fill-style $ or (:surface-color style)
           hsl 0 80 80
@@ -98,8 +98,10 @@ defn render-button (props)
         :fill-style $ or (:text-color style)
           hsl 0 0 10
         :text guide-text
-        :size 20
-        :font-family |Optima
+        :size $ or (:font-size style)
+          , 20
+        :font-family $ or (:font-family style)
+          , |Optima
         :text-align |center
         :x x
         :y y
@@ -122,8 +124,10 @@ defn render-input (props)
         :fill-style $ hsl 0 50 80
         :stroke-style $ hsl 0 0 50
         :line-width 2
-        :x $ or (:x style) 0
-        :y $ or (:y style) 0
+        :x $ or (:x style)
+          , 0
+        :y $ or (:y style)
+          , 0
         :w w
         :h h
 

@@ -121,6 +121,8 @@ Component record:
   :line-width 2
 }})
 (text {:style {
+  :x 0
+  :y 0
   :fill-style (hsl 0 0 0)
   :text-align "center"
   :base-linee "middle"
@@ -138,8 +140,13 @@ Component record:
 (scale {:style {:ratio 1.2}})
 (alpha {:style {:opacity 0.5}})
 (rotate {:style {:angle 30}})
-(button {:style {:w 100 :h 40 :text "button" :surface-color (hsl 0 80 80) :text-color (hsl 0 0 10)}})
+(button {:style {
+  :w 100 :h 40 :text "button"
+  :surface-color (hsl 0 80 80) :text-color (hsl 0 0 10)
+  :font-family "Optima"
+  :font-size 20}})
 (input {:style {:w 0 :h 0 :text ""}})
+(comp-debug data {})
 ```
 
 ### License

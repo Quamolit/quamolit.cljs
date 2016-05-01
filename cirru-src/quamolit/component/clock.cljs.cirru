@@ -3,6 +3,7 @@ ns quamolit.component.clock $ :require
   [] quamolit.alias :refer $ [] create-comp group
   [] quamolit.render.element :refer $ [] translate
   [] quamolit.component.digits :refer $ [] component-digit
+  [] quamolit.component.debug :refer $ [] comp-debug
 
 defn render ()
   fn (state mutate)
@@ -19,23 +20,18 @@ defn render ()
 
         -- .log js/console secs
         group ({})
-          component-digit
-            get-ten hrs
+          component-digit (get-ten hrs)
             {} :style $ {} :x -200
-          component-digit
-            get-one hrs
+          component-digit (get-one hrs)
             {} :style $ {} :x -140
-          component-digit
-            get-ten mins
+          component-digit (get-ten mins)
             {} :style $ {} :x -60
-          component-digit
-            get-one mins
+          component-digit (get-one mins)
             {} :style $ {} :x 0
-          component-digit
-            get-ten secs
+          component-digit (get-ten secs)
             {} :style $ {} :x 80
-          component-digit
-            get-one secs
+          component-digit (get-one secs)
             {} :style $ {} :x 140
+          comp-debug now $ {} :y -60
 
 def component-clock $ create-comp :clock render

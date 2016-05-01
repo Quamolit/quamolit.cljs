@@ -5,6 +5,7 @@ ns quamolit.component.todolist $ :require
   [] quamolit.render.element :refer $ [] translate button input alpha
   [] quamolit.component.task :refer $ [] component-task
   [] quamolit.util.iterate :refer $ [] iterate-instant tween
+  [] quamolit.component.debug :refer $ [] comp-debug
 
 def position-header $ {} (:x 0)
   :y -200
@@ -90,5 +91,7 @@ defn render (store)
                     component-task task index shift-x
 
               into $ sorted-map
+
+        -- comp-debug state $ {}
 
 def component-todolist $ create-comp :todolist init-state merge init-instant on-tick on-update on-unmount nil render
