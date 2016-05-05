@@ -38,8 +38,6 @@
     [:title "Quamolit"]
     [:meta {:charset "utf-8"}]
     [:link
-     {:rel "stylesheet", :type "text/css", :href "style.css"}]
-    [:link
      {:rel "icon", :type "image/png", :href "quamolit.png"}]
     [:style nil "body {margin: 0;}"]
     [:style
@@ -57,7 +55,7 @@
     (compile-cirru)
     (cirru-sepal :paths ["cirru-src"] :watch true)
     (watch)
-    (reload :on-jsload 'quamolit.core/on-jsload)
+    (reload :on-jsload 'quamolit.main/on-jsload)
     (cljs)
     (target)))
 

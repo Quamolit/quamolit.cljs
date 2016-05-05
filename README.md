@@ -30,6 +30,59 @@ Quamolit is trying to combine two things:
 
 ### Usage
 
+```clojure
+[Quamolit/quamolit "0.1.0"]
+```
+
+You may require Quamolit with higher level APIs:
+
+```clojure
+(ns quamolit.main
+  (:require [quamolit.core :refer [render-page
+                                   configure-canvas
+                                   setup-events]]
+            [quamolit.util.time :refer [get-tick]]
+            [quamolit.updater.core :refer [updater-fn]]
+            [devtools.core :as devtools]))
+
+(defonce store-ref (atom []))
+
+(defonce states-ref (atom {}))
+
+(defonce loop-ref (atom nil))
+
+(defn dispatch [op op-data]
+  (let [new-tick (get-tick)
+        new-store (updater-fn @store-ref op op-data new-tick)]
+    (reset! store-ref new-store)))
+
+(defn render-loop []
+  (let [target (.querySelector js/document "#app")]
+    (render-page @store-ref states-ref target)
+    (reset! loop-ref (js/requestAnimationFrame render-loop))))
+
+(defn -main []
+  (devtools/install! [:custom-formatters :santy-hints])
+  (enable-console-print!)
+  (let [target (.querySelector js/document "#app")]
+    (configure-canvas target)
+    (setup-events target dispatch)
+    (render-loop)))
+
+(set! js/window.onload -main)
+
+(set! js/window.onresize configure-canvas)
+
+(defn on-jsload []
+  (js/cancelAnimationFrame @loop-ref)
+  (js/requestAnimationFrame render-loop)
+  (.log js/console "code updated..."))
+```
+
+Also you may use lower level APIs directly by copy/paste this [Gist][Gist]:
+
+[Gist]: https://gist.github.com/jiyinyiyong/62a3e7a1350023e41af7672f111ab369
+
 ```bash
 boot compile-cirru # generate ClojureScript at src/
 boot build-simple # build app at target/
