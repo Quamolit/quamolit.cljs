@@ -1,6 +1,5 @@
 
 ns quamolit.core $ :require (cljs.reader :as reader)
-  [] quamolit.component.container :refer $ [] container-component
   [] quamolit.render.expand :refer $ [] expand-app
   [] quamolit.util.time :refer $ [] get-tick
   [] quamolit.render.flatten :refer $ [] flatten-tree
@@ -50,11 +49,11 @@ defn call-paint (directives target)
 
       reset! directives-ref directives
 
-defn render-page (store states-ref target)
+defn render-page (markup states-ref target)
   let
     (new-tick $ get-tick)
       elapsed $ - new-tick @tick-ref
-      tree $ expand-app (container-component store)
+      tree $ expand-app markup
         , @tree-ref @states-ref (mutate-factory states-ref) new-tick elapsed
       directives $ flatten-tree tree
 

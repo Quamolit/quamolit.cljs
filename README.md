@@ -30,11 +30,19 @@ Quamolit is trying to combine two things:
 
 ### Usage
 
+[![Clojars Project](https://img.shields.io/clojars/v/quamolit.svg)](https://clojars.org/quamolit)
+
 ```clojure
-[Quamolit/quamolit "0.1.0"]
+[quamolit "0.1.0"]
 ```
 
 You may require Quamolit with higher level APIs:
+
+```cojure
+(quamolit.core/render-page store states-ref target)
+(quamolit.core/configure-canvas target)
+(quamolit.core/setup-events target dispatch)
+```
 
 ```clojure
 (ns quamolit.main

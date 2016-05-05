@@ -21,14 +21,14 @@
          '[html-entry.core    :refer [html-entry]]
          '[cirru-sepal.core   :refer [cirru-sepal]])
 
-(def +version+ "0.1.0")
+(def +version+ "0.1.1")
 
 (task-options!
   pom {:project     'quamolit/quamolit
        :version     +version+
        :description "Quamolit"
-       :url         "https://github.com/quamolit/quamolit"
-       :scm         {:url "https://github.com/quamolit/quamolit"}
+       :url         "https://github.com/Quamolit/quamolit"
+       :scm         {:url "https://github.com/Quamolit/quamolit"}
        :license     {"MIT" "http://opensource.org/licenses/mit-license.php"}})
 
 

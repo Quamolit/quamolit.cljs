@@ -1,5 +1,6 @@
 
 ns quamolit.main $ :require
+  [] quamolit.component.container :refer $ [] container-component
   [] quamolit.core :refer $ [] render-page configure-canvas setup-events
   [] quamolit.util.time :refer $ [] get-tick
   [] quamolit.updater.core :refer $ [] updater-fn
@@ -20,7 +21,7 @@ defn dispatch (op op-data)
 defn render-loop ()
   let
     (target $ .querySelector js/document |#app)
-    render-page @store-ref states-ref target
+    render-page (container-component @store-ref) states-ref target
     reset! loop-ref $ js/requestAnimationFrame render-loop
 
 defn -main ()
