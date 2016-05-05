@@ -52,9 +52,9 @@ defn paint-path (ctx style eff)
           get coords 1
           get coords 2
           get coords 3
+          get coords 4
           get coords 5
-          get coords 6
-        :else $ throw "not supported coords"
+        :else $ throw "|not supported coords"
 
     if (contains? style :stroke-style)
       do
