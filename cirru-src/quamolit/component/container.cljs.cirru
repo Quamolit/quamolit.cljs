@@ -25,8 +25,9 @@ defn style-button (guide-text)
   {} (:text guide-text)
     :surface-color $ hsl 200 80 50
     :text-color $ hsl 200 80 100
+    :font-size 16
     :w 80
-    :h 40
+    :h 32
 
 defn handle-back (mutate)
   fn (event dispatch)

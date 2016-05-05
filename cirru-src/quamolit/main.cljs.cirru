@@ -21,7 +21,8 @@ defn dispatch (op op-data)
 defn render-loop ()
   let
     (target $ .querySelector js/document |#app)
-    render-page (container-component @store-ref) states-ref target
+    render-page (container-component @store-ref)
+      , states-ref target
     reset! loop-ref $ js/requestAnimationFrame render-loop
 
 defn -main ()
@@ -35,7 +36,10 @@ defn -main ()
 
 set! js/window.onload -main
 
-set! js/window.onresize configure-canvas
+set! js/window.onresize $ fn (event)
+  let
+    (target $ .querySelector js/document |#app)
+    configure-canvas target
 
 defn on-jsload ()
   js/cancelAnimationFrame @loop-ref

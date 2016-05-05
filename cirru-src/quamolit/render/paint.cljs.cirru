@@ -40,9 +40,21 @@ defn paint-path (ctx style eff)
     .moveTo ctx (first first-point)
       last first-point
     doseq
-      [] point $ rest points
-      .lineTo ctx (first point)
-        last point
+      [] coords $ rest points
+      case (count coords)
+        2 $ .lineTo ctx (get coords 0)
+          get coords 1
+        4 $ .quadraticCurveTo ctx (get coords 0)
+          get coords 1
+          get coords 2
+          get coords 3
+        6 $ .bezierCurveTo ctx (get coords 0)
+          get coords 1
+          get coords 2
+          get coords 3
+          get coords 5
+          get coords 6
+        :else $ throw "not supported coords"
 
     if (contains? style :stroke-style)
       do
