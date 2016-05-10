@@ -79,7 +79,7 @@ defn paint-path (ctx style eff)
 
 def pi-ratio $ / js/Math.PI 180
 
-defn paint-arc (ctx style eff)
+defn paint-arc (ctx style coord eff)
   let
     (x $ or (:x style) (, 0))
       y $ or (:y style)
@@ -107,6 +107,16 @@ defn paint-arc (ctx style eff)
 
     .beginPath ctx
     .arc ctx x y r s-angle e-angle counterclockwise
+
+    let
+      (caller $ aget ctx |addHitRegion)
+        options $ clj->js
+          {} :id $ pr-str coord
+
+      -- .log js/console "|hit region" coord $ some? caller
+      if (some? caller)
+        .call caller ctx options
+
     if
       some? $ :fill-style style
       do
@@ -259,7 +269,7 @@ defn paint-one (ctx directive eff)
       :native-alpha $ paint-alpha ctx style eff
       :native-rotate $ paint-rotate ctx style eff
       :native-scale $ paint-scale ctx style eff
-      :arc $ paint-arc ctx style eff
+      :arc $ paint-arc ctx style coord eff
       do
         .log js/console "|painting not implemented" op
         , eff
