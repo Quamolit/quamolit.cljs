@@ -14,7 +14,8 @@
             [quamolit.component.finder :refer [component-finder]]
             [quamolit.component.raining :refer [component-raining]]
             [quamolit.component.icons-table :refer [component-icons-table]]
-            [quamolit.component.ring :refer [comp-ring]]))
+            [quamolit.component.ring :refer [comp-ring]]
+            [quamolit.component.folding-fan :refer [comp-folding-fan]]))
 
 (defn init-state [] :portal)
 
@@ -77,6 +78,10 @@
           (component-fade-in-out
             {}
             (translate {:style {:y 40, :x 0}} (comp-ring))))
+        (if (= state :folding-fan)
+          (component-fade-in-out
+            {}
+            (translate {:style {:y 40, :x 0}} (comp-folding-fan))))
         (if (not= state :portal)
           (component-fade-in-out
             {}

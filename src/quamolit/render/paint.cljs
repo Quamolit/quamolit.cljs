@@ -173,6 +173,28 @@
 (defn paint-rotate [ctx style eff]
   (let [angle (or (:angle style) 30)] (.rotate ctx angle) eff))
 
+(defonce image-pool (atom {}))
+
+(defn get-image [src]
+  (if (contains? image-pool src)
+    (get image-pool src)
+    (let [image (.createElement js/document "img")]
+      (.setAttribute image "src" src)
+      image)))
+
+(defn paint-image [ctx style coord eff]
+  (let [sx (or (:sx style) 0)
+        sy (or (:sy style) 0)
+        sw (or (:sw style) 40)
+        sh (or (:sh style) 40)
+        dx (or (:dx style) 0)
+        dy (or (:dy style) 0)
+        dw (or (:dw style) 40)
+        dh (or (:dh style) 40)
+        image (get-image (:src style))]
+    (.drawImage ctx image sx sy sw sh dx dy dw dh))
+  eff)
+
 (defn paint-one [ctx directive eff]
   (let [[coord op style] directive]
     (comment .log js/console :paint-one op style)
@@ -200,6 +222,8 @@
       (paint-scale ctx style eff)
       :arc
       (paint-arc ctx style coord eff)
+      :image
+      (paint-image ctx style coord eff)
       (do (.log js/console "painting not implemented" op) eff))))
 
 (defn paint [ctx directives]

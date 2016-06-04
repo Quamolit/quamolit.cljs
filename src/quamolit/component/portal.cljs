@@ -51,7 +51,10 @@
            :event {:click (handle-navigate mutate-navigate :icons)}})
         (button
           {:style (style-button 0 2 "Curve" (hsl 100 80 80)),
+           :event {:click (handle-navigate mutate-navigate :curve)}})
+        (button
+          {:style (style-button 1 2 "Folding fan" (hsl 200 80 80)),
            :event
-           {:click (handle-navigate mutate-navigate :curve)}})))))
+           {:click (handle-navigate mutate-navigate :folding-fan)}})))))
 
 (def component-portal (create-comp :portal render))

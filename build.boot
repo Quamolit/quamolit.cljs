@@ -1,9 +1,5 @@
 
 (set-env!
- :asset-paths #{"assets"}
- :source-paths #{}
- :resource-paths #{"src"}
-
  :dev-dependencies '[]
  :dependencies '[[org.clojure/clojurescript "1.9.14"      :scope "test"]
                  [org.clojure/clojure       "1.8.0"       :scope "test"]
