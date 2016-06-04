@@ -192,6 +192,17 @@ Component record:
   :max-width 400
   :text ""
 }})
+(image (:style {
+  :src "lotus.jpg"
+  :sx 0
+  :sy 0
+  :sw 40
+  :sh 40
+  :dx 0
+  :dy 0
+  :dw 40
+  :dh 40
+}))
 ```
 
 ### Paint Components
@@ -202,6 +213,7 @@ Component record:
 (alpha {:style {:opacity 0.5}})
 (rotate {:style {:angle 30}})
 (button {:style {
+  :x 0 :y 0
   :w 100 :h 40 :text "button"
   :surface-color (hsl 0 80 80) :text-color (hsl 0 0 10)
   :font-family "Optima"
