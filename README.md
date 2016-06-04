@@ -192,7 +192,7 @@ Component record:
   :max-width 400
   :text ""
 }})
-(image (:style {
+(image {:style {
   :src "lotus.jpg"
   :sx 0
   :sy 0
@@ -202,7 +202,7 @@ Component record:
   :dy 0
   :dw 40
   :dh 40
-}))
+}})
 ```
 
 ### Paint Components
