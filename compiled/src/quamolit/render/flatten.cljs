@@ -12,7 +12,9 @@
           child-directives (map
                              (fn [child] (flatten-tree (val child)))
                              (:children tree))
-          all-directives (cons
-                           this-directive
-                           (apply concat child-directives))]
+          all-directives (into
+                           []
+                           (cons
+                             this-directive
+                             (apply concat child-directives)))]
       all-directives)))

@@ -1,6 +1,8 @@
 
 (ns quamolit.render.expand
-  (:require [quamolit.alias :refer [Component Shape]]))
+  (:require [quamolit.alias :refer [Component Shape]]
+            [quamolit.util.detect :refer [=vector]]
+            [quamolit.util.list :refer [filter-first]]))
 
 (declare expand-component)
 
@@ -23,12 +25,16 @@
         (> old-n 0)
         (> new-n 0)
         (= (key old-cursor) (key new-cursor))) (recur
-                                                 (assoc
+                                                 (conj
                                                    acc
-                                                   (key new-cursor)
-                                                   (val new-cursor))
-                                                 (rest old-children)
-                                                 (rest new-children)
+                                                   [(key new-cursor)
+                                                    (val new-cursor)])
+                                                 (subvec
+                                                   old-children
+                                                   1)
+                                                 (subvec
+                                                   new-children
+                                                   1)
                                                  coord
                                                  states
                                                  build-mutate
@@ -49,15 +55,16 @@
                                                                     (last
                                                                       new-cursor)
                                                                     new-acc
-                                                                    (assoc
+                                                                    (conj
                                                                       acc
-                                                                      child-key
-                                                                      child)]
+                                                                      [child-key
+                                                                       child])]
                                                                    (recur
                                                                      new-acc
                                                                      old-children
-                                                                     (rest
-                                                                       new-children)
+                                                                     (subvec
+                                                                       new-children
+                                                                       1)
                                                                      coord
                                                                      states
                                                                      build-mutate
@@ -101,18 +108,18 @@
                                                                                (:instant
                                                                                  child)))
                                                                            acc
-                                                                           (assoc
+                                                                           (conj
                                                                              acc
-                                                                             child-key
-                                                                             (expand-component
-                                                                               child
-                                                                               child
-                                                                               child-coord
-                                                                               states
-                                                                               build-mutate
-                                                                               at-place?
-                                                                               tick
-                                                                               elapsed)))
+                                                                             [child-key
+                                                                              (expand-component
+                                                                                child
+                                                                                child
+                                                                                child-coord
+                                                                                states
+                                                                                build-mutate
+                                                                                at-place?
+                                                                                tick
+                                                                                elapsed)]))
                                                                          (let 
                                                                            [args
                                                                             (:args
@@ -129,20 +136,21 @@
                                                                             new-instant
                                                                             (on-unmount
                                                                               old-instant)]
-                                                                           (assoc
+                                                                           (conj
                                                                              acc
-                                                                             child-key
-                                                                             (assoc
-                                                                               child
-                                                                               :instant
-                                                                               new-instant
-                                                                               :fading?
-                                                                               true))))
+                                                                             [child-key
+                                                                              (assoc
+                                                                                child
+                                                                                :instant
+                                                                                new-instant
+                                                                                :fading?
+                                                                                true)])))
                                                                        acc)]
                                                                     (recur
                                                                       new-acc
-                                                                      (rest
-                                                                        old-children)
+                                                                      (subvec
+                                                                        old-children
+                                                                        1)
                                                                       new-children
                                                                       coord
                                                                       states
@@ -161,19 +169,28 @@
                     at-place?
                     tick
                     elapsed]
-  (let [old-children (:children old-tree)
+  (let [old-children (->> (:children old-tree) (into []))
         new-children (->>
                        (:children markup)
-                       (filter (fn [entry] (some? (val entry))))
-                       (map
+                       (filterv (fn [entry] (some? (last entry))))
+                       (mapv
                          (fn [child]
                            (let [child-key (first child)
                                  child-markup (last child)
                                  child-coord (conj coord child-key)
+                                 old-child-pair
+                                 (->>
+                                   old-children
+                                   (filter-first
+                                     (fn 
+                                       [pair]
+                                       (identical?
+                                         (first pair)
+                                         child-key))))
                                  old-child-tree
                                  (if
-                                   (some? old-tree)
-                                   (get old-children child-key)
+                                   (some? old-child-pair)
+                                   (last old-child-pair)
                                    nil)
                                  child-state (get states child-key)]
                              [child-key
@@ -196,11 +213,10 @@
                                   build-mutate
                                   at-place?
                                   tick
-                                  elapsed))])))
-                       (into (sorted-map)))]
+                                  elapsed))]))))]
     (if (some? old-tree)
       (let [merged-children (merge-children
-                              {}
+                              []
                               old-children
                               new-children
                               coord
@@ -275,43 +291,51 @@
                            (into [] new-args)
                            old-state
                            new-state))]
-        (let [mutate (build-mutate child-coord)
-              new-shape (-> (:render markup)
-                         (apply new-args)
-                         (apply (list new-state mutate))
-                         (apply (list new-instant tick)))
-              new-tree (if (= Component (type new-shape))
-                         (expand-component
-                           new-shape
-                           (:tree old-tree)
-                           child-coord
-                           state-tree
-                           build-mutate
-                           at-place?
-                           tick
-                           elapsed)
-                         (expand-shape
-                           new-shape
-                           (:tree old-tree)
-                           child-coord
-                           child-coord
-                           state-tree
-                           build-mutate
-                           at-place?
-                           tick
-                           elapsed))
-              result (assoc
-                       old-tree
-                       :args
-                       new-args
-                       :state
-                       new-state
-                       :instant
-                       new-instant
-                       :tree
-                       new-tree)]
-          (comment .log js/console "existing state" coord state-tree)
-          result))
+        (if (and
+              (=vector (into [] old-args) (into [] new-args))
+              (identical? old-state new-state)
+              (identical? (:render old-tree) (:render markup))
+              (identical? old-instant new-instant))
+          (do
+            (comment println "reusing tree" child-coord)
+            (comment println old-args new-args)
+            old-tree)
+          (let [mutate (build-mutate child-coord)
+                new-shape (-> (:render markup)
+                           (apply new-args)
+                           (apply (list new-state mutate))
+                           (apply (list new-instant tick)))
+                new-tree (if (= Component (type new-shape))
+                           (expand-component
+                             new-shape
+                             (:tree old-tree)
+                             child-coord
+                             state-tree
+                             build-mutate
+                             at-place?
+                             tick
+                             elapsed)
+                           (expand-shape
+                             new-shape
+                             (:tree old-tree)
+                             child-coord
+                             child-coord
+                             state-tree
+                             build-mutate
+                             at-place?
+                             tick
+                             elapsed))]
+            (comment .log js/console "existing state" coord state-tree)
+            (assoc
+              old-tree
+              :args
+              new-args
+              :state
+              new-state
+              :instant
+              new-instant
+              :tree
+              new-tree))))
       (let [args (:args markup)
             init-state (:init-state markup)
             init-instant (:init-instant markup)
@@ -341,20 +365,19 @@
                      build-mutate
                      false
                      tick
-                     elapsed))
-            result (assoc
-                     markup
-                     :coord
-                     child-coord
-                     :args
-                     args
-                     :state
-                     state
-                     :instant
-                     instant
-                     :tree
-                     tree)]
-        result))))
+                     elapsed))]
+        (assoc
+          markup
+          :coord
+          child-coord
+          :args
+          args
+          :state
+          state
+          :instant
+          instant
+          :tree
+          tree)))))
 
 (defn expand-app [markup old-tree states build-mutate tick elapsed]
   (comment

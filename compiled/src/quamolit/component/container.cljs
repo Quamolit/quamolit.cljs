@@ -32,7 +32,7 @@
 
 (defn handle-back [mutate] (fn [event dispatch] (mutate :portal)))
 
-(defn render [store]
+(defn render [timestamp store]
   (fn [state mutate]
     (fn [instant tick]
       (comment .log js/console state)

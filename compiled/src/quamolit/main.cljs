@@ -19,9 +19,12 @@
         new-store (updater-fn @store-ref op op-data new-tick)]
     (reset! store-ref new-store)))
 
-(defn render-loop []
+(defn render-loop [timestamp]
   (let [target (.querySelector js/document "#app")]
-    (render-page (container-component @store-ref) states-ref target)
+    (render-page
+      (container-component timestamp @store-ref)
+      states-ref
+      target)
     (reset! loop-ref (js/requestAnimationFrame render-loop))))
 
 (defn -main []
@@ -30,7 +33,7 @@
   (let [target (.querySelector js/document "#app")]
     (configure-canvas target)
     (setup-events target dispatch)
-    (render-loop)))
+    (js/requestAnimationFrame render-loop)))
 
 (set! js/window.onload -main)
 
