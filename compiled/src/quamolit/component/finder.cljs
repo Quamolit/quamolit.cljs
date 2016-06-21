@@ -46,8 +46,7 @@
             (filter
               (fn [entry]
                 (let [[index tree] entry target (last state)]
-                  (if (some? target) (= index target) true))))
-            (into (sorted-map))))))))
+                  (if (some? target) (= index target) true))))))))))
 
 (def component-finder
  (create-comp :finder init-state update-state render))

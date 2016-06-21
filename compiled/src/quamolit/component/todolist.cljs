@@ -101,8 +101,11 @@
                                             (:presence instant)
                                             500))))))]
                     [(:id task)
-                     (component-task timestamp task index shift-x)])))
-              (into (sorted-map)))))
+                     (component-task
+                       timestamp
+                       task
+                       index
+                       shift-x)]))))))
         (comp-debug instant {})))))
 
 (def component-todolist

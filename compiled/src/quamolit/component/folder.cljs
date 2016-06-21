@@ -102,8 +102,7 @@
                 (filter
                   (fn [entry]
                     (let [index (first entry)]
-                      (if (some? state) (= index state) true))))
-                (into (sorted-map))))
+                      (if (some? state) (= index state) true))))))
             (if (not popup?)
               (rect
                 {:style {:w 600, :h 400, :fill-style (hsl 0 80 0 0)},

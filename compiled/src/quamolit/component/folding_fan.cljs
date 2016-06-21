@@ -63,8 +63,7 @@
                                :dw dest-unit,
                                :sx (* i image-unit),
                                :sh image-h,
-                               :sw image-unit}}))]))
-              (into (sorted-map))))
+                               :sw image-unit}}))]))))
           (button
             {:style
              {:y 200,

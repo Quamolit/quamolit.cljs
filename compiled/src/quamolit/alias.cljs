@@ -34,7 +34,8 @@
       (->>
         children
         (map-indexed vector)
-        (filter (fn [entry] (some? (val entry))))))))
+        (filter (fn [entry] (some? (val entry))))
+        (into [])))))
 
 (defn create-shape [shape-name props children]
   (if (not (map? props))

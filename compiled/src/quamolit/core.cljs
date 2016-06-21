@@ -61,7 +61,7 @@
                (mutate-factory states-ref)
                new-tick
                elapsed)
-        directives (flatten-tree tree)]
+        directives (:directives tree)]
     (comment .info js/console "rendering page..." @states-ref)
     (reset! tree-ref tree)
     (reset! tick-ref new-tick)
