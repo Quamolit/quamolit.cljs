@@ -30,7 +30,7 @@
 
 (defn remove? [instant] true)
 
-(defn render []
+(defn render [timestamp]
   (fn [state mutate]
     (fn [instant tick]
       (comment .log js/console (pr-str instant))

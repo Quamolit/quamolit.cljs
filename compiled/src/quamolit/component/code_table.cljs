@@ -7,7 +7,7 @@
 
 (defn init-state [] (into [] (repeat 3 (into [] (repeat 3 "")))))
 
-(defn render []
+(defn render [timestamp]
   (fn [state mutate]
     (fn [instant tick]
       (comment .log js/console state)

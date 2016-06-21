@@ -5,7 +5,7 @@
             [quamolit.component.digits :refer [component-digit]]
             [quamolit.component.debug :refer [comp-debug]]))
 
-(defn render []
+(defn render [timestamp]
   (fn [state mutate]
     (fn [instant]
       (let [now (js/Date.)

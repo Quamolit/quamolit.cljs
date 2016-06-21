@@ -10,7 +10,7 @@
 
 (def style-small {:r 30, :fill-style (hsl 200 80 80)})
 
-(defn render [level]
+(defn render [timestamp level]
   (fn [state mutate]
     (fn [instant tick]
       (comment .log js/console :tick (/ tick 10))
@@ -25,6 +25,6 @@
             {:style {:ratio 0.8}}
             (translate
               {:style {:y 180, :x 20}}
-              (component-solar (- level 1)))))))))
+              (component-solar timestamp (- level 1)))))))))
 
 (def component-solar (create-comp :solar render))

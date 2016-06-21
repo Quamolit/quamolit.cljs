@@ -5,7 +5,7 @@
             [quamolit.component.icon-increase :refer [comp-icon-increase]]
             [quamolit.component.icon-play :refer [component-icon-play]]))
 
-(defn render []
+(defn render [timestamp]
   (fn [state mutate]
     (fn [instant]
       (group

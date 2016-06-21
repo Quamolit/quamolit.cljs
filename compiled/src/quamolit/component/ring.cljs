@@ -8,7 +8,7 @@
 
 (defn cos [x] (js/Math.cos (* js/Math.PI (/ x 180))))
 
-(defn render []
+(defn render [timestamp]
   (fn [state mutate]
     (fn [instant tick]
       (let [n 20

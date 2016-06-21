@@ -40,15 +40,19 @@
         {:style {}}
         (if (= state :portal)
           (component-fade-in-out {} (component-portal mutate)))
-        (if (= state :todolist) (component-todolist store))
+        (if (= state :todolist) (component-todolist timestamp store))
         (if (= state :clock)
           (component-fade-in-out
             {}
-            (translate {:style {:y 0, :x 0}} (component-clock))))
+            (translate
+              {:style {:y 0, :x 0}}
+              (component-clock timestamp))))
         (if (= state :solar)
           (component-fade-in-out
             {}
-            (translate {:style {:y 0, :x 0}} (component-solar 8))))
+            (translate
+              {:style {:y 0, :x 0}}
+              (component-solar timestamp 8))))
         (if (= state :binary-tree)
           (component-fade-in-out
             {}
@@ -60,25 +64,29 @@
             {}
             (translate
               {:style {:y 40, :x 0}}
-              (component-code-table 5))))
+              (component-code-table timestamp 5))))
         (if (= state :finder)
           (component-fade-in-out
             {}
-            (translate {:style {:y 40, :x 0}} (component-finder))))
+            (translate
+              {:style {:y 40, :x 0}}
+              (component-finder timestamp))))
         (if (= state :raining)
           (component-fade-in-out
             {}
-            (translate {:style {:y 40, :x 0}} (component-raining))))
+            (translate
+              {:style {:y 40, :x 0}}
+              (component-raining timestamp))))
         (if (= state :icons)
           (component-fade-in-out
             {}
             (translate
               {:style {:y 40, :x 0}}
-              (component-icons-table))))
+              (component-icons-table timestamp))))
         (if (= state :curve)
           (component-fade-in-out
             {}
-            (translate {:style {:y 40, :x 0}} (comp-ring))))
+            (translate {:style {:y 40, :x 0}} (comp-ring timestamp))))
         (if (= state :folding-fan)
           (component-fade-in-out
             {}

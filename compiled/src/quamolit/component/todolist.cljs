@@ -50,7 +50,7 @@
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
-(defn render [store]
+(defn render [timestamp store]
   (fn [state mutate]
     (fn [instant]
       (comment .info js/console "todolist:" store state)

@@ -19,7 +19,7 @@
 
 (defn handle-back [mutate] (fn [event dispatch] (mutate nil)))
 
-(defn render []
+(defn render [timestamp]
   (fn [state mutate]
     (fn [instant tick]
       (comment .log js/console instant state)
