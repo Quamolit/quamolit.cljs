@@ -58,13 +58,11 @@
             {}
             (translate
               {:style {:y 240, :x 0}}
-              (component-binary-tree 5))))
+              (component-binary-tree timestamp 5))))
         (if (= state :code-table)
           (component-fade-in-out
             {}
-            (translate
-              {:style {:y 40, :x 0}}
-              (component-code-table timestamp 5))))
+            (translate {:style {:y 40, :x 0}} (component-code-table))))
         (if (= state :finder)
           (component-fade-in-out
             {}

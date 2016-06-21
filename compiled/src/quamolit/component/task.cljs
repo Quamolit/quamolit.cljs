@@ -23,7 +23,7 @@
   (fn [event dispatch] (dispatch :rm task-id)))
 
 (defn init-instant [args state at-place?]
-  (let [index (get args 1)]
+  (let [index (get args 2)]
     {:presence-velocity 3,
      :index index,
      :presence 0,
@@ -57,7 +57,7 @@
 
 (defn on-update [instant old-args args old-state state]
   (comment .log js/console "on update:" instant old-args args)
-  (let [old-index (get old-args 1) new-index (get args 1)]
+  (let [old-index (get old-args 2) new-index (get args 2)]
     (if (not= old-index new-index)
       (assoc
         instant
@@ -71,15 +71,15 @@
   (comment .log js/console "calling unmount" instant)
   (assoc instant :presence-velocity -3 :left-velocity -0.09))
 
-(defn render [task index shift-x]
+(defn render [timestamp task index shift-x]
   (fn [state mutate]
     (fn [instant]
-      (alpha
-        {:style {:opacity (/ (:presence instant) 1000)}}
-        (translate
-          {:style
-           {:y (- (* 60 (:index instant)) 140),
-            :x (+ shift-x (:left instant))}}
+      (translate
+        {:style
+         {:y (- (* 60 (:index instant)) 140),
+          :x (+ shift-x (:left instant))}}
+        (alpha
+          {:style {:opacity (/ (:presence instant) 1000)}}
           (translate
             {:style {:x -200}}
             (component-toggler (:done? task) (:id task)))

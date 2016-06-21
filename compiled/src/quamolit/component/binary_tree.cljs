@@ -9,7 +9,7 @@
 
 (declare component-binary-tree)
 
-(defn render [level]
+(defn render [timestamp level]
   (fn [state mutate]
     (fn [instant tick]
       (let [[r1 r2 r3 r4] state
@@ -38,7 +38,7 @@
                 {:style {:ratio (+ (* 2 shift-a) 0.5)}}
                 (rotate
                   {:style {:angle (+ (* 300 shift-a) 10)}}
-                  (component-binary-tree (dec level))))))
+                  (component-binary-tree timestamp (dec level))))))
           (if (> level 0)
             (translate
               {:style {:y y2, :x x2}}
@@ -46,7 +46,7 @@
                 {:style {:ratio (+ 0.83 (* 2 shift-b))}}
                 (rotate
                   {:style {:angle (+ (* 50 shift-b) 10)}}
-                  (component-binary-tree (dec level)))))))))))
+                  (component-binary-tree timestamp (dec level)))))))))))
 
 (def component-binary-tree
  (create-comp :binary-tree init-state merge render))

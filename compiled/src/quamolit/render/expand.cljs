@@ -280,8 +280,9 @@
             old-state (:state old-tree)
             old-instant (:instant old-tree)
             new-args (:args markup)
-            maybe-state (get state-tree 'data)
-            new-state (if (some? maybe-state) maybe-state old-state)
+            new-state (if (contains? state-tree 'data)
+                        (get state-tree 'data)
+                        old-state)
             on-tick (:on-tick markup)
             on-update (:on-update markup)
             new-instant (-> old-instant
@@ -292,10 +293,10 @@
                            old-state
                            new-state))]
         (if (and
-              (=vector (into [] old-args) (into [] new-args))
               (identical? old-state new-state)
               (identical? (:render old-tree) (:render markup))
-              (identical? old-instant new-instant))
+              (identical? old-instant new-instant)
+              (=vector (into [] old-args) (into [] new-args)))
           (do
             (comment println "reusing tree" child-coord)
             (comment println old-args new-args)
