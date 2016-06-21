@@ -1,13 +1,12 @@
 
 (set-env!
- :dev-dependencies '[]
- :dependencies '[[org.clojure/clojurescript "1.9.14"      :scope "test"]
+ :dependencies '[[org.clojure/clojurescript "1.9.36"      :scope "test"]
                  [org.clojure/clojure       "1.8.0"       :scope "test"]
-                 [adzerk/boot-cljs          "1.7.170-3"   :scope "test"]
-                 [adzerk/boot-reload        "0.4.6"       :scope "test"]
-                 [cirru/boot-cirru-sepal    "0.1.7"       :scope "test"]
+                 [adzerk/boot-cljs          "1.7.228-1"   :scope "test"]
+                 [adzerk/boot-reload        "0.4.8"       :scope "test"]
+                 [cirru/boot-cirru-sepal    "0.1.8"       :scope "test"]
                  [binaryage/devtools        "0.6.1"       :scope "test"]
-                 [mvc-works/respo           "0.1.22"]
+                 [mvc-works/respo           "0.2.2"]
                  [mvc-works/hsl             "0.1.2"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]]
@@ -29,10 +28,10 @@
 
 (deftask compile-cirru []
   (set-env!
-    :source-paths #{"cirru-src/"})
+    :source-paths #{"cirru/"})
   (comp
     (transform-cirru)
-    (target :dir #{"src/"})))
+    (target :dir #{"compiled/"})))
 
 (defn use-text [x] {:attrs {:innerHTML x}})
 (defn html-dsl [data fileset]
@@ -67,7 +66,7 @@
 (deftask dev []
   (set-env!
     :asset-paths #{"assets"}
-    :source-paths #{"cirru-src"})
+    :source-paths #{"cirru/src"})
   (comp
     (html-file :data {:build? false})
     (watch)
@@ -79,7 +78,7 @@
 (deftask build-simple []
   (set-env!
     :asset-paths #{"assets"}
-    :source-paths #{"cirru-src"})
+    :source-paths #{"cirru/src"})
   (comp
     (transform-cirru)
     (cljs :optimizations :simple)
@@ -89,7 +88,7 @@
 (deftask build-advanced []
   (set-env!
     :asset-paths #{"assets"}
-    :source-paths #{"cirru-src"})
+    :source-paths #{"cirru/src"})
   (comp
     (transform-cirru)
     (cljs :optimizations :advanced :compiler-options
@@ -98,10 +97,9 @@
     (target)))
 
 (deftask rsync []
-  (fn [next-task]
-    (fn [fileset]
-      (sh "rsync" "-r" "target/" "tiye:repo/Quamolit/quamolit" "--exclude" "main.out" "--delete")
-      (next-task fileset))))
+  (with-pre-wrap fileset
+    (sh "rsync" "-r" "target/" "tiye:repo/Quamolit/quamolit" "--exclude" "main.out" "--delete")
+    fileset))
 
 (deftask send-tiye []
   (comp
@@ -110,7 +108,7 @@
 
 (deftask build []
   (set-env!
-    :source-paths #{"cirru-src"})
+    :source-paths #{"cirru/src"})
   (comp
     (transform-cirru)
     (pom)
