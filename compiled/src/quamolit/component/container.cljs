@@ -15,7 +15,8 @@
             [quamolit.component.raining :refer [component-raining]]
             [quamolit.component.icons-table :refer [component-icons-table]]
             [quamolit.component.ring :refer [comp-ring]]
-            [quamolit.component.folding-fan :refer [comp-folding-fan]]))
+            [quamolit.component.folding-fan :refer [comp-folding-fan]]
+            [quamolit.component.debug :refer [comp-debug]]))
 
 (defn init-state [] :portal)
 

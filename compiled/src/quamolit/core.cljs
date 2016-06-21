@@ -6,8 +6,7 @@
             [quamolit.render.flatten :refer [flatten-tree]]
             [quamolit.render.paint :refer [paint]]
             [quamolit.controller.resolve :refer [resolve-target
-                                                 locate-target]]
-            [quamolit.controller.gc :refer [states-gc]]))
+                                                 locate-target]]))
 
 (defonce tree-ref (atom nil))
 
@@ -27,16 +26,17 @@
       (let [component (locate-target
                         @tree-ref
                         (subvec coord 0 (- (count coord) 1)))
-            old-state (if (contains? @states-ref coord)
-                        (get @states-ref coord)
+            state-path (conj coord 'data)
+            maybe-state (get-in @states-ref state-path)
+            old-state (if (some? maybe-state)
+                        maybe-state
                         (:state component))
             update-state (:update-state component)
             new-state (apply update-state (cons old-state state-args))
-            new-states (assoc @states-ref coord new-state)
-            clean-states (states-gc new-states @tree-ref)]
+            new-states (assoc-in @states-ref state-path new-state)]
         (comment .log js/console "component" component)
         (comment .log js/console "new-states" new-states)
-        (reset! states-ref clean-states)))))
+        (reset! states-ref new-states)))))
 
 (defn call-paint [directives target]
   (comment .log js/console directives @directives-ref)

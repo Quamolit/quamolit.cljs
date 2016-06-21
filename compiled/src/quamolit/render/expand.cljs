@@ -174,14 +174,15 @@
                                  (if
                                    (some? old-tree)
                                    (get old-children child-key)
-                                   nil)]
+                                   nil)
+                                 child-state (get states child-key)]
                              [child-key
                               (if (= (type child-markup) Component)
                                 (expand-component
                                   child-markup
                                   old-child-tree
                                   child-coord
-                                  states
+                                  child-state
                                   build-mutate
                                   at-place?
                                   tick
@@ -191,7 +192,7 @@
                                   old-child-tree
                                   child-coord
                                   coord
-                                  states
+                                  child-state
                                   build-mutate
                                   at-place?
                                   tick
@@ -253,7 +254,8 @@
                         tick
                         elapsed]
   (let [child-coord (conj coord (:name markup))
-        existed? (some? old-tree)]
+        existed? (some? old-tree)
+        state-tree (get states (:name markup))]
     (comment .log js/console "child-coord:" child-coord)
     (comment .log js/console "component" (:name markup) coord)
     (comment .log js/console states)
@@ -262,12 +264,10 @@
             old-state (:state old-tree)
             old-instant (:instant old-tree)
             new-args (:args markup)
-            new-state (if (contains? states child-coord)
-                        (get states child-coord)
-                        old-state)
+            maybe-state (get state-tree 'data)
+            new-state (if (some? maybe-state) maybe-state old-state)
             on-tick (:on-tick markup)
             on-update (:on-update markup)
-            update-state (:update-state markup)
             new-instant (-> old-instant
                          (on-tick tick elapsed)
                          (on-update
@@ -285,7 +285,7 @@
                            new-shape
                            (:tree old-tree)
                            child-coord
-                           states
+                           state-tree
                            build-mutate
                            at-place?
                            tick
@@ -295,7 +295,7 @@
                            (:tree old-tree)
                            child-coord
                            child-coord
-                           states
+                           state-tree
                            build-mutate
                            at-place?
                            tick
@@ -310,17 +310,11 @@
                        new-instant
                        :tree
                        new-tree)]
-          (comment
-            .log
-            js/console
-            "existing state"
-            coord
-            (get states coord))
+          (comment .log js/console "existing state" coord state-tree)
           result))
       (let [args (:args markup)
             init-state (:init-state markup)
             init-instant (:init-instant markup)
-            update-state (:update-state markup)
             state (apply init-state args)
             instant (init-instant (into [] args) state at-place?)
             mutate (build-mutate child-coord)
