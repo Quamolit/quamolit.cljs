@@ -28,7 +28,7 @@
       (comment .log js/console instant)
       (alpha
         {:style {:opacity (/ (:presence instant) 1000)}}
-        (into (sorted-map) (map-indexed vector children))))))
+        (map-indexed vector children)))))
 
 (def component-fade-in-out
  (create-comp

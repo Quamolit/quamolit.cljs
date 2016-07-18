@@ -22,8 +22,8 @@
 (defrecord Shape [name props children])
 
 (defn arrange-children [children]
-  (into
-    (sorted-map)
+  (sort-by
+    first
     (if (and
           (= (count children) 1)
           (not
@@ -34,8 +34,7 @@
       (->>
         children
         (map-indexed vector)
-        (filter (fn [entry] (some? (val entry))))
-        (into [])))))
+        (filter (fn [entry] (some? (val entry))))))))
 
 (defn create-shape [shape-name props children]
   (if (not (map? props))

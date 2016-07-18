@@ -33,9 +33,7 @@
                                         {:style
                                          {:w 80,
                                           :h 40,
-                                          :text "demo"}})))]))
-                             (into (sorted-map))))]))
-          (into (sorted-map)))))))
+                                          :text "demo"}})))]))))])))))))
 
 (def component-code-table
  (create-comp :code-table init-state nil render))
