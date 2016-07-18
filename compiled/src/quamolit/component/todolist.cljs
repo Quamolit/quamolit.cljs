@@ -85,16 +85,23 @@
                                       -40
                                       (+
                                         (if
-                                          (> (:presence-v instant) 0)
-                                          (/ index (- (count store) 1))
-                                          (-
-                                            1
-                                            (if
-                                              (= index 0)
-                                              0
-                                              (/
-                                                index
-                                                (- (count store) 1)))))
+                                          (= (count store) 1)
+                                          0
+                                          (if
+                                            (> (:presence-v instant) 0)
+                                            (/
+                                              index
+                                              (- (count store) 1))
+                                            (-
+                                              1
+                                              (if
+                                                (= index 0)
+                                                0
+                                                (/
+                                                  index
+                                                  (-
+                                                    (count store)
+                                                    1))))))
                                         (-
                                           1
                                           (/

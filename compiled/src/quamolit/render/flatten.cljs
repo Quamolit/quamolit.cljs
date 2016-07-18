@@ -10,7 +10,7 @@
                           (:name tree)
                           (:style (:props tree))]
           child-directives (map
-                             (fn [child] (flatten-tree (val child)))
+                             (fn [child] (flatten-tree (last child)))
                              (:children tree))
           all-directives (into
                            []

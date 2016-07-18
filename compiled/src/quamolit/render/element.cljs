@@ -35,7 +35,7 @@
           {}
           (native-save {})
           (native-scale (assoc props :style style))
-          (group {} (into {} (map-indexed vector children)))
+          (group {} (map-indexed vector children))
           (native-restore {}))))))
 
 (def scale (create-comp :scale render-scale))

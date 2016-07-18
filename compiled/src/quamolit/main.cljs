@@ -28,7 +28,7 @@
     (reset! loop-ref (js/requestAnimationFrame render-loop))))
 
 (defn -main []
-  (devtools/install! [:custom-formatters :santy-hints])
+  (devtools/install!)
   (enable-console-print!)
   (let [target (.querySelector js/document "#app")]
     (configure-canvas target)

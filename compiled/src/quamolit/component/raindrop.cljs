@@ -15,7 +15,7 @@
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
-(defn render [position]
+(defn render [position timestamp]
   (fn [state mutate]
     (fn [instant tick]
       (let [x (first position) y (last position)]

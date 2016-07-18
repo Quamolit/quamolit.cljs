@@ -41,8 +41,7 @@
           (map
             (fn [entry]
               (let [child-key (first entry) child (last entry)]
-                [child-key (component-raindrop child)])))
-          (into (sorted-map)))))))
+                [child-key (component-raindrop child timestamp)]))))))))
 
 (def component-raining
  (create-comp

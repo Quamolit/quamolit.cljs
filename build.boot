@@ -1,12 +1,12 @@
 
 (set-env!
- :dependencies '[[org.clojure/clojurescript "1.9.36"      :scope "test"]
+ :dependencies '[[org.clojure/clojurescript "1.9.89"      :scope "test"]
                  [org.clojure/clojure       "1.8.0"       :scope "test"]
                  [adzerk/boot-cljs          "1.7.228-1"   :scope "test"]
-                 [adzerk/boot-reload        "0.4.8"       :scope "test"]
-                 [cirru/boot-cirru-sepal    "0.1.8"       :scope "test"]
-                 [binaryage/devtools        "0.6.1"       :scope "test"]
-                 [mvc-works/respo           "0.2.2"]
+                 [adzerk/boot-reload        "0.4.11"      :scope "test"]
+                 [cirru/boot-cirru-sepal    "0.1.9"       :scope "test"]
+                 [binaryage/devtools        "0.7.2"       :scope "test"]
+                 [mvc-works/respo           "0.3.7"]
                  [mvc-works/hsl             "0.1.2"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]]
@@ -21,7 +21,7 @@
 (task-options!
   pom {:project     'quamolit/quamolit
        :version     +version+
-       :description "Quamolit"
+       :description "Quamolit is declarative animation library for Canvas"
        :url         "https://github.com/Quamolit/quamolit"
        :scm         {:url "https://github.com/Quamolit/quamolit"}
        :license     {"MIT" "http://opensource.org/licenses/mit-license.php"}})
@@ -71,7 +71,8 @@
     (html-file :data {:build? false})
     (watch)
     (transform-cirru)
-    (reload :on-jsload 'quamolit.main/on-jsload)
+    (reload :on-jsload 'quamolit.main/on-jsload
+            :cljs-asset-path ".")
     (cljs)
     (target)))
 
@@ -98,7 +99,7 @@
 
 (deftask rsync []
   (with-pre-wrap fileset
-    (sh "rsync" "-r" "target/" "tiye:repo/Quamolit/quamolit" "--exclude" "main.out" "--delete")
+    (sh "rsync" "-r" "target/" "tiye.me:repo/Quamolit/quamolit" "--exclude" "main.out" "--delete")
     fileset))
 
 (deftask send-tiye []

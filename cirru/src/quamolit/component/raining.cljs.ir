@@ -8,6 +8,6 @@
 [ "defn" "on-update" [ "instant" "old-args" "args" "old-state" "state" ] "instant" ]
 [ "defn" "on-unmount" [ "instant" "tick" ] "instant" ]
 [ "defn" "remove?" [ "instant" ] "true" ]
-[ "defn" "render" [ "timestamp" ] [ "fn" [ "state" "mutate" ] [ "fn" [ "instant" "tick" ] [ "--" ".log" "js/console" [ "pr-str" "instant" ] ] [ "group" [ "{}" ] [ "->>" "instant" [ "map" [ "fn" [ "entry" ] [ "let" [ [ "child-key" [ "first" "entry" ] ] [ "child" [ "last" "entry" ] ] ] [ "[]" "child-key" [ "component-raindrop" "child" ] ] ] ] ] [ "into" [ "sorted-map" ] ] ] ] ] ] ]
+[ "defn" "render" [ "timestamp" ] [ "fn" [ "state" "mutate" ] [ "fn" [ "instant" "tick" ] [ "--" ".log" "js/console" [ "pr-str" "instant" ] ] [ "group" [ "{}" ] [ "->>" "instant" [ "map" [ "fn" [ "entry" ] [ "let" [ [ "child-key" [ "first" "entry" ] ] [ "child" [ "last" "entry" ] ] ] [ "[]" "child-key" [ "component-raindrop" "child" "timestamp" ] ] ] ] ] ] ] ] ] ]
 [ "def" "component-raining" [ "create-comp" ":raining" "init-instant" "on-tick" "on-update" "on-unmount" "remove?" "render" ] ]
 ]
