@@ -16,7 +16,7 @@
          '[respo.render.static-html :refer [make-html]]
          '[clojure.java.io    :as    io])
 
-(def +version+ "0.1.2")
+(def +version+ "0.1.3")
 
 (task-options!
   pom {:project     'quamolit/quamolit

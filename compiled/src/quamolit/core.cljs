@@ -30,7 +30,9 @@
             maybe-state (get-in @states-ref state-path)
             old-state (if (some? maybe-state)
                         maybe-state
-                        (:state component))
+                        (let [init-state (:init-state component)
+                              args (:args component)]
+                          (apply init-state args)))
             update-state (:update-state component)
             new-state (apply update-state (cons old-state state-args))
             new-states (assoc-in @states-ref state-path new-state)]

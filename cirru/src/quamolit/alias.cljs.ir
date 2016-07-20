@@ -1,7 +1,7 @@
 
 [
 [ "ns" "quamolit.alias" ]
-[ "defrecord" "Component" [ "name" "coord" "args" "state" "instant" "init-state" "update-state" "init-instant" "on-tick" "on-update" "on-unmount" "remove?" "render" "tree" "fading?" ] ]
+[ "defrecord" "Component" [ "name" "coord" "args" "states" "instant" "init-state" "update-state" "init-instant" "on-tick" "on-update" "on-unmount" "remove?" "render" "tree" "fading?" ] ]
 [ "defrecord" "Shape" [ "name" "props" "children" ] ]
 [ "defn" "arrange-children" [ "children" ] [ "sort-by" "first" [ "if" [ "and" [ "=" [ "count" "children" ] "1" ] [ "not" [ "or" [ "=" "Component" [ "type" [ "first" "children" ] ] ] [ "=" "Shape" [ "type" [ "first" "children" ] ] ] ] ] ] [ "first" "children" ] [ "->>" "children" [ "map-indexed" "vector" ] [ "filter" [ "fn" [ "entry" ] [ "some?" [ "val" "entry" ] ] ] ] ] ] ] ]
 [ "defn" "create-shape" [ "shape-name" "props" "children" ] [ "if" [ "not" [ "map?" "props" ] ] [ "throw" [ "js/Error." "|Props expeced to be a map!" ] ] ] [ "->Shape" "shape-name" "props" [ "arrange-children" "children" ] ] ]

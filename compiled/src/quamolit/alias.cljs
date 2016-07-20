@@ -6,7 +6,7 @@
   [name
    coord
    args
-   state
+   states
    instant
    init-state
    update-state

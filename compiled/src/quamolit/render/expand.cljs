@@ -122,13 +122,7 @@
                                                                                 tick
                                                                                 elapsed)]))
                                                                          (let 
-                                                                           [args
-                                                                            (:args
-                                                                              child)
-                                                                            state
-                                                                            (:state
-                                                                              child)
-                                                                            old-instant
+                                                                           [old-instant
                                                                             (:instant
                                                                               child)
                                                                             on-unmount
@@ -278,12 +272,14 @@
     (comment .log js/console states)
     (if existed?
       (let [old-args (:args old-tree)
-            old-state (:state old-tree)
+            old-states (:states old-tree)
             old-instant (:instant old-tree)
             new-args (:args markup)
+            old-state (get old-states 'data)
+            init-state (:init-state markup)
             new-state (if (contains? state-tree 'data)
                         (get state-tree 'data)
-                        old-state)
+                        (apply init-state new-args))
             on-tick (:on-tick markup)
             on-update (:on-update markup)
             new-instant (-> old-instant
@@ -294,13 +290,14 @@
                            old-state
                            new-state))]
         (if (and
-              (identical? old-state new-state)
+              (identical? old-states state-tree)
               (identical? (:render old-tree) (:render markup))
               (identical? old-instant new-instant)
               (=vector (into [] old-args) (into [] new-args)))
           (do
             (comment println "reusing tree" child-coord)
             (comment println old-args new-args)
+            (comment println coord old-states state-tree)
             old-tree)
           (let [mutate (build-mutate child-coord)
                 new-shape (-> (:render markup)
@@ -333,8 +330,8 @@
               old-tree
               :args
               new-args
-              :state
-              new-state
+              :states
+              state-tree
               :instant
               new-instant
               :tree
@@ -344,7 +341,9 @@
       (let [args (:args markup)
             init-state (:init-state markup)
             init-instant (:init-instant markup)
-            state (apply init-state args)
+            state (if (contains? state-tree 'data)
+                    (get state-tree 'data)
+                    (apply init-state args))
             instant (init-instant (into [] args) state at-place?)
             mutate (build-mutate child-coord)
             shape (-> (:render markup)
@@ -356,7 +355,7 @@
                      shape
                      nil
                      child-coord
-                     states
+                     state-tree
                      build-mutate
                      false
                      tick
@@ -366,7 +365,7 @@
                      nil
                      child-coord
                      child-coord
-                     states
+                     state-tree
                      build-mutate
                      false
                      tick
@@ -377,8 +376,8 @@
           child-coord
           :args
           args
-          :state
-          state
+          :states
+          state-tree
           :instant
           instant
           :tree

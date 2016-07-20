@@ -133,7 +133,7 @@
 
 (def input (create-comp :input render-input))
 
-(defn init-textbox [props] "default")
+(defn init-textbox [props] (:text (:style props)))
 
 (defn update-textbox [state keycode shift?]
   (comment .log js/console keycode)
