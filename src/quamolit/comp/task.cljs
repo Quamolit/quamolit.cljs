@@ -48,20 +48,19 @@
 (defn handle-remove [task-id] (fn [event dispatch] (dispatch :rm task-id)))
 
 (defn render [timestamp task index shift-x]
-  (fn [state mutate]
-    (fn [instant]
-      (translate
-        {:style {:y (- (* 60 (:index instant)) 140), :x (+ shift-x (:left instant))}}
-        (alpha
-          {:style {:opacity (/ (:presence instant) 1000)}}
-          (translate {:style {:x -200}} (comp-toggler (:done? task) (:id task)))
-          (input
-            {:style (style-input (:text task)),
-             :event {:click (handle-input (:id task) (:text task))}})
-          (translate
-            {:style {:x 280}}
-            (rect {:style style-remove, :event {:click (handle-remove (:id task))}}))
-          (comp-debug task {}))))))
+  (fn [state mutate instant tick]
+    (translate
+      {:style {:y (- (* 60 (:index instant)) 140), :x (+ shift-x (:left instant))}}
+      (alpha
+        {:style {:opacity (/ (:presence instant) 1000)}}
+        (translate {:style {:x -200}} (comp-toggler (:done? task) (:id task)))
+        (input
+          {:style (style-input (:text task)),
+           :event {:click (handle-input (:id task) (:text task))}})
+        (translate
+          {:style {:x 280}}
+          (rect {:style style-remove, :event {:click (handle-remove (:id task))}}))
+        (comp-debug task {})))))
 
 (defn init-instant [args state at-place?]
   (let [index (get args 2)]

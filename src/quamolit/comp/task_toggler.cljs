@@ -22,12 +22,11 @@
    (hsl (tween [360 200] [0 1000] done-value) 80 (tween [40 80] [0 1000] done-value))})
 
 (defn render [done? task-id]
-  (fn [state mutate]
-    (fn [instant]
-      (comment .log js/console "done:" instant)
-      (rect
-        {:style (style-toggler (:done-value instant)),
-         :event {:click (handle-click task-id)}}))))
+  (fn [state mutate instant tick]
+    (comment .log js/console "done:" instant)
+    (rect
+      {:style (style-toggler (:done-value instant)),
+       :event {:click (handle-click task-id)}})))
 
 (defn init-instant [args state]
   (let [done? (first args)] {:numb? true, :done-value (if done? 0 1000), :done-velocity 0}))

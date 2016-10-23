@@ -22,17 +22,16 @@
 (defn on-update [instant old-args args old-state state] instant)
 
 (defn render [timestamp]
-  (fn [state mutate]
-    (fn [instant tick]
-      (comment .log js/console (pr-str instant))
-      (group
-        {}
-        (->>
-          instant
-          (map
-            (fn [entry]
-              (let [child-key (first entry) child (last entry)]
-                [child-key (comp-raindrop child timestamp)]))))))))
+  (fn [state mutate instant tick]
+    (comment .log js/console (pr-str instant))
+    (group
+      {}
+      (->>
+        instant
+        (map
+          (fn [entry]
+            (let [child-key (first entry) child (last entry)]
+              [child-key (comp-raindrop child timestamp)])))))))
 
 (defn init-instant []
   (let [init-val (->>

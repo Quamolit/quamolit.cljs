@@ -34,49 +34,48 @@
 (def position-body {:y 40, :x 0})
 
 (defn render [timestamp store]
-  (fn [state mutate]
-    (fn [instant]
-      (comment .info js/console "todolist:" store state)
-      (alpha
-        {:style {:opacity (/ (:presence instant) 1000)}}
+  (fn [state mutate instant tick]
+    (comment .info js/console "todolist:" store state)
+    (alpha
+      {:style {:opacity (/ (:presence instant) 1000)}}
+      (translate
+        {:style position-header}
         (translate
-          {:style position-header}
-          (translate
-            {:style {:y 40, :x -20}}
-            (input
-              {:style {:w 400, :h 40, :text (:draft state)},
-               :event {:click (handle-input mutate (:draft state))}}))
-          (translate
-            {:style {:y 40, :x 240}}
-            (button {:style style-button, :event (event-button mutate (:draft state))})))
+          {:style {:y 40, :x -20}}
+          (input
+            {:style {:w 400, :h 40, :text (:draft state)},
+             :event {:click (handle-input mutate (:draft state))}}))
         (translate
-          {:style position-body}
-          (group
-            {}
-            (->>
-              store
-              (reverse)
-              (map-indexed
-                (fn [index task]
-                  (let [shift-x (max
-                                  -40
-                                  (min
-                                    0
-                                    (*
-                                      -40
-                                      (+
-                                        (if (= (count store) 1)
-                                          0
-                                          (if (> (:presence-v instant) 0)
-                                            (/ index (- (count store) 1))
-                                            (-
-                                              1
-                                              (if (= index 0)
-                                                0
-                                                (/ index (- (count store) 1))))))
-                                        (- 1 (/ (:presence instant) 500))))))]
-                    [(:id task) (comp-task timestamp task index shift-x)]))))))
-        (comp-debug instant {})))))
+          {:style {:y 40, :x 240}}
+          (button {:style style-button, :event (event-button mutate (:draft state))})))
+      (translate
+        {:style position-body}
+        (group
+          {}
+          (->>
+            store
+            (reverse)
+            (map-indexed
+              (fn [index task]
+                (let [shift-x (max
+                                -40
+                                (min
+                                  0
+                                  (*
+                                    -40
+                                    (+
+                                      (if (= (count store) 1)
+                                        0
+                                        (if (> (:presence-v instant) 0)
+                                          (/ index (- (count store) 1))
+                                          (-
+                                            1
+                                            (if (= index 0)
+                                              0
+                                              (/ index (- (count store) 1))))))
+                                      (- 1 (/ (:presence instant) 500))))))]
+                  [(:id task) (comp-task timestamp task index shift-x)]))))))
+      (comp-debug instant {}))))
 
 (defn init-instant [args state at-place?] {:presence 0, :numb? false, :presence-v 3})
 

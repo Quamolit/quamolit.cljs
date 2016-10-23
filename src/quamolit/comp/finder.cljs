@@ -20,27 +20,26 @@
 (defn init-state [] [card-collection nil])
 
 (defn render [timestamp]
-  (fn [state mutate]
-    (fn [instant tick]
-      (comment .log js/console instant state)
-      (rect
-        {:style {:w 1000, :h 600, :fill-style (hsl 100 40 90)},
-         :event {:click (handle-back mutate)}}
-        (group
-          {}
-          (->>
-            (first state)
-            (map-indexed
-              (fn [index folder]
-                (comment .log js/console folder)
-                (let [ix (mod index 4)
-                      iy (js/Math.floor (/ index 4))
-                      position [(- (* ix 200) 200) (- (* iy 200) 100)]]
-                  [index
-                   (comp-folder folder position mutate index (= index (last state)))])))
-            (filter
-              (fn [entry]
-                (let [[index tree] entry target (last state)]
-                  (if (some? target) (= index target) true))))))))))
+  (fn [state mutate instant tick]
+    (comment .log js/console instant state)
+    (rect
+      {:style {:w 1000, :h 600, :fill-style (hsl 100 40 90)},
+       :event {:click (handle-back mutate)}}
+      (group
+        {}
+        (->>
+          (first state)
+          (map-indexed
+            (fn [index folder]
+              (comment .log js/console folder)
+              (let [ix (mod index 4)
+                    iy (js/Math.floor (/ index 4))
+                    position [(- (* ix 200) 200) (- (* iy 200) 100)]]
+                [index
+                 (comp-folder folder position mutate index (= index (last state)))])))
+          (filter
+            (fn [entry]
+              (let [[index tree] entry target (last state)]
+                (if (some? target) (= index target) true)))))))))
 
 (def comp-finder (create-comp :finder init-state update-state render))

@@ -26,57 +26,52 @@
 (defn init-state [cards position _ index popup?] nil)
 
 (defn render [cards position navigate index popup?]
-  (fn [state mutate]
-    (fn [instant tick]
-      (comment .log js/console state)
-      (let [shift-x (first position)
-            shift-y (last position)
-            popup-ratio (/ (:popup instant) 1000)
-            place-x (* shift-x (- 1 popup-ratio))
-            place-y (* shift-y (- 1 popup-ratio))
-            ratio (+ 0.2 (* 0.8 popup-ratio))
-            bg-light (tween [60 82] [0 1] popup-ratio)]
-        (translate
-          {:style {:y place-y, :x place-x}}
-          (scale
-            {:style {:ratio ratio}}
-            (alpha
-              {:style {:opacity (* 0.6 (/ (:presence instant) 1000))}}
-              (rect
-                {:style {:w 600, :h 400, :fill-style (hsl 0 80 bg-light)},
-                 :event {:click (handle-back navigate index)}}))
-            (group
-              {}
-              (->>
-                cards
-                (map-indexed
-                  (fn [index card-name] [index
-                                         (let [jx (mod index 4)
-                                               jy (js/Math.floor (/ index 4))
-                                               card-x (*
-                                                        (- jx 1.5)
-                                                        (*
-                                                          200
-                                                          (+ 0.1 (* 0.9 popup-ratio))))
-                                               card-y (*
-                                                        (- jy 1.5)
-                                                        (*
-                                                          100
-                                                          (+ 0.1 (* 0.9 popup-ratio))))]
-                                           (comp-file-card
-                                             card-name
-                                             [card-x card-y]
-                                             mutate
-                                             index
-                                             ratio
-                                             (= state index)))]))
-                (filter
-                  (fn [entry]
-                    (let [index (first entry)] (if (some? state) (= index state) true))))))
-            (if (not popup?)
-              (rect
-                {:style {:w 600, :h 400, :fill-style (hsl 0 80 0 0)},
-                 :event {:click (handle-back navigate index)}}))))))))
+  (fn [state mutate instant tick]
+    (comment .log js/console state)
+    (let [shift-x (first position)
+          shift-y (last position)
+          popup-ratio (/ (:popup instant) 1000)
+          place-x (* shift-x (- 1 popup-ratio))
+          place-y (* shift-y (- 1 popup-ratio))
+          ratio (+ 0.2 (* 0.8 popup-ratio))
+          bg-light (tween [60 82] [0 1] popup-ratio)]
+      (translate
+        {:style {:y place-y, :x place-x}}
+        (scale
+          {:style {:ratio ratio}}
+          (alpha
+            {:style {:opacity (* 0.6 (/ (:presence instant) 1000))}}
+            (rect
+              {:style {:w 600, :h 400, :fill-style (hsl 0 80 bg-light)},
+               :event {:click (handle-back navigate index)}}))
+          (group
+            {}
+            (->>
+              cards
+              (map-indexed
+                (fn [index card-name] [index
+                                       (let [jx (mod index 4)
+                                             jy (js/Math.floor (/ index 4))
+                                             card-x (*
+                                                      (- jx 1.5)
+                                                      (* 200 (+ 0.1 (* 0.9 popup-ratio))))
+                                             card-y (*
+                                                      (- jy 1.5)
+                                                      (* 100 (+ 0.1 (* 0.9 popup-ratio))))]
+                                         (comp-file-card
+                                           card-name
+                                           [card-x card-y]
+                                           mutate
+                                           index
+                                           ratio
+                                           (= state index)))]))
+              (filter
+                (fn [entry]
+                  (let [index (first entry)] (if (some? state) (= index state) true))))))
+          (if (not popup?)
+            (rect
+              {:style {:w 600, :h 400, :fill-style (hsl 0 80 0 0)},
+               :event {:click (handle-back navigate index)}})))))))
 
 (defn init-instant [args state at-place?]
   {:popup 0, :presence 0, :popup-v 0, :presence-v 3})

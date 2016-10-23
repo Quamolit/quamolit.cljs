@@ -22,56 +22,50 @@
 (defn init-state [] 0)
 
 (defn render []
-  (fn [state mutate]
-    (fn [instant]
-      (let [n1 (:n instant)]
-        (rect
-          {:style {:w 60, :h 60, :fill-style (hsl 0 0 90)},
-           :event {:click (handle-click mutate)}}
-          (translate
-            {:style {:x -12}}
-            (rotate
-              {:style {:angle (* 90 n1)}}
-              (line
-                {:style
-                 {:stroke-style (hsl 0 80 30),
-                  :y1 0,
-                  :line-width 2,
-                  :y0 0,
-                  :x1 7,
-                  :x0 -7}})
-              (line
-                {:style
-                 {:stroke-style (hsl 0 80 30),
-                  :y1 7,
-                  :line-width 2,
-                  :y0 -7,
-                  :x1 0,
-                  :x0 0}})))
-          (translate
-            {:style {:x 10}}
-            (into
-              (sorted-map)
-              {(+ state 1)
-               (translate
-                 {:style {:y (* -20 (- state n1))}}
-                 (alpha
-                   {:style {:opacity (- (+ 1 n1) state)}}
-                   (text
-                     {:style
-                      {:fill-style (hsl 0 80 30),
-                       :font-family "Wawati SC Regular",
-                       :text (str (+ state 1))}}))),
-               state
-               (translate
-                 {:style {:y (* 20 (- n1 (- state 1)))}}
-                 (alpha
-                   {:style {:opacity (- state n1)}}
-                   (text
-                     {:style
-                      {:fill-style (hsl 0 80 30),
-                       :font-family "Wawati SC Regular",
-                       :text (str state)}})))})))))))
+  (fn [state mutate instant tick]
+    (let [n1 (:n instant)]
+      (rect
+        {:style {:w 60, :h 60, :fill-style (hsl 0 0 90)},
+         :event {:click (handle-click mutate)}}
+        (translate
+          {:style {:x -12}}
+          (rotate
+            {:style {:angle (* 90 n1)}}
+            (line
+              {:style
+               {:stroke-style (hsl 0 80 30), :y1 0, :line-width 2, :y0 0, :x1 7, :x0 -7}})
+            (line
+              {:style
+               {:stroke-style (hsl 0 80 30),
+                :y1 7,
+                :line-width 2,
+                :y0 -7,
+                :x1 0,
+                :x0 0}})))
+        (translate
+          {:style {:x 10}}
+          (into
+            (sorted-map)
+            {(+ state 1)
+             (translate
+               {:style {:y (* -20 (- state n1))}}
+               (alpha
+                 {:style {:opacity (- (+ 1 n1) state)}}
+                 (text
+                   {:style
+                    {:fill-style (hsl 0 80 30),
+                     :font-family "Wawati SC Regular",
+                     :text (str (+ state 1))}}))),
+             state
+             (translate
+               {:style {:y (* 20 (- n1 (- state 1)))}}
+               (alpha
+                 {:style {:opacity (- state n1)}}
+                 (text
+                   {:style
+                    {:fill-style (hsl 0 80 30),
+                     :font-family "Wawati SC Regular",
+                     :text (str state)}})))}))))))
 
 (defn init-instant [args state] {:n state, :n-v 0, :n-target state})
 

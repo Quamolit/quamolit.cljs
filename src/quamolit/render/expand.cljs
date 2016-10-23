@@ -262,8 +262,7 @@
           (let [mutate (build-mutate child-coord)
                 new-shape (-> (:render markup)
                            (apply new-args)
-                           (apply (list new-state mutate))
-                           (apply (list new-instant tick)))
+                           (apply (list new-state mutate new-instant tick)))
                 new-tree (if (= Component (type new-shape))
                            (expand-component
                              new-shape
@@ -308,8 +307,7 @@
             mutate (build-mutate child-coord)
             shape (-> (:render markup)
                    (apply args)
-                   (apply (list state mutate))
-                   (apply (list instant tick)))
+                   (apply (list state mutate instant tick)))
             tree (if (= Component (type shape))
                    (expand-component
                      shape

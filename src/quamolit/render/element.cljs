@@ -8,14 +8,13 @@
 
 (defn render-translate [props & children]
   (let [style (merge {:y 0, :x 0} (:style props))]
-    (fn [state]
-      (fn [instant]
-        (group
-          {}
-          (native-save {})
-          (native-translate (assoc props :style style))
-          (group {} (arrange-children children))
-          (native-restore {}))))))
+    (fn [state mutate! instant tick]
+      (group
+        {}
+        (native-save {})
+        (native-translate (assoc props :style style))
+        (group {} (arrange-children children))
+        (native-restore {})))))
 
 (def translate (create-comp :translate render-translate))
 
@@ -40,39 +39,36 @@
                     :x 0,
                     :font-family "Optima",
                     :text (:text style)}]
-    (fn [state]
-      (fn [instant]
-        (group
-          {}
-          (rect {:style style-bg, :event event-collection})
-          (translate {:style style-place-text} (text {:style style-text})))))))
+    (fn [state mutate! instant tick]
+      (group
+        {}
+        (rect {:style style-bg, :event event-collection})
+        (translate {:style style-place-text} (text {:style style-text}))))))
 
 (defn init-textbox [props] (:text (:style props)))
 
 (def pi-ratio (/ js/Math.PI 180))
 
 (defn render-rotate [props & children]
-  (fn [state]
-    (fn [instant]
-      (let [style (:style props) angle (* pi-ratio (or (:angle style) 30))]
-        (comment .log js/console "actual degree:" angle)
-        (group
-          {}
-          (native-save {})
-          (native-rotate {:style {:angle angle}})
-          (group {} (arrange-children children))
-          (native-restore {}))))))
+  (fn [state mutate! instant tick]
+    (let [style (:style props) angle (* pi-ratio (or (:angle style) 30))]
+      (comment .log js/console "actual degree:" angle)
+      (group
+        {}
+        (native-save {})
+        (native-rotate {:style {:angle angle}})
+        (group {} (arrange-children children))
+        (native-restore {})))))
 
 (defn render-scale [props & children]
   (let [style (merge {:y 0, :x 0} (:style props))]
-    (fn [state]
-      (fn [instant]
-        (group
-          {}
-          (native-save {})
-          (native-scale (assoc props :style style))
-          (group {} (map-indexed vector children))
-          (native-restore {}))))))
+    (fn [state mutate! instant tick]
+      (group
+        {}
+        (native-save {})
+        (native-scale (assoc props :style style))
+        (group {} (map-indexed vector children))
+        (native-restore {})))))
 
 (def scale (create-comp :scale render-scale))
 
@@ -89,23 +85,21 @@
   (fn [event dispatch] (mutate (.-keyCode event) (.-shiftKey event))))
 
 (defn render-textbox [props]
-  (fn [state mutate]
-    (fn [instant tick]
-      (let [style (assoc (:style props) :text state)]
-        (input {:style style, :event {:keydown (handle-keydown mutate)}})))))
+  (fn [state mutate instant tick]
+    (let [style (assoc (:style props) :text state)]
+      (input {:style style, :event {:keydown (handle-keydown mutate)}}))))
 
 (def textbox (create-comp :textbox init-textbox update-textbox render-textbox))
 
 (defn render-alpha [props & children]
   (let [style (merge {:opacity 0.5} (:style props))]
-    (fn [state]
-      (fn [instant]
-        (group
-          {}
-          (native-save {})
-          (native-alpha (assoc props :style style))
-          (group {} (arrange-children children))
-          (native-restore {}))))))
+    (fn [state mutate! instant tick]
+      (group
+        {}
+        (native-save {})
+        (native-alpha (assoc props :style style))
+        (group {} (arrange-children children))
+        (native-restore {})))))
 
 (def alpha (create-comp :alpha render-alpha))
 
@@ -130,12 +124,8 @@
                     :x x,
                     :font-family (or (:font-family style) "Optima"),
                     :text guide-text}]
-    (fn [state]
-      (fn [instant]
-        (group
-          {}
-          (rect {:style style-bg, :event event-button})
-          (text {:style style-text}))))))
+    (fn [state mutate! instant tick]
+      (group {} (rect {:style style-bg, :event event-button}) (text {:style style-text})))))
 
 (def rotate (create-comp :rotate render-rotate))
 

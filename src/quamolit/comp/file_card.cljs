@@ -21,28 +21,26 @@
     (if (= old-popup? popup?) instant (assoc instant :popup-v (if popup? 3 -3)))))
 
 (defn render [card-name position navigate-this index parent-ratio popup?]
-  (fn [state mutate]
-    (fn [instant tick]
-      (let [popup-ratio (/ (:popup instant) 1000)
-            shift-x (first position)
-            shift-y (last position)
-            move-x (* shift-x (+ 0.1 (* 0.9 (- 1 popup-ratio))))
-            move-y (* shift-y (+ 0.1 (* 0.9 (- 1 popup-ratio))))
-            scale-ratio (/ (+ 0.2 (* 0.8 popup-ratio)) parent-ratio)]
-        (translate
-          {:style {}}
-          (alpha
-            {:style {:opacity (/ (:presence instant) 1000)}}
-            (translate
-              {:style {:y move-y, :x move-x}}
-              (scale
-                {:style {:ratio scale-ratio}}
-                (rect
-                  {:style {:w 520, :h 360, :fill-style (hsl 200 80 80)},
-                   :event {:click (handle-click navigate-this index popup?)}}
-                  (text
-                    {:style
-                     {:size 60, :fill-style (hsl 0 0 100), :text card-name}}))))))))))
+  (fn [state mutate instant tick]
+    (let [popup-ratio (/ (:popup instant) 1000)
+          shift-x (first position)
+          shift-y (last position)
+          move-x (* shift-x (+ 0.1 (* 0.9 (- 1 popup-ratio))))
+          move-y (* shift-y (+ 0.1 (* 0.9 (- 1 popup-ratio))))
+          scale-ratio (/ (+ 0.2 (* 0.8 popup-ratio)) parent-ratio)]
+      (translate
+        {:style {}}
+        (alpha
+          {:style {:opacity (/ (:presence instant) 1000)}}
+          (translate
+            {:style {:y move-y, :x move-x}}
+            (scale
+              {:style {:ratio scale-ratio}}
+              (rect
+                {:style {:w 520, :h 360, :fill-style (hsl 200 80 80)},
+                 :event {:click (handle-click navigate-this index popup?)}}
+                (text
+                  {:style {:size 60, :fill-style (hsl 0 0 100), :text card-name}})))))))))
 
 (defn init-instant [] {:popup 0, :presence 0, :numb? false, :popup-v 0, :presence-v 3})
 

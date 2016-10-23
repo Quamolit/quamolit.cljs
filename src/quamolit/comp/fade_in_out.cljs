@@ -13,12 +13,9 @@
 (defn on-update [instant old-args args old-state state] instant)
 
 (defn render [props & children]
-  (fn [state mutate]
-    (fn [instant tick]
-      (comment .log js/console instant)
-      (alpha
-        {:style {:opacity (/ (:presence instant) 1000)}}
-        (map-indexed vector children)))))
+  (fn [state mutate instant tick]
+    (comment .log js/console instant)
+    (alpha {:style {:opacity (/ (:presence instant) 1000)}} (map-indexed vector children))))
 
 (defn init-instant [args state] {:presence 0, :numb? false, :presence-v 3})
 
