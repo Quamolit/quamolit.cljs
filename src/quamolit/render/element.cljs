@@ -1,17 +1,9 @@
 
 (ns quamolit.render.element
   (:require [hsl.core :refer [hsl]]
-            [quamolit.alias :refer [create-comp
-                                    native-translate
-                                    native-alpha
-                                    native-save
-                                    native-restore
-                                    native-rotate
-                                    native-scale
-                                    group
-                                    rect
-                                    text
-                                    arrange-children]]
+            [quamolit.alias :refer [create-comp native-translate native-alpha native-save
+                                    native-restore native-rotate native-scale group rect
+                                    text arrange-children]]
             [quamolit.util.keyboard :refer [keycode->key]]))
 
 (defn render-translate [props & children]
@@ -53,9 +45,7 @@
         (group
           {}
           (rect {:style style-bg, :event event-collection})
-          (translate
-            {:style style-place-text}
-            (text {:style style-text})))))))
+          (translate {:style style-place-text} (text {:style style-text})))))))
 
 (defn init-textbox [props] (:text (:style props)))
 
@@ -64,8 +54,7 @@
 (defn render-rotate [props & children]
   (fn [state]
     (fn [instant]
-      (let [style (:style props)
-            angle (* pi-ratio (or (:angle style) 30))]
+      (let [style (:style props) angle (* pi-ratio (or (:angle style) 30))]
         (comment .log js/console "actual degree:" angle)
         (group
           {}
@@ -92,11 +81,7 @@
   (let [guess (keycode->key keycode shift?)]
     (if (some? guess)
       (str state guess)
-      (case
-        keycode
-        8
-        (if (= state "") "" (subs state 0 (- (count state) 1)))
-        state))))
+      (case keycode 8 (if (= state "") "" (subs state 0 (- (count state) 1))) state))))
 
 (def input (create-comp :input render-input))
 
@@ -107,11 +92,9 @@
   (fn [state mutate]
     (fn [instant tick]
       (let [style (assoc (:style props) :text state)]
-        (input
-          {:style style, :event {:keydown (handle-keydown mutate)}})))))
+        (input {:style style, :event {:keydown (handle-keydown mutate)}})))))
 
-(def textbox
- (create-comp :textbox init-textbox update-textbox render-textbox))
+(def textbox (create-comp :textbox init-textbox update-textbox render-textbox))
 
 (defn render-alpha [props & children]
   (let [style (merge {:opacity 0.5} (:style props))]
@@ -137,8 +120,7 @@
         style-bg {:y y,
                   :w w,
                   :h h,
-                  :fill-style
-                  (or (:surface-color style) (hsl 0 80 80)),
+                  :fill-style (or (:surface-color style) (hsl 0 80 80)),
                   :x x}
         event-button (:event props)
         style-text {:y y,

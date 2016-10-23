@@ -8,8 +8,7 @@
 (defn on-tick [instant tick elapsed]
   (iterate-instant instant :presence :presence-v elapsed [0 1000]))
 
-(defn remove? [instant]
-  (and (= 0 (:presence instant)) (= 0 (:presence-v instant))))
+(defn remove? [instant] (and (= 0 (:presence instant)) (= 0 (:presence-v instant))))
 
 (defn on-update [instant old-args args old-state state] instant)
 
@@ -33,11 +32,4 @@
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
 (def comp-raindrop
- (create-comp
-   :raindrop
-   init-instant
-   on-tick
-   on-update
-   on-unmount
-   remove?
-   render))
+ (create-comp :raindrop init-instant on-tick on-update on-unmount remove? render))

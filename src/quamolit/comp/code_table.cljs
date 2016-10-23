@@ -22,18 +22,14 @@
                            (->>
                              row
                              (map-indexed
-                               (fn 
-                                 [j content]
-                                 [j
-                                  (let 
-                                    [move-x (* i 100) move-y (* j 60)]
-                                    (translate
-                                      {:style {:y move-y, :x move-x}}
-                                      (textbox
-                                        {:style
-                                         {:w 80,
-                                          :h 40,
-                                          :text
-                                          content}})))]))))])))))))
+                               (fn [j content] [j
+                                                (let [move-x (* i 100) move-y (* j 60)]
+                                                  (translate
+                                                    {:style {:y move-y, :x move-x}}
+                                                    (textbox
+                                                      {:style
+                                                       {:w 80,
+                                                        :h 40,
+                                                        :text content}})))]))))])))))))
 
 (def comp-code-table (create-comp :code-table init-state nil render))

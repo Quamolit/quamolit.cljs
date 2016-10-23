@@ -6,12 +6,7 @@
   (set! ctx.fillStyle (or (:fill-style style) (hsl 0 0 0)))
   (set! ctx.textAlign (or (:text-align style) "center"))
   (set! ctx.textBaseline (or (:base-line style) "middle"))
-  (set!
-    ctx.font
-    (str
-      (or (:size style) 20)
-      "px "
-      (or (:font-family style) "Optima")))
+  (set! ctx.font (str (or (:size style) 20) "px " (or (:font-family style) "Optima")))
   (if (contains? style :fill-style)
     (do
       (.fillText
@@ -30,25 +25,17 @@
         (or (:max-width style) 400))))
   eff)
 
-(defn paint-restore [ctx style eff]
-  (.restore ctx)
-  (update eff :alpha-stack rest))
+(defn paint-restore [ctx style eff] (.restore ctx) (update eff :alpha-stack rest))
 
 (defn paint-alpha [ctx style eff]
   (let [inherent-opacity (first (:alpha-stack eff))
         opacity (* inherent-opacity (or (:opacity style) 0.5))]
     (set! ctx.globalAlpha opacity)
-    (update
-      eff
-      :alpha-stack
-      (fn [alpha-stack] (cons opacity (rest alpha-stack))))))
+    (update eff :alpha-stack (fn [alpha-stack] (cons opacity (rest alpha-stack))))))
 
 (defn paint-save [ctx style eff]
   (.save ctx)
-  (update
-    eff
-    :alpha-stack
-    (fn [alpha-stack] (cons ctx.globalAlpha alpha-stack))))
+  (update eff :alpha-stack (fn [alpha-stack] (cons ctx.globalAlpha alpha-stack))))
 
 (def pi-ratio (/ js/Math.PI 180))
 
@@ -65,8 +52,7 @@
         miter-limit (or (:miter-limit style) 8)]
     (.beginPath ctx)
     (.arc ctx x y r s-angle e-angle counterclockwise)
-    (let [caller (aget ctx "addHitRegion")
-          options (clj->js {:id (pr-str coord)})]
+    (let [caller (aget ctx "addHitRegion") options (clj->js {:id (pr-str coord)})]
       (comment .log js/console "hit region" coord (some? caller))
       (if (some? caller) (.call caller ctx options)))
     (if (some? (:fill-style style))
@@ -84,9 +70,7 @@
   (let [ratio (or (:ratio style) 1.2)] (.scale ctx ratio ratio) eff))
 
 (defn paint-translate [ctx style eff]
-  (let [x (or (:x style) 0) y (or (:y style) 0)]
-    (.translate ctx x y)
-    eff))
+  (let [x (or (:x style) 0) y (or (:y style) 0)] (.translate ctx x y) eff))
 
 (defn paint-line [ctx style eff]
   (let [x0 (or (:x0 style) 0)
@@ -118,12 +102,7 @@
         2
         (.lineTo ctx (get coords 0) (get coords 1))
         4
-        (.quadraticCurveTo
-          ctx
-          (get coords 0)
-          (get coords 1)
-          (get coords 2)
-          (get coords 3))
+        (.quadraticCurveTo ctx (get coords 0) (get coords 1) (get coords 2) (get coords 3))
         6
         (.bezierCurveTo
           ctx
@@ -143,10 +122,7 @@
         (set! ctx.milterLimit (or (:milter-limit style) 8))
         (.stroke ctx)))
     (if (contains? style :fill-style)
-      (do
-        (set! ctx.fillStyle (:fill-style style))
-        (.closePath ctx)
-        (.fill ctx)))
+      (do (set! ctx.fillStyle (:fill-style style)) (.closePath ctx) (.fill ctx)))
     eff))
 
 (defonce image-pool (atom {}))
@@ -154,9 +130,7 @@
 (defn get-image [src]
   (if (contains? image-pool src)
     (get image-pool src)
-    (let [image (.createElement js/document "img")]
-      (.setAttribute image "src" src)
-      image)))
+    (let [image (.createElement js/document "img")] (.setAttribute image "src" src) image)))
 
 (defn paint-image [ctx style coord eff]
   (let [sx (or (:sx style) 0)
@@ -179,8 +153,7 @@
         line-width (or (:line-width style) 2)]
     (.beginPath ctx)
     (.rect ctx x y w h)
-    (let [caller (aget ctx "addHitRegion")
-          options (clj->js {:id (pr-str coord)})]
+    (let [caller (aget ctx "addHitRegion") options (clj->js {:id (pr-str coord)})]
       (comment .log js/console "hit region" coord (some? caller))
       (if (some? caller) (.call caller ctx options)))
     (if (contains? style :fill-style)
@@ -232,6 +205,5 @@
     (.save ctx)
     (.translate ctx (/ w 2) (/ h 2))
     (loop [ds directives eff {:alpha-stack (list 1)}]
-      (if (> (count ds) 0)
-        (do (recur (subvec ds 1) (paint-one ctx (first ds) eff)))))
+      (if (> (count ds) 0) (do (recur (subvec ds 1) (paint-one ctx (first ds) eff)))))
     (.restore ctx)))

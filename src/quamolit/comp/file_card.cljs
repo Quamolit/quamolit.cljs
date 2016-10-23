@@ -7,16 +7,8 @@
 
 (defn on-tick [instant tick elapsed]
   (let [new-instant (-> instant
-                     (iterate-instant
-                       :presence
-                       :presence-v
-                       elapsed
-                       [0 1000])
-                     (iterate-instant
-                       :popup
-                       :popup-v
-                       elapsed
-                       [0 1000]))]
+                     (iterate-instant :presence :presence-v elapsed [0 1000])
+                     (iterate-instant :popup :popup-v elapsed [0 1000]))]
     (if (and (< (:presence-v instant) 0) (= (:presence new-instant) 0))
       (assoc new-instant :numb? true)
       new-instant)))
@@ -26,16 +18,9 @@
 
 (defn on-update [instant old-args args old-state state]
   (let [old-popup? (last old-args) popup? (last args)]
-    (if (= old-popup? popup?)
-      instant
-      (assoc instant :popup-v (if popup? 3 -3)))))
+    (if (= old-popup? popup?) instant (assoc instant :popup-v (if popup? 3 -3)))))
 
-(defn render [card-name
-              position
-              navigate-this
-              index
-              parent-ratio
-              popup?]
+(defn render [card-name position navigate-this index parent-ratio popup?]
   (fn [state mutate]
     (fn [instant tick]
       (let [popup-ratio (/ (:popup instant) 1000)
@@ -53,27 +38,15 @@
               (scale
                 {:style {:ratio scale-ratio}}
                 (rect
-                  {:style
-                   {:w 520, :h 360, :fill-style (hsl 200 80 80)},
-                   :event
-                   {:click (handle-click navigate-this index popup?)}}
+                  {:style {:w 520, :h 360, :fill-style (hsl 200 80 80)},
+                   :event {:click (handle-click navigate-this index popup?)}}
                   (text
                     {:style
-                     {:size 60,
-                      :fill-style (hsl 0 0 100),
-                      :text card-name}}))))))))))
+                     {:size 60, :fill-style (hsl 0 0 100), :text card-name}}))))))))))
 
-(defn init-instant []
-  {:popup 0, :presence 0, :numb? false, :popup-v 0, :presence-v 3})
+(defn init-instant [] {:popup 0, :presence 0, :numb? false, :popup-v 0, :presence-v 3})
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
 (def comp-file-card
- (create-comp
-   :file-card
-   init-instant
-   on-tick
-   on-update
-   on-unmount
-   nil
-   render))
+ (create-comp :file-card init-instant on-tick on-update on-unmount nil render))

@@ -7,12 +7,7 @@
 
 (defn on-tick [instant tick elapsed]
   (let [target (:n-target instant)
-        new-instant (-> instant
-                     (iterate-instant
-                       :n
-                       :n-v
-                       elapsed
-                       [target target]))]
+        new-instant (-> instant (iterate-instant :n :n-v elapsed [target target]))]
     new-instant))
 
 (defn update-state [x] (inc x))
@@ -22,9 +17,7 @@
 (defn handle-click [mutate] (fn [event dispatch] (mutate)))
 
 (defn on-update [instant old-args args old-state state]
-  (if (not= old-state state)
-    (assoc instant :n-v 0.004 :n-target state)
-    instant))
+  (if (not= old-state state) (assoc instant :n-v 0.004 :n-target state) instant))
 
 (defn init-state [] 0)
 

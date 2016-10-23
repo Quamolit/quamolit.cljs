@@ -9,14 +9,11 @@
     tree
     (let [first-pos (first coord)]
       (if (= Component (type tree))
-        (if (= first-pos (:name tree))
-          (recur (:tree tree) (subvec coord 1))
-          nil)
+        (if (= first-pos (:name tree)) (recur (:tree tree) (subvec coord 1)) nil)
         (let [picked-pair (->>
                             (:children tree)
                             (filter-first
-                              (fn [child-pair]
-                                (= (first child-pair) first-pos))))
+                              (fn [child-pair] (= (first child-pair) first-pos))))
               picked (if (some? picked-pair) (last picked-pair) nil)]
           (if (some? picked) (recur picked (subvec coord 1)) nil))))))
 
@@ -25,20 +22,10 @@
     (comment .log js/console "target" maybe-target event-name coord)
     (if (nil? maybe-target)
       nil
-      (let [maybe-listener (get-in
-                             maybe-target
-                             [:props :event event-name])]
-        (comment
-          .log
-          js/console
-          "listener"
-          maybe-listener
-          maybe-target)
+      (let [maybe-listener (get-in maybe-target [:props :event event-name])]
+        (comment .log js/console "listener" maybe-listener maybe-target)
         (if (some? maybe-listener)
           maybe-listener
           (if (= 0 (count coord))
             nil
-            (recur
-              tree
-              event-name
-              (subvec coord 0 (- (count coord) 1)))))))))
+            (recur tree event-name (subvec coord 0 (- (count coord) 1)))))))))

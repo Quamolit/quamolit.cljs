@@ -8,8 +8,7 @@
 
 (declare render)
 
-(defn init-state []
-  [(js/Math.random) (js/Math.random) (js/Math.random) (js/Math.random)])
+(defn init-state [] [(js/Math.random) (js/Math.random) (js/Math.random) (js/Math.random)])
 
 (defn render [timestamp level]
   (fn [state mutate]
@@ -21,18 +20,11 @@
             y1-2 -80
             x2 -140
             y2 -100
-            shift-a (*
-                      (+ 0.02 (* 0.001 r1))
-                      (js/Math.sin (/ tick (+ (* r2 100) 800))))
-            shift-b (*
-                      (+ 0.03 (* 0.001 r3))
-                      (js/Math.sin (/ tick (+ 1300 (* 60 r4)))))]
+            shift-a (* (+ 0.02 (* 0.001 r1)) (js/Math.sin (/ tick (+ (* r2 100) 800))))
+            shift-b (* (+ 0.03 (* 0.001 r3)) (js/Math.sin (/ tick (+ 1300 (* 60 r4)))))]
         (group
           {}
-          (path
-            {:style
-             {:stroke-style (hsl 200 80 50),
-              :points [[x1 y1] [0 0] [x2 y2]]}})
+          (path {:style {:stroke-style (hsl 200 80 50), :points [[x1 y1] [0 0] [x2 y2]]}})
           (if (> level 0)
             (translate
               {:style {:y y1, :x x1}}
@@ -50,7 +42,6 @@
                   {:style {:angle (+ (* 50 shift-b) 10)}}
                   (comp-binary-tree timestamp (dec level)))))))))))
 
-(def comp-binary-tree
- (create-comp :binary-tree init-state merge render))
+(def comp-binary-tree (create-comp :binary-tree init-state merge render))
 
 (declare comp-binary-tree)

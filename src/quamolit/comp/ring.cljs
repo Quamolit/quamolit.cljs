@@ -20,12 +20,8 @@
             curve-points (map
                            (fn [x]
                              (let [this-angle (* angle (inc x))
-                                   angle-1
-                                   (+
-                                     (- this-angle rotation angle)
-                                     shift)
-                                   angle-2
-                                   (- (+ this-angle rotation) shift)]
+                                   angle-1 (+ (- this-angle rotation angle) shift)
+                                   angle-2 (- (+ this-angle rotation) shift)]
                                [(* rl (sin angle-1))
                                 (- 0 (* rl (cos angle-1)))
                                 (* rl (sin angle-2))

@@ -5,9 +5,7 @@
 (defn task-toggle [store op-data tick]
   (->>
     store
-    (map
-      (fn [task]
-        (if (= op-data (:id task)) (update task :done? not) task)))
+    (map (fn [task] (if (= op-data (:id task)) (update task :done? not) task)))
     (into [])))
 
 (defn task-rm [store op-data tick]
@@ -17,13 +15,10 @@
   (let [[task-id text] op-data]
     (->>
       store
-      (map
-        (fn [task]
-          (if (= task-id (:id task)) (assoc task :text text) task)))
+      (map (fn [task] (if (= task-id (:id task)) (assoc task :text text) task)))
       (into []))))
 
-(defn task-add [store op-data tick]
-  (conj store (assoc schema/task :id tick :text op-data)))
+(defn task-add [store op-data tick] (conj store (assoc schema/task :id tick :text op-data)))
 
 (defn updater-fn [store op op-data tick]
   (comment .log js/console "store update:" op op-data tick)

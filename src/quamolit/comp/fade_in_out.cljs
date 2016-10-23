@@ -5,12 +5,7 @@
             [quamolit.util.iterate :refer [iterate-instant]]))
 
 (defn on-tick [instant tick elapsed]
-  (let [new-instant (iterate-instant
-                      instant
-                      :presence
-                      :presence-v
-                      elapsed
-                      [0 1000])]
+  (let [new-instant (iterate-instant instant :presence :presence-v elapsed [0 1000])]
     (if (and (< (:presence-v instant) 0) (= (:presence new-instant) 0))
       (assoc new-instant :numb? true)
       new-instant)))
@@ -25,17 +20,9 @@
         {:style {:opacity (/ (:presence instant) 1000)}}
         (map-indexed vector children)))))
 
-(defn init-instant [args state]
-  {:presence 0, :numb? false, :presence-v 3})
+(defn init-instant [args state] {:presence 0, :numb? false, :presence-v 3})
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
 (def comp-fade-in-out
- (create-comp
-   :fade-in-out
-   init-instant
-   on-tick
-   on-update
-   on-unmount
-   nil
-   render))
+ (create-comp :fade-in-out init-instant on-tick on-update on-unmount nil render))

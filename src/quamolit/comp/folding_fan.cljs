@@ -15,9 +15,7 @@
 (defn removable? [instant] true)
 
 (defn on-update [instant old-args old-state args state]
-  (if (not= old-state state)
-    (assoc instant :folding-v (if state 2 -2))
-    instant))
+  (if (not= old-state state) (assoc instant :folding-v (if state 2 -2)) instant))
 
 (defn init-state [] true)
 
@@ -43,10 +41,7 @@
                            {:style
                             {:angle
                              (*
-                               (tween
-                                 [0 6]
-                                 [0 1000]
-                                 (:folding-value instant))
+                               (tween [0 6] [0 1000] (:folding-value instant))
                                (+ 0.5 (- i (/ n 2))))}}
                            (image
                              {:style
@@ -68,8 +63,7 @@
               :text "Toggle"},
              :event {:click (handle-toggle mutate)}}))))))
 
-(defn init-instant [args state]
-  {:folding-v 0, :folding-value (if state 1000 0)})
+(defn init-instant [args state] {:folding-v 0, :folding-value (if state 1000 0)})
 
 (defn on-unmount [instant tick] instant)
 

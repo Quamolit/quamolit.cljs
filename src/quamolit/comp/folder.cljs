@@ -8,16 +8,8 @@
 
 (defn on-tick [instant tick elapsed]
   (let [new-instant (-> instant
-                     (iterate-instant
-                       :presence
-                       :presence-v
-                       elapsed
-                       [0 1000])
-                     (iterate-instant
-                       :popup
-                       :popup-v
-                       elapsed
-                       [0 1000]))]
+                     (iterate-instant :presence :presence-v elapsed [0 1000])
+                     (iterate-instant :popup :popup-v elapsed [0 1000]))]
     (if (and (< (:presence-v instant) 0) (= (:presence new-instant) 0))
       (assoc new-instant :numb? true)
       new-instant)))
@@ -27,12 +19,9 @@
 (defn on-update [instant old-args args old-state state]
   (comment .log js/console "update folder..." args)
   (let [old-popup? (last old-args) popup? (last args)]
-    (if (not= old-popup? popup?)
-      (assoc instant :popup-v (if popup? 3 -3))
-      instant)))
+    (if (not= old-popup? popup?) (assoc instant :popup-v (if popup? 3 -3)) instant)))
 
-(defn handle-back [mutate-navitate index]
-  (fn [event dispatch] (mutate-navitate index)))
+(defn handle-back [mutate-navitate index] (fn [event dispatch] (mutate-navitate index)))
 
 (defn init-state [cards position _ index popup?] nil)
 
@@ -54,8 +43,7 @@
             (alpha
               {:style {:opacity (* 0.6 (/ (:presence instant) 1000))}}
               (rect
-                {:style
-                 {:w 600, :h 400, :fill-style (hsl 0 80 bg-light)},
+                {:style {:w 600, :h 400, :fill-style (hsl 0 80 bg-light)},
                  :event {:click (handle-back navigate index)}}))
             (group
               {}
@@ -63,30 +51,18 @@
                 cards
                 (map-indexed
                   (fn [index card-name] [index
-                                         (let 
-                                           [jx (mod index 4)
-                                            jy
-                                            (js/Math.floor (/ index 4))
-                                            card-x
-                                            (*
-                                              (- jx 1.5)
-                                              (*
-                                                200
-                                                (+
-                                                  0.1
-                                                  (*
-                                                    0.9
-                                                    popup-ratio))))
-                                            card-y
-                                            (*
-                                              (- jy 1.5)
-                                              (*
-                                                100
-                                                (+
-                                                  0.1
-                                                  (*
-                                                    0.9
-                                                    popup-ratio))))]
+                                         (let [jx (mod index 4)
+                                               jy (js/Math.floor (/ index 4))
+                                               card-x (*
+                                                        (- jx 1.5)
+                                                        (*
+                                                          200
+                                                          (+ 0.1 (* 0.9 popup-ratio))))
+                                               card-y (*
+                                                        (- jy 1.5)
+                                                        (*
+                                                          100
+                                                          (+ 0.1 (* 0.9 popup-ratio))))]
                                            (comp-file-card
                                              card-name
                                              [card-x card-y]
@@ -96,8 +72,7 @@
                                              (= state index)))]))
                 (filter
                   (fn [entry]
-                    (let [index (first entry)]
-                      (if (some? state) (= index state) true))))))
+                    (let [index (first entry)] (if (some? state) (= index state) true))))))
             (if (not popup?)
               (rect
                 {:style {:w 600, :h 400, :fill-style (hsl 0 80 0 0)},

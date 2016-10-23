@@ -30,18 +30,13 @@
 (defn render []
   (fn [state mutate]
     (fn [instant]
-      (let [tw (fn [a0 a1]
-                 (tween [a0 a1] [0 1] (:play-value instant)))]
+      (let [tw (fn [a0 a1] (tween [a0 a1] [0 1] (:play-value instant)))]
         (rect
           {:style {:w 60, :h 60, :fill-style (hsl 40 80 90)},
            :event {:click (handle-click mutate)}}
           (path
             {:style
-             {:points
-              [[-20 -20]
-               [-20 20]
-               [(tw -5 0) (tw 20 10)]
-               [(tw -5 0) (tw -20 -10)]],
+             {:points [[-20 -20] [-20 20] [(tw -5 0) (tw 20 10)] [(tw -5 0) (tw -20 -10)]],
               :fill-style (hsl 120 50 60)}})
           (path
             {:style
@@ -54,8 +49,7 @@
           (comment comp-debug instant {}))))))
 
 (defn init-instant [args state]
-  (let [value (if true 1 0)]
-    {:play-value value, :play-v 0, :play-target value}))
+  (let [value (if true 1 0)] {:play-value value, :play-v 0, :play-target value}))
 
 (defn on-unmount [instant tick] instant)
 

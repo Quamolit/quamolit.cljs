@@ -8,31 +8,11 @@
 (defn on-tick [instant tick elapsed]
   (let [fading? (< (:presence-v instant) 0)
         new-instant (-> instant
-                     (iterate-instant
-                       :presence
-                       :presence-v
-                       elapsed
-                       [0 1])
-                     (iterate-instant
-                       :x0
-                       :x0-v
-                       elapsed
-                       (repeat 2 (:x0-target instant)))
-                     (iterate-instant
-                       :y0
-                       :y0-v
-                       elapsed
-                       (repeat 2 (:y0-target instant)))
-                     (iterate-instant
-                       :x1
-                       :x1-v
-                       elapsed
-                       (repeat 2 (:x1-target instant)))
-                     (iterate-instant
-                       :y1
-                       :y1-v
-                       elapsed
-                       (repeat 2 (:y1-target instant))))]
+                     (iterate-instant :presence :presence-v elapsed [0 1])
+                     (iterate-instant :x0 :x0-v elapsed (repeat 2 (:x0-target instant)))
+                     (iterate-instant :y0 :y0-v elapsed (repeat 2 (:y0-target instant)))
+                     (iterate-instant :x1 :x1-v elapsed (repeat 2 (:x1-target instant)))
+                     (iterate-instant :y1 :y1-v elapsed (repeat 2 (:y1-target instant))))]
     (if (and fading? (= 0 (:presence new-instant)))
       (assoc new-instant :numb? true)
       new-instant)))
@@ -94,15 +74,7 @@
   (comment .log js/console "stroke unmount")
   (assoc instant :presence-v -0.003 :numb? false))
 
-(def comp-stroke
- (create-comp
-   :stroke
-   init-instant
-   on-tick
-   on-update
-   on-unmount
-   nil
-   render))
+(def comp-stroke (create-comp :stroke init-instant on-tick on-update on-unmount nil render))
 
 (defn render-3 [props]
   (fn [state mutate]
@@ -166,11 +138,7 @@
 
 (defn render-1 [props]
   (fn [state mutate]
-    (fn [instant]
-      (translate
-        props
-        (comp-stroke 40 0 40 40)
-        (comp-stroke 40 40 40 80)))))
+    (fn [instant] (translate props (comp-stroke 40 0 40 40) (comp-stroke 40 40 40 80)))))
 
 (def comp-1 (create-comp :one render-1))
 

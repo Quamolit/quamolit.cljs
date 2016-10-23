@@ -5,8 +5,7 @@
             [quamolit.util.time :refer [get-tick]]
             [quamolit.render.flatten :refer [flatten-tree]]
             [quamolit.render.paint :refer [paint]]
-            [quamolit.controller.resolve :refer [resolve-target
-                                                 locate-target]]))
+            [quamolit.controller.resolve :refer [resolve-target locate-target]]))
 
 (defonce tree-ref (atom nil))
 
@@ -19,15 +18,12 @@
       (comment .log js/console "coord:" coord)
       (comment .log js/console "states-ref" @states-ref)
       (comment .log js/console "old-state" (get @states-ref coord))
-      (let [component (locate-target
-                        @tree-ref
-                        (subvec coord 0 (- (count coord) 1)))
+      (let [component (locate-target @tree-ref (subvec coord 0 (- (count coord) 1)))
             state-path (conj coord 'data)
             maybe-state (get-in @states-ref state-path)
             old-state (if (some? maybe-state)
                         maybe-state
-                        (let [init-state (:init-state component)
-                              args (:args component)]
+                        (let [init-state (:init-state component) args (:args component)]
                           (apply init-state args)))
             update-state (:update-state component)
             new-state (apply update-state (cons old-state state-args))
@@ -67,11 +63,7 @@
     (reset! tick-ref new-tick)
     (call-paint directives target)
     (comment .log js/console "tree" tree)
-    (comment
-      doall
-      (map
-        (fn [d] (.log js/console "directives" (pr-str d)))
-        directives))))
+    (comment doall (map (fn [d] (.log js/console "directives" (pr-str d))) directives))))
 
 (defonce focus-ref (atom []))
 
@@ -82,14 +74,7 @@
 
 (defn handle-event [coord event-name event dispatch]
   (let [maybe-listener (resolve-target @tree-ref event-name coord)]
-    (comment
-      .log
-      js.console
-      "handle event"
-      maybe-listener
-      coord
-      event-name
-      @tree-ref)
+    (comment .log js.console "handle event" maybe-listener coord event-name @tree-ref)
     (if (some? maybe-listener)
       (do (.preventDefault event) (maybe-listener event dispatch))
       (comment .log js/console "no target"))))
@@ -110,15 +95,10 @@
     (.addEventListener
       root-element
       "keypress"
-      (fn [event]
-        (let [coord @focus-ref]
-          (handle-event coord :keypress event dispatch))))
+      (fn [event] (let [coord @focus-ref] (handle-event coord :keypress event dispatch))))
     (.addEventListener
       root-element
       "keydown"
-      (fn [event]
-        (let [coord @focus-ref]
-          (handle-event coord :keydown event dispatch))))
+      (fn [event] (let [coord @focus-ref] (handle-event coord :keydown event dispatch))))
     (if (nil? (aget ctx "addHitRegion"))
-      (js/alert
-        "You need to enable experimental canvas features to view this app"))))
+      (js/alert "You need to enable experimental canvas features to view this app"))))

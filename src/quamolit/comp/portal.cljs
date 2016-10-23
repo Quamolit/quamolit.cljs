@@ -24,8 +24,7 @@
         {}
         (button
           {:style (style-button 0 0 "Todolist" (hsl 0 120 60)),
-           :event
-           {:click (handle-navigate mutate-navigate :todolist)}})
+           :event {:click (handle-navigate mutate-navigate :todolist)}})
         (button
           {:style (style-button 1 0 "Clock" (hsl 300 80 80)),
            :event {:click (handle-navigate mutate-navigate :clock)}})
@@ -34,12 +33,10 @@
            :event {:click (handle-navigate mutate-navigate :solar)}})
         (button
           {:style (style-button 3 0 "Binary Tree" (hsl 140 20 30)),
-           :event
-           {:click (handle-navigate mutate-navigate :binary-tree)}})
+           :event {:click (handle-navigate mutate-navigate :binary-tree)}})
         (button
           {:style (style-button 0 1 "Table" (hsl 340 80 80)),
-           :event
-           {:click (handle-navigate mutate-navigate :code-table)}})
+           :event {:click (handle-navigate mutate-navigate :code-table)}})
         (button
           {:style (style-button 1 1 "Finder" (hsl 60 80 45)),
            :event {:click (handle-navigate mutate-navigate :finder)}})
@@ -54,7 +51,6 @@
            :event {:click (handle-navigate mutate-navigate :curve)}})
         (button
           {:style (style-button 1 2 "Folding fan" (hsl 200 80 80)),
-           :event
-           {:click (handle-navigate mutate-navigate :folding-fan)}})))))
+           :event {:click (handle-navigate mutate-navigate :folding-fan)}})))))
 
 (def comp-portal (create-comp :portal render))

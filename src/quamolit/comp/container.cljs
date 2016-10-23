@@ -38,63 +38,38 @@
       (comment .log js/console state)
       (group
         {:style {}}
-        (if (= state :portal)
-          (comp-fade-in-out {} (comp-portal mutate)))
+        (if (= state :portal) (comp-fade-in-out {} (comp-portal mutate)))
         (if (= state :todolist) (comp-todolist timestamp store))
         (if (= state :clock)
-          (comp-fade-in-out
-            {}
-            (translate {:style {:y 0, :x 0}} (comp-clock timestamp))))
+          (comp-fade-in-out {} (translate {:style {:y 0, :x 0}} (comp-clock timestamp))))
         (if (= state :solar)
-          (comp-fade-in-out
-            {}
-            (translate
-              {:style {:y 0, :x 0}}
-              (comp-solar timestamp 8))))
+          (comp-fade-in-out {} (translate {:style {:y 0, :x 0}} (comp-solar timestamp 8))))
         (if (= state :binary-tree)
           (comp-fade-in-out
             {}
-            (translate
-              {:style {:y 240, :x 0}}
-              (comp-binary-tree timestamp 5))))
+            (translate {:style {:y 240, :x 0}} (comp-binary-tree timestamp 5))))
         (if (= state :code-table)
-          (comp-fade-in-out
-            {}
-            (translate {:style {:y 40, :x 0}} (comp-code-table))))
+          (comp-fade-in-out {} (translate {:style {:y 40, :x 0}} (comp-code-table))))
         (if (= state :finder)
-          (comp-fade-in-out
-            {}
-            (translate
-              {:style {:y 40, :x 0}}
-              (comp-finder timestamp))))
+          (comp-fade-in-out {} (translate {:style {:y 40, :x 0}} (comp-finder timestamp))))
         (if (= state :raining)
           (comp-fade-in-out
             {}
-            (translate
-              {:style {:y 40, :x 0}}
-              (comp-raining timestamp))))
+            (translate {:style {:y 40, :x 0}} (comp-raining timestamp))))
         (if (= state :icons)
           (comp-fade-in-out
             {}
-            (translate
-              {:style {:y 40, :x 0}}
-              (comp-icons-table timestamp))))
+            (translate {:style {:y 40, :x 0}} (comp-icons-table timestamp))))
         (if (= state :curve)
-          (comp-fade-in-out
-            {}
-            (translate {:style {:y 40, :x 0}} (comp-ring timestamp))))
+          (comp-fade-in-out {} (translate {:style {:y 40, :x 0}} (comp-ring timestamp))))
         (if (= state :folding-fan)
-          (comp-fade-in-out
-            {}
-            (translate {:style {:y 40, :x 0}} (comp-folding-fan))))
+          (comp-fade-in-out {} (translate {:style {:y 40, :x 0}} (comp-folding-fan))))
         (if (not= state :portal)
           (comp-fade-in-out
             {}
             (translate
               {:style {:y -140, :x -400}}
               (button
-                {:style (style-button "Back"),
-                 :event {:click (handle-back mutate)}}))))))))
+                {:style (style-button "Back"), :event {:click (handle-back mutate)}}))))))))
 
-(def comp-container
- (create-comp :container init-state update-state render))
+(def comp-container (create-comp :container init-state update-state render))

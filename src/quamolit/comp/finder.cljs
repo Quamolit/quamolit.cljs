@@ -37,12 +37,7 @@
                       iy (js/Math.floor (/ index 4))
                       position [(- (* ix 200) 200) (- (* iy 200) 100)]]
                   [index
-                   (comp-folder
-                     folder
-                     position
-                     mutate
-                     index
-                     (= index (last state)))])))
+                   (comp-folder folder position mutate index (= index (last state)))])))
             (filter
               (fn [entry]
                 (let [[index tree] entry target (last state)]

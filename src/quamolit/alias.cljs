@@ -8,32 +8,23 @@
     (if (and
           (= (count children) 1)
           (not
-            (or
-              (= Component (type (first children)))
-              (= Shape (type (first children))))))
+            (or (= Component (type (first children))) (= Shape (type (first children))))))
       (first children)
-      (->>
-        children
-        (map-indexed vector)
-        (filter (fn [entry] (some? (val entry))))))))
+      (->> children (map-indexed vector) (filter (fn [entry] (some? (val entry))))))))
 
 (defn create-shape [shape-name props children]
-  (if (not (map? props))
-    (throw (js/Error. "Props expeced to be a map!")))
+  (if (not (map? props)) (throw (js/Error. "Props expeced to be a map!")))
   (Shape. shape-name props (arrange-children children)))
 
-(defn native-rotate [props & children]
-  (create-shape :native-rotate props children))
+(defn native-rotate [props & children] (create-shape :native-rotate props children))
 
 (defn default-init-state [& args] {})
 
-(defn native-translate [props & children]
-  (create-shape :native-translate props children))
+(defn native-translate [props & children] (create-shape :native-translate props children))
 
 (defn default-on-unmount [instant tick] (assoc instant :numb? true))
 
-(defn native-clip [props & children]
-  (create-shape :native-clip props children))
+(defn native-clip [props & children] (create-shape :native-clip props children))
 
 (defn group [props & children] (create-shape :group props children))
 
@@ -41,8 +32,7 @@
 
 (defn path [props & children] (create-shape :path props children))
 
-(defn native-transform [props & children]
-  (create-shape :native-transform props children))
+(defn native-transform [props & children] (create-shape :native-transform props children))
 
 (defn default-on-update [instant old-args args old-state state] instant)
 
@@ -53,19 +43,9 @@
 (defn default-on-tick [instant tick elapsed] instant)
 
 (defn create-comp
-  ([comp-name render]
-    (create-comp comp-name nil nil nil nil nil nil nil render))
+  ([comp-name render] (create-comp comp-name nil nil nil nil nil nil nil render))
   ([comp-name init-state update-state render]
-    (create-comp
-      comp-name
-      init-state
-      update-state
-      nil
-      nil
-      nil
-      nil
-      nil
-      render))
+    (create-comp comp-name init-state update-state nil nil nil nil nil render))
   ([comp-name init-instant on-tick on-update on-unmount remove? render]
     (create-comp
       comp-name
@@ -104,11 +84,9 @@
         nil
         false))))
 
-(defn native-alpha [props & children]
-  (create-shape :native-alpha props children))
+(defn native-alpha [props & children] (create-shape :native-alpha props children))
 
-(defn native-save [props & children]
-  (create-shape :native-save props children))
+(defn native-save [props & children] (create-shape :native-save props children))
 
 (defn bezier [props & children] (create-shape :bezier props children))
 
@@ -118,10 +96,8 @@
 
 (defn line [props & children] (create-shape :line props children))
 
-(defn native-scale [props & children]
-  (create-shape :native-scale props children))
+(defn native-scale [props & children] (create-shape :native-scale props children))
 
-(defn native-restore [props & children]
-  (create-shape :native-restore props children))
+(defn native-restore [props & children] (create-shape :native-restore props children))
 
 (defn rect [props & children] (create-shape :rect props children))

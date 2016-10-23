@@ -44,11 +44,4 @@
 (defn on-unmount [instant tick] instant)
 
 (def comp-raining
- (create-comp
-   :raining
-   init-instant
-   on-tick
-   on-update
-   on-unmount
-   remove?
-   render))
+ (create-comp :raining init-instant on-tick on-update on-unmount remove? render))

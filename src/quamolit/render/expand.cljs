@@ -14,16 +14,12 @@
 (defn contain-markups? [items]
   (let [result (some
                  (fn [item]
-                   (if (or
-                         (= Component (type item))
-                         (= Shape (type item)))
+                   (if (or (= Component (type item)) (= Shape (type item)))
                      true
                      (if (and (map? item) (> (count item) 0))
                        (some
                          (fn [child]
-                           (or
-                             (= Component (type child))
-                             (= Shape (type child))))
+                           (or (= Component (type child)) (= Shape (type child))))
                          (vals item))
                        false)))
                  items)]
@@ -48,20 +44,16 @@
                            (let [child-key (first child)
                                  child-markup (last child)
                                  child-coord (conj coord child-key)
-                                 old-child-pair
-                                 (->>
-                                   old-children
-                                   (filter-first
-                                     (fn 
-                                       [pair]
-                                       (identical?
-                                         (first pair)
-                                         child-key))))
-                                 old-child-tree
-                                 (if
-                                   (some? old-child-pair)
-                                   (last old-child-pair)
-                                   nil)
+                                 old-child-pair (->>
+                                                  old-children
+                                                  (filter-first
+                                                    (fn [pair]
+                                                      (identical?
+                                                        (first pair)
+                                                        child-key))))
+                                 old-child-tree (if (some? old-child-pair)
+                                                  (last old-child-pair)
+                                                  nil)
                                  child-state (get states child-key)]
                              [child-key
                               (if (= (type child-markup) Component)
@@ -95,22 +87,8 @@
                               at-place?
                               tick
                               elapsed)]
-        (assoc
-          markup
-          :coord
-          coord
-          :c-coord
-          c-coord
-          :children
-          merged-children))
-      (assoc
-        markup
-        :children
-        new-children
-        :coord
-        coord
-        :c-coord
-        c-coord))))
+        (assoc markup :coord coord :c-coord c-coord :children merged-children))
+      (assoc markup :children new-children :coord coord :c-coord c-coord))))
 
 (defn merge-children [acc
                       old-children
@@ -127,147 +105,125 @@
         new-cursor (first new-children)]
     (cond
       (and (= old-n 0) (= new-n 0)) acc
-      (and
-        (> old-n 0)
-        (> new-n 0)
-        (= (key old-cursor) (key new-cursor))) (recur
-                                                 (conj
-                                                   acc
-                                                   [(key new-cursor)
-                                                    (val new-cursor)])
-                                                 (subvec
-                                                   old-children
-                                                   1)
-                                                 (subvec
-                                                   new-children
-                                                   1)
-                                                 coord
-                                                 states
-                                                 build-mutate
-                                                 at-place?
-                                                 tick
-                                                 elapsed)
+      (and (> old-n 0) (> new-n 0) (= (key old-cursor) (key new-cursor))) (recur
+                                                                            (conj
+                                                                              acc
+                                                                              [(key
+                                                                                 new-cursor)
+                                                                               (val
+                                                                                 new-cursor)])
+                                                                            (subvec
+                                                                              old-children
+                                                                              1)
+                                                                            (subvec
+                                                                              new-children
+                                                                              1)
+                                                                            coord
+                                                                            states
+                                                                            build-mutate
+                                                                            at-place?
+                                                                            tick
+                                                                            elapsed)
       (and
         (> new-n 0)
         (or
           (= old-n 0)
-          (and
-            (> old-n 0)
-            (= 1 (compare (key old-cursor) (key new-cursor)))))) (let 
-                                                                   [child-key
-                                                                    (first
-                                                                      new-cursor)
-                                                                    child
-                                                                    (last
-                                                                      new-cursor)
-                                                                    new-acc
-                                                                    (conj
-                                                                      acc
-                                                                      [child-key
-                                                                       child])]
-                                                                   (recur
-                                                                     new-acc
-                                                                     old-children
-                                                                     (subvec
-                                                                       new-children
-                                                                       1)
-                                                                     coord
-                                                                     states
-                                                                     build-mutate
-                                                                     at-place?
-                                                                     tick
-                                                                     elapsed))
+          (and (> old-n 0) (= 1 (compare (key old-cursor) (key new-cursor)))))) (let [child-key (first
+                                                                                                  new-cursor)
+                                                                                      child (last
+                                                                                              new-cursor)
+                                                                                      new-acc (conj
+                                                                                                acc
+                                                                                                [child-key
+                                                                                                 child])]
+                                                                                  (recur
+                                                                                    new-acc
+                                                                                    old-children
+                                                                                    (subvec
+                                                                                      new-children
+                                                                                      1)
+                                                                                    coord
+                                                                                    states
+                                                                                    build-mutate
+                                                                                    at-place?
+                                                                                    tick
+                                                                                    elapsed))
       (and
         (> old-n 0)
         (or
           (= new-n 0)
-          (and
-            (> new-n 0)
-            (= -1 (compare (key old-cursor) (key new-cursor)))))) (let 
-                                                                    [child-key
-                                                                     (first
-                                                                       old-cursor)
-                                                                     child
-                                                                     (last
-                                                                       old-cursor)
-                                                                     component?
-                                                                     (=
-                                                                       Component
-                                                                       (type
-                                                                         child))
-                                                                     child-coord
-                                                                     (conj
-                                                                       coord
-                                                                       child-key)
-                                                                     new-acc
-                                                                     (if
-                                                                       component?
-                                                                       (if
-                                                                         (:fading?
-                                                                           child)
-                                                                         (if
-                                                                           (let 
-                                                                             [remove?
-                                                                              (:remove?
-                                                                                child)]
-                                                                             (remove?
-                                                                               (:instant
-                                                                                 child)))
-                                                                           acc
-                                                                           (conj
-                                                                             acc
-                                                                             [child-key
-                                                                              (expand-component
-                                                                                child
-                                                                                child
-                                                                                child-coord
-                                                                                states
-                                                                                build-mutate
-                                                                                at-place?
-                                                                                tick
-                                                                                elapsed)]))
-                                                                         (let 
-                                                                           [old-instant
-                                                                            (:instant
-                                                                              child)
-                                                                            on-unmount
-                                                                            (:on-unmount
-                                                                              child)
-                                                                            new-instant
-                                                                            (on-unmount
-                                                                              old-instant)]
-                                                                           (conj
-                                                                             acc
-                                                                             [child-key
-                                                                              (assoc
-                                                                                child
-                                                                                :instant
-                                                                                new-instant
-                                                                                :fading?
-                                                                                true)])))
-                                                                       acc)]
-                                                                    (recur
-                                                                      new-acc
-                                                                      (subvec
-                                                                        old-children
-                                                                        1)
-                                                                      new-children
-                                                                      coord
-                                                                      states
-                                                                      build-mutate
-                                                                      at-place?
-                                                                      tick
-                                                                      elapsed))
+          (and (> new-n 0) (= -1 (compare (key old-cursor) (key new-cursor)))))) (let [child-key (first
+                                                                                                   old-cursor)
+                                                                                       child (last
+                                                                                               old-cursor)
+                                                                                       component? (=
+                                                                                                    Component
+                                                                                                    (type
+                                                                                                      child))
+                                                                                       child-coord (conj
+                                                                                                     coord
+                                                                                                     child-key)
+                                                                                       new-acc (if
+                                                                                                 component?
+                                                                                                 (if
+                                                                                                   (:fading?
+                                                                                                     child)
+                                                                                                   (if
+                                                                                                     (let 
+                                                                                                       [remove?
+                                                                                                        (:remove?
+                                                                                                          child)]
+                                                                                                       (remove?
+                                                                                                         (:instant
+                                                                                                           child)))
+                                                                                                     acc
+                                                                                                     (conj
+                                                                                                       acc
+                                                                                                       [child-key
+                                                                                                        (expand-component
+                                                                                                          child
+                                                                                                          child
+                                                                                                          child-coord
+                                                                                                          states
+                                                                                                          build-mutate
+                                                                                                          at-place?
+                                                                                                          tick
+                                                                                                          elapsed)]))
+                                                                                                   (let 
+                                                                                                     [old-instant
+                                                                                                      (:instant
+                                                                                                        child)
+                                                                                                      on-unmount
+                                                                                                      (:on-unmount
+                                                                                                        child)
+                                                                                                      new-instant
+                                                                                                      (on-unmount
+                                                                                                        old-instant)]
+                                                                                                     (conj
+                                                                                                       acc
+                                                                                                       [child-key
+                                                                                                        (assoc
+                                                                                                          child
+                                                                                                          :instant
+                                                                                                          new-instant
+                                                                                                          :fading?
+                                                                                                          true)])))
+                                                                                                 acc)]
+                                                                                   (recur
+                                                                                     new-acc
+                                                                                     (subvec
+                                                                                       old-children
+                                                                                       1)
+                                                                                     new-children
+                                                                                     coord
+                                                                                     states
+                                                                                     build-mutate
+                                                                                     at-place?
+                                                                                     tick
+                                                                                     elapsed))
       :else acc)))
 
-(defn expand-component [markup
-                        old-tree
-                        coord
-                        states
-                        build-mutate
-                        at-place?
-                        tick
-                        elapsed]
+(defn expand-component [markup old-tree coord states build-mutate at-place? tick elapsed]
   (let [child-coord (conj coord (:name markup))
         existed? (some? old-tree)
         state-tree (get states (:name markup))]
@@ -388,20 +344,8 @@
           tree)))))
 
 (defn expand-app [markup old-tree states build-mutate tick elapsed]
-  (comment
-    .log
-    js/console
-    "caches:"
-    (map first (map key @comp-caches)))
+  (comment .log js/console "caches:" (map first (map key @comp-caches)))
   (let [initial-coord []]
-    (expand-component
-      markup
-      old-tree
-      initial-coord
-      states
-      build-mutate
-      true
-      tick
-      elapsed)))
+    (expand-component markup old-tree initial-coord states build-mutate true tick elapsed)))
 
 (declare expand-component)
