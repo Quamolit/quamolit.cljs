@@ -4,7 +4,7 @@
             [quamolit.alias :refer [create-comp rect text group]]
             [quamolit.render.element :refer [translate scale alpha]]
             [quamolit.util.iterate :refer [iterate-instant tween]]
-            [quamolit.comp.file-card :refer [component-file-card]]))
+            [quamolit.comp.file-card :refer [comp-file-card]]))
 
 (defn on-tick [instant tick elapsed]
   (let [new-instant (-> instant
@@ -87,7 +87,7 @@
                                                   (*
                                                     0.9
                                                     popup-ratio))))]
-                                           (component-file-card
+                                           (comp-file-card
                                              card-name
                                              [card-x card-y]
                                              mutate
@@ -108,7 +108,7 @@
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
-(def component-folder
+(def comp-folder
  (create-comp
    :folder
    init-state

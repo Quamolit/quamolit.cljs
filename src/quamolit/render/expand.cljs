@@ -392,7 +392,7 @@
     .log
     js/console
     "caches:"
-    (map first (map key @component-caches)))
+    (map first (map key @comp-caches)))
   (let [initial-coord []]
     (expand-component
       markup

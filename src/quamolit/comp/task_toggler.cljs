@@ -40,7 +40,7 @@
   (let [done? (first args)]
     {:numb? true, :done-value (if done? 0 1000), :done-velocity 0}))
 
-(def component-toggler
+(def comp-toggler
  (create-comp
    :task-toggler
    nil

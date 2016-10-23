@@ -53,11 +53,11 @@
 (defn default-on-tick [instant tick elapsed] instant)
 
 (defn create-comp
-  ([component-name render]
-    (create-comp component-name nil nil nil nil nil nil nil render))
-  ([component-name init-state update-state render]
+  ([comp-name render]
+    (create-comp comp-name nil nil nil nil nil nil nil render))
+  ([comp-name init-state update-state render]
     (create-comp
-      component-name
+      comp-name
       init-state
       update-state
       nil
@@ -66,15 +66,9 @@
       nil
       nil
       render))
-  ([component-name
-    init-instant
-    on-tick
-    on-update
-    on-unmount
-    remove?
-    render]
+  ([comp-name init-instant on-tick on-update on-unmount remove? render]
     (create-comp
-      component-name
+      comp-name
       nil
       nil
       init-instant
@@ -83,7 +77,7 @@
       on-unmount
       remove?
       render))
-  ([component-name
+  ([comp-name
     init-state
     update-state
     init-instant
@@ -94,7 +88,7 @@
     render]
     (fn [& args]
       (Component.
-        component-name
+        comp-name
         nil
         args
         nil

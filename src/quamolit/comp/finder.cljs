@@ -2,7 +2,7 @@
 (ns quamolit.comp.finder
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect group]]
-            [quamolit.comp.folder :refer [component-folder]]))
+            [quamolit.comp.folder :refer [comp-folder]]))
 
 (defn update-state [state target]
   (comment .log js/console state target)
@@ -37,7 +37,7 @@
                       iy (js/Math.floor (/ index 4))
                       position [(- (* ix 200) 200) (- (* iy 200) 100)]]
                   [index
-                   (component-folder
+                   (comp-folder
                      folder
                      position
                      mutate
@@ -48,5 +48,4 @@
                 (let [[index tree] entry target (last state)]
                   (if (some? target) (= index target) true))))))))))
 
-(def component-finder
- (create-comp :finder init-state update-state render))
+(def comp-finder (create-comp :finder init-state update-state render))

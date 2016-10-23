@@ -57,4 +57,4 @@
            :event
            {:click (handle-navigate mutate-navigate :folding-fan)}})))))
 
-(def component-portal (create-comp :portal render))
+(def comp-portal (create-comp :portal render))

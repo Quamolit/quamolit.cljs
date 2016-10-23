@@ -4,7 +4,7 @@
             [quamolit.alias :refer [create-comp group rect]]
             [quamolit.render.element :refer [translate alpha input]]
             [quamolit.util.iterate :refer [iterate-instant]]
-            [quamolit.comp.task-toggler :refer [component-toggler]]
+            [quamolit.comp.task-toggler :refer [comp-toggler]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn on-tick [instant tick elapsed]
@@ -68,7 +68,7 @@
           {:style {:opacity (/ (:presence instant) 1000)}}
           (translate
             {:style {:x -200}}
-            (component-toggler (:done? task) (:id task)))
+            (comp-toggler (:done? task) (:id task)))
           (input
             {:style (style-input (:text task)),
              :event {:click (handle-input (:id task) (:text task))}})
@@ -93,7 +93,7 @@
   (comment .log js/console "calling unmount" instant)
   (assoc instant :presence-velocity -3 :left-velocity -0.09))
 
-(def component-task
+(def comp-task
  (create-comp
    :task
    nil

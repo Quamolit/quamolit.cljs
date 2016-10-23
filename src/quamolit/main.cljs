@@ -1,6 +1,6 @@
 
 (ns quamolit.main
-  (:require [quamolit.comp.container :refer [container-component]]
+  (:require [quamolit.comp.container :refer [comp-container]]
             [quamolit.core :refer [render-page
                                    configure-canvas
                                    setup-events]]
@@ -17,7 +17,7 @@
 (defn render-loop [timestamp]
   (let [target (.querySelector js/document "#app")]
     (render-page
-      (container-component timestamp @store-ref)
+      (comp-container timestamp @store-ref)
       states-ref
       target)
     (reset! loop-ref (js/requestAnimationFrame render-loop))))

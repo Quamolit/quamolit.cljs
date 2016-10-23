@@ -6,7 +6,7 @@
                                              button
                                              input
                                              alpha]]
-            [quamolit.comp.task :refer [component-task]]
+            [quamolit.comp.task :refer [comp-task]]
             [quamolit.util.iterate :refer [iterate-instant tween]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
@@ -103,11 +103,7 @@
                                             (:presence instant)
                                             500))))))]
                     [(:id task)
-                     (component-task
-                       timestamp
-                       task
-                       index
-                       shift-x)]))))))
+                     (comp-task timestamp task index shift-x)]))))))
         (comp-debug instant {})))))
 
 (defn init-instant [args state at-place?]
@@ -115,7 +111,7 @@
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
-(def component-todolist
+(def comp-todolist
  (create-comp
    :todolist
    init-state

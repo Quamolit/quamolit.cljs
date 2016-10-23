@@ -36,5 +36,4 @@
                                           :text
                                           content}})))]))))])))))))
 
-(def component-code-table
- (create-comp :code-table init-state nil render))
+(def comp-code-table (create-comp :code-table init-state nil render))

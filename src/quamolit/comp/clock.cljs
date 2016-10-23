@@ -2,7 +2,7 @@
 (ns quamolit.comp.clock
   (:require [quamolit.alias :refer [create-comp group]]
             [quamolit.render.element :refer [translate]]
-            [quamolit.comp.digits :refer [component-digit]]
+            [quamolit.comp.digits :refer [comp-digit]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn render [timestamp]
@@ -17,12 +17,12 @@
         (comment .log js/console secs)
         (group
           {}
-          (component-digit (get-ten hrs) {:style {:x -200}})
-          (component-digit (get-one hrs) {:style {:x -140}})
-          (component-digit (get-ten mins) {:style {:x -60}})
-          (component-digit (get-one mins) {:style {:x 0}})
-          (component-digit (get-ten secs) {:style {:x 80}})
-          (component-digit (get-one secs) {:style {:x 140}})
+          (comp-digit (get-ten hrs) {:style {:x -200}})
+          (comp-digit (get-one hrs) {:style {:x -140}})
+          (comp-digit (get-ten mins) {:style {:x -60}})
+          (comp-digit (get-one mins) {:style {:x 0}})
+          (comp-digit (get-ten secs) {:style {:x 80}})
+          (comp-digit (get-one secs) {:style {:x 140}})
           (comp-debug now {:y -60}))))))
 
-(def component-clock (create-comp :clock render))
+(def comp-clock (create-comp :clock render))

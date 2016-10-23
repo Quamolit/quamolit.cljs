@@ -4,7 +4,7 @@
             [quamolit.alias :refer [create-comp line group path]]
             [quamolit.render.element :refer [rotate scale translate]]))
 
-(declare component-binary-tree)
+(declare comp-binary-tree)
 
 (declare render)
 
@@ -40,7 +40,7 @@
                 {:style {:ratio (+ (* 2 shift-a) 0.5)}}
                 (rotate
                   {:style {:angle (+ (* 300 shift-a) 10)}}
-                  (component-binary-tree timestamp (dec level))))))
+                  (comp-binary-tree timestamp (dec level))))))
           (if (> level 0)
             (translate
               {:style {:y y2, :x x2}}
@@ -48,9 +48,9 @@
                 {:style {:ratio (+ 0.83 (* 2 shift-b))}}
                 (rotate
                   {:style {:angle (+ (* 50 shift-b) 10)}}
-                  (component-binary-tree timestamp (dec level)))))))))))
+                  (comp-binary-tree timestamp (dec level)))))))))))
 
-(def component-binary-tree
+(def comp-binary-tree
  (create-comp :binary-tree init-state merge render))
 
-(declare component-binary-tree)
+(declare comp-binary-tree)

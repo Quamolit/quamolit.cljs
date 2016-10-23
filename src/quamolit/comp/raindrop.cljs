@@ -32,7 +32,7 @@
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
-(def component-raindrop
+(def comp-raindrop
  (create-comp
    :raindrop
    init-instant

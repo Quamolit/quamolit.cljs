@@ -3,17 +3,17 @@
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group]]
             [quamolit.render.element :refer [translate button]]
-            [quamolit.comp.todolist :refer [component-todolist]]
-            [quamolit.comp.digits :refer [component-digit]]
-            [quamolit.comp.portal :refer [component-portal]]
-            [quamolit.comp.clock :refer [component-clock]]
-            [quamolit.comp.solar :refer [component-solar]]
-            [quamolit.comp.fade-in-out :refer [component-fade-in-out]]
-            [quamolit.comp.binary-tree :refer [component-binary-tree]]
-            [quamolit.comp.code-table :refer [component-code-table]]
-            [quamolit.comp.finder :refer [component-finder]]
-            [quamolit.comp.raining :refer [component-raining]]
-            [quamolit.comp.icons-table :refer [component-icons-table]]
+            [quamolit.comp.todolist :refer [comp-todolist]]
+            [quamolit.comp.digits :refer [comp-digit]]
+            [quamolit.comp.portal :refer [comp-portal]]
+            [quamolit.comp.clock :refer [comp-clock]]
+            [quamolit.comp.solar :refer [comp-solar]]
+            [quamolit.comp.fade-in-out :refer [comp-fade-in-out]]
+            [quamolit.comp.binary-tree :refer [comp-binary-tree]]
+            [quamolit.comp.code-table :refer [comp-code-table]]
+            [quamolit.comp.finder :refer [comp-finder]]
+            [quamolit.comp.raining :refer [comp-raining]]
+            [quamolit.comp.icons-table :refer [comp-icons-table]]
             [quamolit.comp.ring :refer [comp-ring]]
             [quamolit.comp.folding-fan :refer [comp-folding-fan]]
             [quamolit.comp.debug :refer [comp-debug]]))
@@ -39,58 +39,56 @@
       (group
         {:style {}}
         (if (= state :portal)
-          (component-fade-in-out {} (component-portal mutate)))
-        (if (= state :todolist) (component-todolist timestamp store))
+          (comp-fade-in-out {} (comp-portal mutate)))
+        (if (= state :todolist) (comp-todolist timestamp store))
         (if (= state :clock)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
-            (translate
-              {:style {:y 0, :x 0}}
-              (component-clock timestamp))))
+            (translate {:style {:y 0, :x 0}} (comp-clock timestamp))))
         (if (= state :solar)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate
               {:style {:y 0, :x 0}}
-              (component-solar timestamp 8))))
+              (comp-solar timestamp 8))))
         (if (= state :binary-tree)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate
               {:style {:y 240, :x 0}}
-              (component-binary-tree timestamp 5))))
+              (comp-binary-tree timestamp 5))))
         (if (= state :code-table)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
-            (translate {:style {:y 40, :x 0}} (component-code-table))))
+            (translate {:style {:y 40, :x 0}} (comp-code-table))))
         (if (= state :finder)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate
               {:style {:y 40, :x 0}}
-              (component-finder timestamp))))
+              (comp-finder timestamp))))
         (if (= state :raining)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate
               {:style {:y 40, :x 0}}
-              (component-raining timestamp))))
+              (comp-raining timestamp))))
         (if (= state :icons)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate
               {:style {:y 40, :x 0}}
-              (component-icons-table timestamp))))
+              (comp-icons-table timestamp))))
         (if (= state :curve)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate {:style {:y 40, :x 0}} (comp-ring timestamp))))
         (if (= state :folding-fan)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate {:style {:y 40, :x 0}} (comp-folding-fan))))
         (if (not= state :portal)
-          (component-fade-in-out
+          (comp-fade-in-out
             {}
             (translate
               {:style {:y -140, :x -400}}
@@ -98,5 +96,5 @@
                 {:style (style-button "Back"),
                  :event {:click (handle-back mutate)}}))))))))
 
-(def container-component
+(def comp-container
  (create-comp :container init-state update-state render))

@@ -30,7 +30,7 @@
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
-(def component-fade-in-out
+(def comp-fade-in-out
  (create-comp
    :fade-in-out
    init-instant

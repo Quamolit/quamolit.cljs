@@ -59,7 +59,7 @@
 
 (defn on-unmount [instant tick] instant)
 
-(def component-icon-play
+(def comp-icon-play
  (create-comp
    :icon-play
    init-state

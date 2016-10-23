@@ -94,7 +94,7 @@
   (comment .log js/console "stroke unmount")
   (assoc instant :presence-v -0.003 :numb? false))
 
-(def component-stroke
+(def comp-stroke
  (create-comp
    :stroke
    init-instant
@@ -109,129 +109,129 @@
     (fn [instant]
       (translate
         props
-        (component-stroke 0 0 40 0)
-        (component-stroke 40 0 40 40)
-        (component-stroke 40 40 40 80)
-        (component-stroke 40 80 0 80)
-        (component-stroke 40 40 0 40)))))
+        (comp-stroke 0 0 40 0)
+        (comp-stroke 40 0 40 40)
+        (comp-stroke 40 40 40 80)
+        (comp-stroke 40 80 0 80)
+        (comp-stroke 40 40 0 40)))))
 
 (defn render-7 [props]
   (fn [state mutate]
     (fn [instant]
       (translate
         props
-        (component-stroke 0 0 40 0)
-        (component-stroke 40 0 40 40)
-        (component-stroke 40 40 40 80)))))
+        (comp-stroke 0 0 40 0)
+        (comp-stroke 40 0 40 40)
+        (comp-stroke 40 40 40 80)))))
 
-(defn render-4 [props]
-  (fn [state mutate]
-    (fn [instant]
-      (translate
-        props
-        (component-stroke 0 0 0 40)
-        (component-stroke 0 40 40 40)
-        (component-stroke 40 40 40 80)
-        (component-stroke 40 40 40 0)))))
-
-(def component-4 (create-comp :four render-4))
-
-(defn render-1 [props]
-  (fn [state mutate]
-    (fn [instant]
-      (translate
-        props
-        (component-stroke 40 0 40 40)
-        (component-stroke 40 40 40 80)))))
-
-(def component-1 (create-comp :one render-1))
-
-(def component-7 (create-comp :seven render-7))
+(def comp-3 (create-comp :three render-3))
 
 (defn render-5 [props]
   (fn [state mutate]
     (fn [instant]
       (translate
         props
-        (component-stroke 40 0 0 0)
-        (component-stroke 0 0 0 40)
-        (component-stroke 0 40 40 40)
-        (component-stroke 40 40 40 80)
-        (component-stroke 40 80 0 80)))))
+        (comp-stroke 40 0 0 0)
+        (comp-stroke 0 0 0 40)
+        (comp-stroke 0 40 40 40)
+        (comp-stroke 40 40 40 80)
+        (comp-stroke 40 80 0 80)))))
 
-(def component-5 (create-comp :five render-5))
-
-(def component-3 (create-comp :three render-3))
-
-(defn render-6 [props]
-  (fn [state mutate]
-    (fn [instant]
-      (translate
-        props
-        (component-stroke 40 0 0 0)
-        (component-stroke 0 0 0 40)
-        (component-stroke 0 40 40 40)
-        (component-stroke 40 40 40 80)
-        (component-stroke 40 80 0 80)
-        (component-stroke 0 80 0 40)))))
-
-(def component-6 (create-comp :six render-6))
-
-(defn render-8 [props]
-  (fn [state mutate]
-    (fn [instant]
-      (translate
-        props
-        (component-stroke 0 0 40 0)
-        (component-stroke 40 0 40 40)
-        (component-stroke 40 40 40 80)
-        (component-stroke 40 80 0 80)
-        (component-stroke 0 80 0 40)
-        (component-stroke 0 40 0 0)
-        (component-stroke 0 40 40 40)))))
-
-(def component-8 (create-comp :eight render-8))
-
-(defn render-0 [props]
-  (fn [state mutate]
-    (fn [instant]
-      (translate
-        props
-        (component-stroke 0 0 40 0)
-        (component-stroke 40 0 40 40)
-        (component-stroke 40 40 40 80)
-        (component-stroke 40 80 0 80)
-        (component-stroke 0 80 0 40)
-        (component-stroke 0 40 0 0)))))
-
-(def component-0 (create-comp :zero render-0))
-
-(defn render-9 [props]
-  (fn [state mutate]
-    (fn [instant]
-      (translate
-        props
-        (component-stroke 40 40 0 40)
-        (component-stroke 0 40 0 0)
-        (component-stroke 0 0 40 0)
-        (component-stroke 40 0 40 40)
-        (component-stroke 40 40 40 80)
-        (component-stroke 40 80 0 80)))))
+(def comp-7 (create-comp :seven render-7))
 
 (defn render-2 [props]
   (fn [state mutate]
     (fn [instant]
       (translate
         props
-        (component-stroke 0 0 40 0)
-        (component-stroke 40 0 40 40)
-        (component-stroke 40 40 0 40)
-        (component-stroke 0 40 0 80)
-        (component-stroke 0 80 40 80)))))
+        (comp-stroke 0 0 40 0)
+        (comp-stroke 40 0 40 40)
+        (comp-stroke 40 40 0 40)
+        (comp-stroke 0 40 0 80)
+        (comp-stroke 0 80 40 80)))))
 
-(def component-9 (create-comp :nine render-9))
+(def comp-2 (create-comp :two render-2))
 
-(def component-2 (create-comp :two render-2))
+(defn render-4 [props]
+  (fn [state mutate]
+    (fn [instant]
+      (translate
+        props
+        (comp-stroke 0 0 0 40)
+        (comp-stroke 0 40 40 40)
+        (comp-stroke 40 40 40 80)
+        (comp-stroke 40 40 40 0)))))
+
+(def comp-4 (create-comp :four render-4))
+
+(defn render-1 [props]
+  (fn [state mutate]
+    (fn [instant]
+      (translate
+        props
+        (comp-stroke 40 0 40 40)
+        (comp-stroke 40 40 40 80)))))
+
+(def comp-1 (create-comp :one render-1))
+
+(defn render-6 [props]
+  (fn [state mutate]
+    (fn [instant]
+      (translate
+        props
+        (comp-stroke 40 0 0 0)
+        (comp-stroke 0 0 0 40)
+        (comp-stroke 0 40 40 40)
+        (comp-stroke 40 40 40 80)
+        (comp-stroke 40 80 0 80)
+        (comp-stroke 0 80 0 40)))))
+
+(def comp-6 (create-comp :six render-6))
+
+(defn render-0 [props]
+  (fn [state mutate]
+    (fn [instant]
+      (translate
+        props
+        (comp-stroke 0 0 40 0)
+        (comp-stroke 40 0 40 40)
+        (comp-stroke 40 40 40 80)
+        (comp-stroke 40 80 0 80)
+        (comp-stroke 0 80 0 40)
+        (comp-stroke 0 40 0 0)))))
+
+(defn render-8 [props]
+  (fn [state mutate]
+    (fn [instant]
+      (translate
+        props
+        (comp-stroke 0 0 40 0)
+        (comp-stroke 40 0 40 40)
+        (comp-stroke 40 40 40 80)
+        (comp-stroke 40 80 0 80)
+        (comp-stroke 0 80 0 40)
+        (comp-stroke 0 40 0 0)
+        (comp-stroke 0 40 40 40)))))
+
+(defn render-9 [props]
+  (fn [state mutate]
+    (fn [instant]
+      (translate
+        props
+        (comp-stroke 40 40 0 40)
+        (comp-stroke 0 40 0 0)
+        (comp-stroke 0 0 40 0)
+        (comp-stroke 40 0 40 40)
+        (comp-stroke 40 40 40 80)
+        (comp-stroke 40 80 0 80)))))
+
+(def comp-0 (create-comp :zero render-0))
+
+(def comp-5 (create-comp :five render-5))
+
+(def comp-8 (create-comp :eight render-8))
+
+(def comp-9 (create-comp :nine render-9))
 
 (defn render-digit [n props]
   (fn [state mutate]
@@ -239,25 +239,25 @@
       (case
         n
         0
-        (component-0 props)
+        (comp-0 props)
         1
-        (component-1 props)
+        (comp-1 props)
         2
-        (component-2 props)
+        (comp-2 props)
         3
-        (component-3 props)
+        (comp-3 props)
         4
-        (component-4 props)
+        (comp-4 props)
         5
-        (component-5 props)
+        (comp-5 props)
         6
-        (component-6 props)
+        (comp-6 props)
         7
-        (component-7 props)
+        (comp-7 props)
         8
-        (component-8 props)
+        (comp-8 props)
         9
-        (component-9 props)
-        (component-0 props)))))
+        (comp-9 props)
+        (comp-0 props)))))
 
-(def component-digit (create-comp :digit render-digit))
+(def comp-digit (create-comp :digit render-digit))

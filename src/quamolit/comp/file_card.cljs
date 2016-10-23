@@ -68,7 +68,7 @@
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
-(def component-file-card
+(def comp-file-card
  (create-comp
    :file-card
    init-instant

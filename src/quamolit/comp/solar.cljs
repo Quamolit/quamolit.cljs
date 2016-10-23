@@ -4,7 +4,7 @@
             [quamolit.alias :refer [create-comp group rect arc]]
             [quamolit.render.element :refer [rotate translate scale]]))
 
-(declare component-solar)
+(declare comp-solar)
 
 (declare render)
 
@@ -27,8 +27,8 @@
             {:style {:ratio 0.8}}
             (translate
               {:style {:y 180, :x 20}}
-              (component-solar timestamp (- level 1)))))))))
+              (comp-solar timestamp (- level 1)))))))))
 
-(def component-solar (create-comp :solar render))
+(def comp-solar (create-comp :solar render))
 
-(declare component-solar)
+(declare comp-solar)

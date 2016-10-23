@@ -2,7 +2,7 @@
 (ns quamolit.comp.raining
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect group]]
-            [quamolit.comp.raindrop :refer [component-raindrop]]))
+            [quamolit.comp.raindrop :refer [comp-raindrop]]))
 
 (defn random-point [] [(- (rand-int 1400) 600) (- (rand-int 600) 400)])
 
@@ -32,7 +32,7 @@
           (map
             (fn [entry]
               (let [child-key (first entry) child (last entry)]
-                [child-key (component-raindrop child timestamp)]))))))))
+                [child-key (comp-raindrop child timestamp)]))))))))
 
 (defn init-instant []
   (let [init-val (->>
@@ -43,7 +43,7 @@
 
 (defn on-unmount [instant tick] instant)
 
-(def component-raining
+(def comp-raining
  (create-comp
    :raining
    init-instant
