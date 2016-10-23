@@ -6,7 +6,7 @@
             [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn render [timestamp]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [now (js/Date.)
           hrs (.getHours now)
           mins (.getMinutes now)

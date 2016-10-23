@@ -81,13 +81,13 @@
 
 (def input (create-comp :input render-input))
 
-(defn handle-keydown [mutate]
-  (fn [event dispatch] (mutate (.-keyCode event) (.-shiftKey event))))
+(defn handle-keydown [mutate!]
+  (fn [event dispatch] (mutate! (.-keyCode event) (.-shiftKey event))))
 
 (defn render-textbox [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [style (assoc (:style props) :text state)]
-      (input {:style style, :event {:keydown (handle-keydown mutate)}}))))
+      (input {:style style, :event {:keydown (handle-keydown mutate!)}}))))
 
 (def textbox (create-comp :textbox init-textbox update-textbox render-textbox))
 

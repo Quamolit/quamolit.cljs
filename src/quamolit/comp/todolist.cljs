@@ -13,8 +13,8 @@
       (assoc new-instant :numb? true)
       new-instant)))
 
-(defn event-button [mutate draft]
-  {:click (fn [simple-event dispatch] (dispatch :add draft) (mutate {:draft ""}))})
+(defn event-button [mutate! draft]
+  {:click (fn [simple-event dispatch] (dispatch :add draft) (mutate! {:draft ""}))})
 
 (def style-button {:w 80, :h 40, :text "add"})
 
@@ -24,17 +24,17 @@
 
 (defn on-update [instant old-args args old-state state] instant)
 
-(defn handle-input [mutate default-text]
+(defn handle-input [mutate! default-text]
   (fn [simple-event dispatch]
     (let [user-text (js/prompt "input to canvas:" default-text)]
-      (mutate {:draft user-text}))))
+      (mutate! {:draft user-text}))))
 
 (defn init-state [store] {:draft ""})
 
 (def position-body {:y 40, :x 0})
 
 (defn render [timestamp store]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (comment .info js/console "todolist:" store state)
     (alpha
       {:style {:opacity (/ (:presence instant) 1000)}}
@@ -44,10 +44,10 @@
           {:style {:y 40, :x -20}}
           (input
             {:style {:w 400, :h 40, :text (:draft state)},
-             :event {:click (handle-input mutate (:draft state))}}))
+             :event {:click (handle-input mutate! (:draft state))}}))
         (translate
           {:style {:y 40, :x 240}}
-          (button {:style style-button, :event (event-button mutate (:draft state))})))
+          (button {:style style-button, :event (event-button mutate! (:draft state))})))
       (translate
         {:style position-body}
         (group

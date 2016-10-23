@@ -8,7 +8,7 @@
 (defn init-state [] (into [] (repeat 3 (into [] (repeat 3 "edit")))))
 
 (defn render []
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (comment .log js/console state)
     (translate
       {:style {:y -160, :x -160}}

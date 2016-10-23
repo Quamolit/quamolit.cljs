@@ -28,16 +28,16 @@
    :h 32,
    :text guide-text})
 
-(defn handle-back [mutate] (fn [event dispatch] (mutate :portal)))
+(defn handle-back [mutate!] (fn [event dispatch] (mutate! :portal)))
 
 (defn init-state [] :portal)
 
 (defn render [timestamp store]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (comment .log js/console state)
     (group
       {:style {}}
-      (if (= state :portal) (comp-fade-in-out {} (comp-portal mutate)))
+      (if (= state :portal) (comp-fade-in-out {} (comp-portal mutate!)))
       (if (= state :todolist) (comp-todolist timestamp store))
       (if (= state :clock)
         (comp-fade-in-out {} (translate {:style {:y 0, :x 0}} (comp-clock timestamp))))
@@ -67,6 +67,6 @@
           (translate
             {:style {:y -140, :x -400}}
             (button
-              {:style (style-button "Back"), :event {:click (handle-back mutate)}})))))))
+              {:style (style-button "Back"), :event {:click (handle-back mutate!)}})))))))
 
 (def comp-container (create-comp :container init-state update-state render))

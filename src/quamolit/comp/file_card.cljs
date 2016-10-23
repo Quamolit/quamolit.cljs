@@ -21,7 +21,7 @@
     (if (= old-popup? popup?) instant (assoc instant :popup-v (if popup? 3 -3)))))
 
 (defn render [card-name position navigate-this index parent-ratio popup?]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [popup-ratio (/ (:popup instant) 1000)
           shift-x (first position)
           shift-y (last position)

@@ -12,17 +12,17 @@
 
 (defonce loop-ref (atom nil))
 
-(defn render-loop [timestamp]
+(defn render-loop! [timestamp]
   (let [target (.querySelector js/document "#app")]
     (render-page (comp-container timestamp @store-ref) states-ref target)
-    (reset! loop-ref (js/requestAnimationFrame render-loop))))
+    (reset! loop-ref (js/requestAnimationFrame render-loop!))))
 
 (defn on-jsload []
   (js/cancelAnimationFrame @loop-ref)
-  (js/requestAnimationFrame render-loop)
+  (js/requestAnimationFrame render-loop!)
   (.log js/console "code updated..."))
 
-(defn dispatch [op op-data]
+(defn dispatch! [op op-data]
   (let [new-tick (get-tick) new-store (updater-fn @store-ref op op-data new-tick)]
     (reset! store-ref new-store)))
 
@@ -31,8 +31,8 @@
   (enable-console-print!)
   (let [target (.querySelector js/document "#app")]
     (configure-canvas target)
-    (setup-events target dispatch)
-    (js/requestAnimationFrame render-loop)))
+    (setup-events target dispatch!)
+    (js/requestAnimationFrame render-loop!)))
 
 (set! js/window.onload -main)
 

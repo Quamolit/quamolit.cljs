@@ -14,7 +14,7 @@
 
 (defn remove? [instant] true)
 
-(defn handle-click [mutate] (fn [event dispatch] (mutate)))
+(defn handle-click [mutate!] (fn [event dispatch] (mutate!)))
 
 (defn on-update [instant old-args args old-state state]
   (if (not= old-state state) (assoc instant :n-v 0.004 :n-target state) instant))
@@ -22,11 +22,11 @@
 (defn init-state [] 0)
 
 (defn render []
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [n1 (:n instant)]
       (rect
         {:style {:w 60, :h 60, :fill-style (hsl 0 0 90)},
-         :event {:click (handle-click mutate)}}
+         :event {:click (handle-click mutate!)}}
         (translate
           {:style {:x -12}}
           (rotate

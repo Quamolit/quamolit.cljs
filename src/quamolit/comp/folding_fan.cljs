@@ -10,7 +10,7 @@
 
 (defn update-state [state] (not state))
 
-(defn handle-toggle [mutate] (fn [e dispatch] (mutate)))
+(defn handle-toggle [mutate!] (fn [e dispatch] (mutate!)))
 
 (defn removable? [instant] true)
 
@@ -20,7 +20,7 @@
 (defn init-state [] true)
 
 (defn render []
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [n 24
           image-w 650
           image-h 432
@@ -60,7 +60,7 @@
             :text-color (hsl 0 0 100),
             :x 160,
             :text "Toggle"},
-           :event {:click (handle-toggle mutate)}})))))
+           :event {:click (handle-toggle mutate!)}})))))
 
 (defn init-instant [args state] {:folding-v 0, :folding-value (if state 1000 0)})
 

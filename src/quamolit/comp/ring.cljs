@@ -9,7 +9,7 @@
 (defn cos [x] (js/Math.cos (* js/Math.PI (/ x 180))))
 
 (defn render [timestamp]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [n 20
           angle (/ 360 n)
           shift 10

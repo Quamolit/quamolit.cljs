@@ -11,7 +11,7 @@
 (defn init-state [] [(js/Math.random) (js/Math.random) (js/Math.random) (js/Math.random)])
 
 (defn render [timestamp level]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [[r1 r2 r3 r4] state
           x1 120
           y1 -220

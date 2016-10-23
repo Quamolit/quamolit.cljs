@@ -26,7 +26,7 @@
 (defn init-state [cards position _ index popup?] nil)
 
 (defn render [cards position navigate index popup?]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (comment .log js/console state)
     (let [shift-x (first position)
           shift-y (last position)
@@ -61,7 +61,7 @@
                                          (comp-file-card
                                            card-name
                                            [card-x card-y]
-                                           mutate
+                                           mutate!
                                            index
                                            ratio
                                            (= state index)))]))

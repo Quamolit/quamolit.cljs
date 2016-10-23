@@ -22,7 +22,7 @@
 (defn on-update [instant old-args args old-state state] instant)
 
 (defn render [timestamp]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (comment .log js/console (pr-str instant))
     (group
       {}

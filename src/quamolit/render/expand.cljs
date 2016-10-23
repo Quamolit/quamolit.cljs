@@ -259,10 +259,10 @@
             (comment println old-args new-args)
             (comment println coord old-states state-tree)
             old-tree)
-          (let [mutate (build-mutate child-coord)
+          (let [mutate! (build-mutate child-coord)
                 new-shape (-> (:render markup)
                            (apply new-args)
-                           (apply (list new-state mutate new-instant tick)))
+                           (apply (list new-state mutate! new-instant tick)))
                 new-tree (if (= Component (type new-shape))
                            (expand-component
                              new-shape
@@ -304,10 +304,10 @@
                     (get state-tree 'data)
                     (apply init-state args))
             instant (init-instant (into [] args) state at-place?)
-            mutate (build-mutate child-coord)
+            mutate! (build-mutate child-coord)
             shape (-> (:render markup)
                    (apply args)
-                   (apply (list state mutate instant tick)))
+                   (apply (list state mutate! instant tick)))
             tree (if (= Component (type shape))
                    (expand-component
                      shape

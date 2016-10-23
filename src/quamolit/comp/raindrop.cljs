@@ -13,7 +13,7 @@
 (defn on-update [instant old-args args old-state state] instant)
 
 (defn render [position timestamp]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [x (first position) y (last position)]
       (alpha
         {:style {:opacity (* (:presence instant) 0.001)}}

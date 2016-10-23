@@ -6,7 +6,7 @@
             [quamolit.comp.icon-play :refer [comp-icon-play]]))
 
 (defn render [timestamp]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (group
       {}
       (translate {:style {:x -200}} (comp-icon-increase))

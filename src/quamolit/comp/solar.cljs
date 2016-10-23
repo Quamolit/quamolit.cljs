@@ -13,7 +13,7 @@
 (def style-large {:r 60, :fill-style (hsl 80 80 80)})
 
 (defn render [timestamp level]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (comment .log js/console :tick (/ tick 10))
     (rotate
       {:style {:angle (rem (/ tick 8) 360)}}

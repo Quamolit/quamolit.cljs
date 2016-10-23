@@ -37,7 +37,7 @@
      (check-number 3 :y1-v :y1-target))))
 
 (defn render [x0 y0 x1 y1]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (comment .log js/console "watching" (:presence instant))
     (group
       {}
@@ -76,7 +76,7 @@
 (def comp-stroke (create-comp :stroke init-instant on-tick on-update on-unmount nil render))
 
 (defn render-3 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 0 0 40 0)
@@ -86,7 +86,7 @@
       (comp-stroke 40 40 0 40))))
 
 (defn render-7 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 0 0 40 0)
@@ -96,7 +96,7 @@
 (def comp-3 (create-comp :three render-3))
 
 (defn render-5 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 40 0 0 0)
@@ -108,7 +108,7 @@
 (def comp-7 (create-comp :seven render-7))
 
 (defn render-2 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 0 0 40 0)
@@ -120,7 +120,7 @@
 (def comp-2 (create-comp :two render-2))
 
 (defn render-4 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 0 0 0 40)
@@ -131,13 +131,13 @@
 (def comp-4 (create-comp :four render-4))
 
 (defn render-1 [props]
-  (fn [state mutate intant tick]
+  (fn [state mutate! intant tick]
     (translate props (comp-stroke 40 0 40 40) (comp-stroke 40 40 40 80))))
 
 (def comp-1 (create-comp :one render-1))
 
 (defn render-6 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 40 0 0 0)
@@ -150,7 +150,7 @@
 (def comp-6 (create-comp :six render-6))
 
 (defn render-0 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 0 0 40 0)
@@ -161,7 +161,7 @@
       (comp-stroke 0 40 0 0))))
 
 (defn render-8 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 0 0 40 0)
@@ -173,7 +173,7 @@
       (comp-stroke 0 40 40 40))))
 
 (defn render-9 [props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       props
       (comp-stroke 40 40 0 40)
@@ -192,7 +192,7 @@
 (def comp-9 (create-comp :nine render-9))
 
 (defn render-digit [n props]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (case
       n
       0

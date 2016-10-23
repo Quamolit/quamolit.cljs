@@ -48,7 +48,7 @@
 (defn handle-remove [task-id] (fn [event dispatch] (dispatch :rm task-id)))
 
 (defn render [timestamp task index shift-x]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (translate
       {:style {:y (- (* 60 (:index instant)) 140), :x (+ shift-x (:left instant))}}
       (alpha

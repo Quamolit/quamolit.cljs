@@ -18,7 +18,7 @@
   (fn [event dispatch] (mutate-navigate next-page)))
 
 (defn render [mutate-navigate]
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (group
       {}
       (button

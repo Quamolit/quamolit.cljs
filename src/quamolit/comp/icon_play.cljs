@@ -17,7 +17,7 @@
 
 (defn remove? [instant] true)
 
-(defn handle-click [mutate] (fn [event dispatch] (mutate)))
+(defn handle-click [mutate!] (fn [event dispatch] (mutate!)))
 
 (defn on-update [instant old-args args old-state state]
   (if (= old-state state)
@@ -28,11 +28,11 @@
 (defn init-state [] true)
 
 (defn render []
-  (fn [state mutate instant tick]
+  (fn [state mutate! instant tick]
     (let [tw (fn [a0 a1] (tween [a0 a1] [0 1] (:play-value instant)))]
       (rect
         {:style {:w 60, :h 60, :fill-style (hsl 40 80 90)},
-         :event {:click (handle-click mutate)}}
+         :event {:click (handle-click mutate!)}}
         (path
           {:style
            {:points [[-20 -20] [-20 20] [(tw -5 0) (tw 20 10)] [(tw -5 0) (tw -20 -10)]],
