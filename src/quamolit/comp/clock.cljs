@@ -1,9 +1,9 @@
 
-(ns quamolit.component.clock
+(ns quamolit.comp.clock
   (:require [quamolit.alias :refer [create-comp group]]
             [quamolit.render.element :refer [translate]]
-            [quamolit.component.digits :refer [component-digit]]
-            [quamolit.component.debug :refer [comp-debug]]))
+            [quamolit.comp.digits :refer [component-digit]]
+            [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn render [timestamp]
   (fn [state mutate]

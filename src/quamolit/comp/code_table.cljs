@@ -1,5 +1,5 @@
 
-(ns quamolit.component.code-table
+(ns quamolit.comp.code-table
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group rect]]
             [quamolit.render.element :refer [input translate textbox]]

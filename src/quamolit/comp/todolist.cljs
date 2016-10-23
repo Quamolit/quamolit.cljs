@@ -1,14 +1,14 @@
 
-(ns quamolit.component.todolist
+(ns quamolit.comp.todolist
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group rect text]]
             [quamolit.render.element :refer [translate
                                              button
                                              input
                                              alpha]]
-            [quamolit.component.task :refer [component-task]]
+            [quamolit.comp.task :refer [component-task]]
             [quamolit.util.iterate :refer [iterate-instant tween]]
-            [quamolit.component.debug :refer [comp-debug]]))
+            [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn on-tick [instant tick elapsed]
   (let [new-instant (iterate-instant

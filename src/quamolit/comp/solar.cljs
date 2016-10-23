@@ -1,5 +1,5 @@
 
-(ns quamolit.component.solar
+(ns quamolit.comp.solar
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group rect arc]]
             [quamolit.render.element :refer [rotate translate scale]]))

@@ -1,6 +1,6 @@
 
 (ns quamolit.main
-  (:require [quamolit.component.container :refer [container-component]]
+  (:require [quamolit.comp.container :refer [container-component]]
             [quamolit.core :refer [render-page
                                    configure-canvas
                                    setup-events]]

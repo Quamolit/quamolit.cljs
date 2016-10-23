@@ -1,8 +1,8 @@
 
-(ns quamolit.component.finder
+(ns quamolit.comp.finder
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect group]]
-            [quamolit.component.folder :refer [component-folder]]))
+            [quamolit.comp.folder :refer [component-folder]]))
 
 (defn update-state [state target]
   (comment .log js/console state target)

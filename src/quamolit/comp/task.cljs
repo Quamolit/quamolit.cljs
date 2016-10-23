@@ -1,11 +1,11 @@
 
-(ns quamolit.component.task
+(ns quamolit.comp.task
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group rect]]
             [quamolit.render.element :refer [translate alpha input]]
             [quamolit.util.iterate :refer [iterate-instant]]
-            [quamolit.component.task-toggler :refer [component-toggler]]
-            [quamolit.component.debug :refer [comp-debug]]))
+            [quamolit.comp.task-toggler :refer [component-toggler]]
+            [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn on-tick [instant tick elapsed]
   (comment .log js/console "on tick data:" instant tick elapsed)

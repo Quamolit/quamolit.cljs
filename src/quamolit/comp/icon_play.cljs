@@ -1,9 +1,9 @@
 
-(ns quamolit.component.icon-play
+(ns quamolit.comp.icon-play
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp path group rect]]
             [quamolit.util.iterate :refer [iterate-instant tween]]
-            [quamolit.component.debug :refer [comp-debug]]))
+            [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn on-tick [instant tick elapsed]
   (iterate-instant

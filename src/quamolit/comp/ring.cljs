@@ -1,8 +1,8 @@
 
-(ns quamolit.component.ring
+(ns quamolit.comp.ring
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group path]]
-            [quamolit.component.debug :refer [comp-debug]]))
+            [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn sin [x] (js/Math.sin (* js/Math.PI (/ x 180))))
 

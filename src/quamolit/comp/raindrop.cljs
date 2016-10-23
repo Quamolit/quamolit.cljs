@@ -1,5 +1,5 @@
 
-(ns quamolit.component.raindrop
+(ns quamolit.comp.raindrop
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect]]
             [quamolit.render.element :refer [translate alpha]]

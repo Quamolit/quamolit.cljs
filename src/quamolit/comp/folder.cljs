@@ -1,10 +1,10 @@
 
-(ns quamolit.component.folder
+(ns quamolit.comp.folder
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect text group]]
             [quamolit.render.element :refer [translate scale alpha]]
             [quamolit.util.iterate :refer [iterate-instant tween]]
-            [quamolit.component.file-card :refer [component-file-card]]))
+            [quamolit.comp.file-card :refer [component-file-card]]))
 
 (defn on-tick [instant tick elapsed]
   (let [new-instant (-> instant

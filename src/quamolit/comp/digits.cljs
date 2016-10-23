@@ -1,5 +1,5 @@
 
-(ns quamolit.component.digits
+(ns quamolit.comp.digits
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect group line]]
             [quamolit.render.element :refer [alpha translate]]

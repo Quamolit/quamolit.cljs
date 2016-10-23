@@ -1,5 +1,5 @@
 
-(ns quamolit.component.binary-tree
+(ns quamolit.comp.binary-tree
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp line group path]]
             [quamolit.render.element :refer [rotate scale translate]]))

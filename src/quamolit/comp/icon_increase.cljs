@@ -1,5 +1,5 @@
 
-(ns quamolit.component.icon-increase
+(ns quamolit.comp.icon-increase
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp line text group rect]]
             [quamolit.render.element :refer [translate rotate alpha]]

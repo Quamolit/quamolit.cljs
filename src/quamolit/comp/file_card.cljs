@@ -1,5 +1,5 @@
 
-(ns quamolit.component.file-card
+(ns quamolit.comp.file-card
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group rect text]]
             [quamolit.render.element :refer [translate alpha scale]]

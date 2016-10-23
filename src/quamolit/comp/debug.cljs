@@ -1,5 +1,5 @@
 
-(ns quamolit.component.debug
+(ns quamolit.comp.debug
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect text]]
             [quamolit.render.element :refer [alpha translate button]]))

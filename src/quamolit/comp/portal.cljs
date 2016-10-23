@@ -1,5 +1,5 @@
 
-(ns quamolit.component.portal
+(ns quamolit.comp.portal
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group rect text]]
             [quamolit.render.element :refer [alpha translate button]]

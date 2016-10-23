@@ -1,5 +1,5 @@
 
-(ns quamolit.component.fade-in-out
+(ns quamolit.comp.fade-in-out
   (:require [quamolit.alias :refer [create-comp]]
             [quamolit.render.element :refer [alpha]]
             [quamolit.util.iterate :refer [iterate-instant]]))

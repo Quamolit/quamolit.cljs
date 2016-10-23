@@ -1,22 +1,22 @@
 
-(ns quamolit.component.container
+(ns quamolit.comp.container
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp group]]
             [quamolit.render.element :refer [translate button]]
-            [quamolit.component.todolist :refer [component-todolist]]
-            [quamolit.component.digits :refer [component-digit]]
-            [quamolit.component.portal :refer [component-portal]]
-            [quamolit.component.clock :refer [component-clock]]
-            [quamolit.component.solar :refer [component-solar]]
-            [quamolit.component.fade-in-out :refer [component-fade-in-out]]
-            [quamolit.component.binary-tree :refer [component-binary-tree]]
-            [quamolit.component.code-table :refer [component-code-table]]
-            [quamolit.component.finder :refer [component-finder]]
-            [quamolit.component.raining :refer [component-raining]]
-            [quamolit.component.icons-table :refer [component-icons-table]]
-            [quamolit.component.ring :refer [comp-ring]]
-            [quamolit.component.folding-fan :refer [comp-folding-fan]]
-            [quamolit.component.debug :refer [comp-debug]]))
+            [quamolit.comp.todolist :refer [component-todolist]]
+            [quamolit.comp.digits :refer [component-digit]]
+            [quamolit.comp.portal :refer [component-portal]]
+            [quamolit.comp.clock :refer [component-clock]]
+            [quamolit.comp.solar :refer [component-solar]]
+            [quamolit.comp.fade-in-out :refer [component-fade-in-out]]
+            [quamolit.comp.binary-tree :refer [component-binary-tree]]
+            [quamolit.comp.code-table :refer [component-code-table]]
+            [quamolit.comp.finder :refer [component-finder]]
+            [quamolit.comp.raining :refer [component-raining]]
+            [quamolit.comp.icons-table :refer [component-icons-table]]
+            [quamolit.comp.ring :refer [comp-ring]]
+            [quamolit.comp.folding-fan :refer [comp-folding-fan]]
+            [quamolit.comp.debug :refer [comp-debug]]))
 
 (defn update-state [old-state new-page] new-page)
 

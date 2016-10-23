@@ -1,5 +1,5 @@
 
-(ns quamolit.component.task-toggler
+(ns quamolit.comp.task-toggler
   (:require [hsl.core :refer [hsl]]
             [quamolit.util.iterate :refer [iterate-instant tween]]
             [quamolit.alias :refer [create-comp group rect]]))

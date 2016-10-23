@@ -1,9 +1,9 @@
 
-(ns quamolit.component.icons-table
+(ns quamolit.comp.icons-table
   (:require [quamolit.alias :refer [create-comp text line group]]
             [quamolit.render.element :refer [translate]]
-            [quamolit.component.icon-increase :refer [comp-icon-increase]]
-            [quamolit.component.icon-play :refer [component-icon-play]]))
+            [quamolit.comp.icon-increase :refer [comp-icon-increase]]
+            [quamolit.comp.icon-play :refer [component-icon-play]]))
 
 (defn render [timestamp]
   (fn [state mutate]

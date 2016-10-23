@@ -1,8 +1,8 @@
 
-(ns quamolit.component.raining
+(ns quamolit.comp.raining
   (:require [hsl.core :refer [hsl]]
             [quamolit.alias :refer [create-comp rect group]]
-            [quamolit.component.raindrop :refer [component-raindrop]]))
+            [quamolit.comp.raindrop :refer [component-raindrop]]))
 
 (defn random-point [] [(- (rand-int 1400) 600) (- (rand-int 600) 400)])
 

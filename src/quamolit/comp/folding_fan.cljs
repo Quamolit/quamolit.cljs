@@ -1,5 +1,5 @@
 
-(ns quamolit.component.folding-fan
+(ns quamolit.comp.folding-fan
   (:require [quamolit.alias :refer [text create-comp group image]]
             [quamolit.render.element :refer [button translate rotate]]
             [hsl.core :refer [hsl]]
