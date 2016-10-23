@@ -14,7 +14,7 @@
 
 (defn create-shape [shape-name props children]
   (if (not (map? props)) (throw (js/Error. "Props expeced to be a map!")))
-  (Shape. shape-name props (arrange-children children)))
+  (Shape. shape-name (:style props) (:event props) (arrange-children children)))
 
 (defn native-rotate [props & children] (create-shape :native-rotate props children))
 

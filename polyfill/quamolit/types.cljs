@@ -19,4 +19,4 @@
    tree
    fading?])
 
-(defrecord Shape [name props children])
+(defrecord Shape [name style event children])

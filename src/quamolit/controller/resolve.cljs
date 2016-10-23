@@ -22,7 +22,7 @@
     (comment .log js/console "target" maybe-target event-name coord)
     (if (nil? maybe-target)
       nil
-      (let [maybe-listener (get-in maybe-target [:props :event event-name])]
+      (let [maybe-listener (get-in maybe-target [:event event-name])]
         (comment .log js/console "listener" maybe-listener maybe-target)
         (if (some? maybe-listener)
           maybe-listener
