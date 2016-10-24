@@ -1,7 +1,7 @@
 
 (ns quamolit.render.paint (:require [hsl.core :refer [hsl]]))
 
-(defn paint-text [ctx style eff]
+(defn paint-text [ctx style]
   (set! ctx.fillStyle (or (:fill-style style) (hsl 0 0 0)))
   (set! ctx.textAlign (or (:text-align style) "center"))
   (set! ctx.textBaseline (or (:base-line style) "middle"))
@@ -21,24 +21,25 @@
       (:text style)
       (or (:x style) 0)
       (or (:y style) 0)
-      (or (:max-width style) 400))))
-  eff)
+      (or (:max-width style) 400)))))
 
-(defn paint-restore [ctx style eff] (.restore ctx) (update eff :alpha-stack rest))
+(defn paint-restore [ctx style eff-ref]
+  (.restore ctx)
+  (swap! eff-ref update :alpha-stack rest))
 
-(defn paint-alpha [ctx style eff]
-  (let [inherent-opacity (first (:alpha-stack eff))
+(defn paint-alpha [ctx style eff-ref]
+  (let [inherent-opacity (first (:alpha-stack @eff-ref))
         opacity (* inherent-opacity (or (:opacity style) 0.5))]
     (set! ctx.globalAlpha opacity)
-    (update eff :alpha-stack (fn [alpha-stack] (cons opacity (rest alpha-stack))))))
+    (swap! eff-ref update :alpha-stack (fn [alpha-stack] (cons opacity (rest alpha-stack))))))
 
-(defn paint-save [ctx style eff]
+(defn paint-save [ctx style eff-ref]
   (.save ctx)
-  (update eff :alpha-stack (fn [alpha-stack] (cons ctx.globalAlpha alpha-stack))))
+  (swap! eff-ref update :alpha-stack (fn [alpha-stack] (cons ctx.globalAlpha alpha-stack))))
 
 (def pi-ratio (/ js/Math.PI 180))
 
-(defn paint-arc [ctx style coord eff]
+(defn paint-arc [ctx style coord]
   (let [x (or (:x style) 0)
         y (or (:y style) 0)
         r (or (:r style) 40)
@@ -62,16 +63,15 @@
        (set! ctx.strokeStyle (:stroke-style style))
        (set! ctx.lineCap line-cap)
        (set! ctx.miterLimit miter-limit)
-       (.stroke ctx)))
-    eff))
+       (.stroke ctx)))))
 
-(defn paint-scale [ctx style eff]
-  (let [ratio (or (:ratio style) 1.2)] (.scale ctx ratio ratio) eff))
+(defn paint-scale [ctx style]
+  (let [ratio (or (:ratio style) 1.2)] (.scale ctx ratio ratio)))
 
-(defn paint-translate [ctx style eff]
-  (let [x (or (:x style) 0), y (or (:y style) 0)] (.translate ctx x y) eff))
+(defn paint-translate [ctx style]
+  (let [x (or (:x style) 0), y (or (:y style) 0)] (.translate ctx x y)))
 
-(defn paint-line [ctx style eff]
+(defn paint-line [ctx style]
   (let [x0 (or (:x0 style) 0)
         y0 (or (:y0 style) 0)
         x1 (or (:x1 style) 40)
@@ -88,10 +88,9 @@
     (set! ctx.strokeStyle stroke-style)
     (set! ctx.lineCap line-cap)
     (set! ctx.miterLimit miter-limit)
-    (.stroke ctx)
-    eff))
+    (.stroke ctx)))
 
-(defn paint-path [ctx style eff]
+(defn paint-path [ctx style]
   (let [points (:points style), first-point (first points)]
     (.beginPath ctx)
     (.moveTo ctx (first first-point) (last first-point))
@@ -119,8 +118,7 @@
        (set! ctx.milterLimit (or (:milter-limit style) 8))
        (.stroke ctx)))
     (if (contains? style :fill-style)
-      (do (set! ctx.fillStyle (:fill-style style)) (.closePath ctx) (.fill ctx)))
-    eff))
+      (do (set! ctx.fillStyle (:fill-style style)) (.closePath ctx) (.fill ctx)))))
 
 (defonce image-pool (atom {}))
 
@@ -129,7 +127,7 @@
     (get image-pool src)
     (let [image (.createElement js/document "img")] (.setAttribute image "src" src) image)))
 
-(defn paint-image [ctx style coord eff]
+(defn paint-image [ctx style coord]
   (let [sx (or (:sx style) 0)
         sy (or (:sy style) 0)
         sw (or (:sw style) 40)
@@ -139,10 +137,9 @@
         dw (or (:dw style) 40)
         dh (or (:dh style) 40)
         image (get-image (:src style))]
-    (.drawImage ctx image sx sy sw sh dx dy dw dh))
-  eff)
+    (.drawImage ctx image sx sy sw sh dx dy dw dh)))
 
-(defn paint-rect [ctx style coord eff]
+(defn paint-rect [ctx style coord]
   (let [w (or (:w style) 100)
         h (or (:h style) 40)
         x (- (or (:x style) 0) (/ w 2))
@@ -159,35 +156,36 @@
       (do
        (set! ctx.strokeStyle (:stroke-style style))
        (set! ctx.lineWidth line-width)
-       (.stroke ctx)))
-    eff))
+       (.stroke ctx)))))
 
-(defn paint-rotate [ctx style eff]
-  (let [angle (or (:angle style) 30)] (.rotate ctx angle) eff))
+(defn paint-group! [] )
 
-(defn paint-one [ctx directive eff]
-  (let [[coord op style] directive]
+(defn paint-rotate [ctx style] (let [angle (or (:angle style) 30)] (.rotate ctx angle)))
+
+(defn paint-one [ctx directive eff-ref]
+  (let [coord (:coord directive), op (:name directive), style (:style directive)]
     (comment .log js/console :paint-one op style)
     (case op
-      :line (paint-line ctx style eff)
-      :path (paint-path ctx style eff)
-      :text (paint-text ctx style eff)
-      :rect (paint-rect ctx style coord eff)
-      :native-save (paint-save ctx style eff)
-      :native-restore (paint-restore ctx style eff)
-      :native-translate (paint-translate ctx style eff)
-      :native-alpha (paint-alpha ctx style eff)
-      :native-rotate (paint-rotate ctx style eff)
-      :native-scale (paint-scale ctx style eff)
-      :arc (paint-arc ctx style coord eff)
-      :image (paint-image ctx style coord eff)
-      (do (.log js/console "painting not implemented" op) eff))))
+      :line (paint-line ctx style)
+      :path (paint-path ctx style)
+      :text (paint-text ctx style)
+      :rect (paint-rect ctx style coord)
+      :native-save (paint-save ctx style eff-ref)
+      :native-restore (paint-restore ctx style eff-ref)
+      :native-translate (paint-translate ctx style)
+      :native-alpha (paint-alpha ctx style eff-ref)
+      :native-rotate (paint-rotate ctx style)
+      :native-scale (paint-scale ctx style)
+      :arc (paint-arc ctx style coord)
+      :image (paint-image ctx style coord)
+      :group (paint-group!)
+      (do (.log js/console "painting not implemented" op) @eff-ref))))
 
-(defn paint [ctx directives]
+(defn paint [ctx directives eff-ref]
   (let [w js/window.innerWidth, h js/window.innerHeight]
     (.clearRect ctx 0 0 w h)
     (.save ctx)
     (.translate ctx (/ w 2) (/ h 2))
-    (loop [ds directives, eff {:alpha-stack (list 1)}]
-      (if (not (empty? ds)) (do (recur (rest ds) (paint-one ctx (first ds) eff)))))
+    (loop [ds directives]
+      (if (not (empty? ds)) (do (paint-one ctx (first ds) eff-ref) (recur (rest ds)))))
     (.restore ctx)))

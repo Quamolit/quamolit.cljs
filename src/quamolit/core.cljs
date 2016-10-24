@@ -38,8 +38,8 @@
   (comment .log js/console directives @directives-ref)
   (if (not= directives @directives-ref)
     (do
-     (let [ctx (.getContext target "2d")]
-       (paint ctx (->> directives (filter (fn [directive] (not= :group (get directive 1)))))))
+     (let [ctx (.getContext target "2d"), eff-ref (atom {:alpha-stack (list 1)})]
+       (paint ctx directives eff-ref))
      (reset! directives-ref directives))))
 
 (defn render-page [markup states-ref target]

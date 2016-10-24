@@ -5,7 +5,7 @@
 (defn flatten-tree [tree]
   (if (= Component (type tree))
     (recur (:tree tree))
-    (let [this-directive [(:coord tree) (:name tree) (:style tree)]
+    (let [this-directive (select-keys tree [:coord :name :style])
           child-directives (map
                             (fn [child-entry] (flatten-tree (last child-entry)))
                             (:children tree))
