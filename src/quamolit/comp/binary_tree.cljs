@@ -28,9 +28,9 @@
          (translate
           {:style {:y y1, :x x1}}
           (scale
-           {:style {:ratio (+ (* 2 shift-a) 0.5)}}
+           {:style {:ratio (+ (* 0.2 shift-a) 0.5)}}
            (rotate
-            {:style {:angle (+ (* 300 shift-a) 10)}}
+            {:style {:angle (+ (* 3 shift-a) 10)}}
             (comp-binary-tree timestamp (dec level))))))
        (if (> level 0)
          (translate

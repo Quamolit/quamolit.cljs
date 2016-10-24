@@ -1,9 +1,9 @@
 
 (ns quamolit.core
   (:require (cljs.reader :as reader)
+            [quamolit.types :refer [Component]]
             [quamolit.render.expand :refer [expand-app]]
             [quamolit.util.time :refer [get-tick]]
-            [quamolit.render.flatten :refer [flatten-tree]]
             [quamolit.render.paint :refer [paint]]
             [quamolit.controller.resolve :refer [resolve-target locate-target]]))
 
@@ -34,13 +34,20 @@
 
 (defonce directives-ref (atom []))
 
-(defn call-paint [directives target]
-  (comment .log js/console directives @directives-ref)
-  (if (not= directives @directives-ref)
+(defn call-paint [tree target]
+  (comment .log js/console tree @directives-ref)
+  (if (not= tree @directives-ref)
     (do
-     (let [ctx (.getContext target "2d"), eff-ref (atom {:alpha-stack (list 1)})]
-       (paint ctx directives eff-ref))
-     (reset! directives-ref directives))))
+     (let [ctx (.getContext target "2d")
+           eff-ref (atom {:alpha-stack (list 1)})
+           w js/window.innerWidth
+           h js/window.innerHeight]
+       (.clearRect ctx 0 0 w h)
+       (.save ctx)
+       (.translate ctx (/ w 2) (/ h 2))
+       (paint ctx tree eff-ref)
+       (.restore ctx))
+     (reset! directives-ref tree))))
 
 (defn render-page [markup states-ref target]
   (let [new-tick (get-tick)
@@ -51,14 +58,12 @@
               @states-ref
               (mutate-factory states-ref)
               new-tick
-              elapsed)
-        directives (:directives tree)]
+              elapsed)]
     (comment .info js/console "rendering page..." @states-ref)
     (reset! tree-ref tree)
     (reset! tick-ref new-tick)
-    (call-paint directives target)
-    (comment .log js/console "tree" tree)
-    (comment doall (map (fn [d] (.log js/console "directives" (pr-str d))) directives))))
+    (call-paint tree target)
+    (comment .log js/console "tree" tree)))
 
 (defonce focus-ref (atom []))
 

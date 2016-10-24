@@ -1,5 +1,6 @@
 
-(ns quamolit.render.paint (:require [hsl.core :refer [hsl]]))
+(ns quamolit.render.paint
+  (:require [hsl.core :refer [hsl]] [quamolit.types :refer [Component]]))
 
 (defn paint-text [ctx style]
   (set! ctx.fillStyle (or (:fill-style style) (hsl 0 0 0)))
@@ -181,11 +182,9 @@
       :group (paint-group!)
       (do (.log js/console "painting not implemented" op) @eff-ref))))
 
-(defn paint [ctx directives eff-ref]
-  (let [w js/window.innerWidth, h js/window.innerHeight]
-    (.clearRect ctx 0 0 w h)
-    (.save ctx)
-    (.translate ctx (/ w 2) (/ h 2))
-    (loop [ds directives]
-      (if (not (empty? ds)) (do (paint-one ctx (first ds) eff-ref) (recur (rest ds)))))
-    (.restore ctx)))
+(defn paint [ctx tree eff-ref]
+  (if (= Component (type tree))
+    (recur ctx (:tree tree) eff-ref)
+    (do
+     (paint-one ctx tree eff-ref)
+     (doseq [cursor (:children tree)] (paint ctx (last cursor) eff-ref)))))

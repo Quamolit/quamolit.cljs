@@ -2,8 +2,7 @@
 (ns quamolit.render.expand
   (:require [quamolit.types :refer [Component Shape]]
             [quamolit.util.detect :refer [=vector]]
-            [quamolit.util.list :refer [filter-first]]
-            [quamolit.render.flatten :refer [flatten-tree]]))
+            [quamolit.util.list :refer [filter-first]]))
 
 (declare expand-component)
 
@@ -227,16 +226,11 @@
                             build-mutate
                             at-place?
                             tick
-                            elapsed))
-                directives (flatten-tree new-tree)]
+                            elapsed))]
             (comment .log js/console "existing state" coord state-tree)
             (merge
              old-tree
-             {:args new-args,
-              :tree new-tree,
-              :instant new-instant,
-              :states state-tree,
-              :directives directives}))))
+             {:args new-args, :tree new-tree, :instant new-instant, :states state-tree}))))
       (let [args (:args markup)
             init-state (:init-state markup)
             init-instant (:init-instant markup)
