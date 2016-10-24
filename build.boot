@@ -93,10 +93,6 @@
     (sh "rsync" "-r" "target/" "repo.tiye.me:repo/Quamolit/quamolit" "--exclude" "main.out" "--delete")
     fileset))
 
-(deftask nothing []
-  (with-pre-wrap fileset
-    fileset))
-
 (deftask build []
   (comp
     (transform-stack :filename "stack-sepal.ir")

@@ -26,7 +26,6 @@ Quamolit is trying to combine two things:
 ![](https://pbs.twimg.com/media/CgnoDXAUoAACK4p.jpg)
 ![](https://pbs.twimg.com/media/CgnoIH_UcAIlDIg.jpg)
 ![](https://pbs.twimg.com/media/Cg8IotoU0AA2rGq.jpg)
-![](https://pbs.twimg.com/media/Cg8NuT1WMAIA3bK.jpg)
 
 ### Usage
 
@@ -106,8 +105,7 @@ boot dev # start develop workspace at target/index.html
 (defn on-unmount [instant tick])
 (defn remove? [instant])
 (defn render [arg1 arg2]
-  (fn [state mutate]
-    (fn [instant tick])))
+  (fn [state mutate instant tick]))
 (defn removable? [instant]
   (:numb? instant))
 
