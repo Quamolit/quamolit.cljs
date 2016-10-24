@@ -17,6 +17,7 @@
    remove?
    render
    tree
-   fading?])
+   fading?
+   directives])
 
 (defrecord Shape [name style event children])

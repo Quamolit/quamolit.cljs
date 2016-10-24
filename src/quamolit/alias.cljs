@@ -71,7 +71,8 @@
       (or remove? default-remove?)
       render
       nil
-      false))))
+      false
+      []))))
 
 (defn native-alpha [props & children] (create-shape :native-alpha props children))
 

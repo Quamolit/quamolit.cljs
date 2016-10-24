@@ -230,18 +230,13 @@
                             elapsed))
                 directives (flatten-tree new-tree)]
             (comment .log js/console "existing state" coord state-tree)
-            (assoc
+            (merge
              old-tree
-             :args
-             new-args
-             :states
-             state-tree
-             :instant
-             new-instant
-             :tree
-             new-tree
-             :directives
-             directives))))
+             {:args new-args,
+              :tree new-tree,
+              :instant new-instant,
+              :states state-tree,
+              :directives directives}))))
       (let [args (:args markup)
             init-state (:init-state markup)
             init-instant (:init-instant markup)
@@ -273,18 +268,9 @@
                     false
                     tick
                     elapsed))]
-        (assoc
+        (merge
          markup
-         :coord
-         child-coord
-         :args
-         args
-         :states
-         state-tree
-         :instant
-         instant
-         :tree
-         tree)))))
+         {:args args, :coord child-coord, :tree tree, :instant instant, :states state-tree})))))
 
 (defn expand-app [markup old-tree states build-mutate tick elapsed]
   (comment .log js/console "caches:" (map first (map key @comp-caches)))
