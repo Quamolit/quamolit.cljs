@@ -1,7 +1,6 @@
 
 (ns quamolit.controller.resolve
-  (:require [quamolit.types :refer [Component]]
-            [quamolit.util.list :refer [filter-first]]))
+  (:require [quamolit.types :refer [Component]] [quamolit.util.list :refer [filter-first]]))
 
 (defn locate-target [tree coord]
   (comment .log js/console "locating" coord tree)
@@ -10,10 +9,9 @@
     (let [first-pos (first coord)]
       (if (= Component (type tree))
         (if (= first-pos (:name tree)) (recur (:tree tree) (subvec coord 1)) nil)
-        (let [picked-pair (->>
-                            (:children tree)
-                            (filter-first
-                              (fn [child-pair] (= (first child-pair) first-pos))))
+        (let [picked-pair (->> (:children tree)
+                               (filter-first
+                                (fn [child-pair] (= (first child-pair) first-pos))))
               picked (if (some? picked-pair) (last picked-pair) nil)]
           (if (some? picked) (recur picked (subvec coord 1)) nil))))))
 

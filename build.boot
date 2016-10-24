@@ -5,7 +5,7 @@
                   [org.clojure/clojurescript "1.9.293"     :scope "test"]
                   [adzerk/boot-cljs          "1.7.228-1"   :scope "test"]
                   [adzerk/boot-reload        "0.4.12"      :scope "test"]
-                  [cirru/boot-stack-server   "0.1.18"      :scope "test"]
+                  [cirru/boot-stack-server   "0.1.19"      :scope "test"]
                   [binaryage/devtools        "0.7.2"       :scope "test"]
                   [respo                     "0.3.25"]
                   [mvc-works/hsl             "0.1.2"]])
@@ -91,6 +91,10 @@
 (deftask rsync []
   (with-pre-wrap fileset
     (sh "rsync" "-r" "target/" "repo.tiye.me:repo/Quamolit/quamolit" "--exclude" "main.out" "--delete")
+    fileset))
+
+(deftask nothing []
+  (with-pre-wrap fileset
     fileset))
 
 (deftask build []

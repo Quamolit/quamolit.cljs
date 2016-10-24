@@ -26,8 +26,7 @@
 
 (defn handle-input [mutate! default-text]
   (fn [simple-event dispatch]
-    (let [user-text (js/prompt "input to canvas:" default-text)]
-      (mutate! {:draft user-text}))))
+    (let [user-text (js/prompt "input to canvas:" default-text)] (mutate! {:draft user-text}))))
 
 (defn init-state [store] {:draft ""})
 
@@ -37,52 +36,47 @@
   (fn [state mutate! instant tick]
     (comment .info js/console "todolist:" store state)
     (alpha
-      {:style {:opacity (/ (:presence instant) 1000)}}
+     {:style {:opacity (/ (:presence instant) 1000)}}
+     (translate
+      {:style position-header}
       (translate
-        {:style position-header}
-        (translate
-          {:style {:y 40, :x -20}}
-          (input
-            {:style {:w 400, :h 40, :text (:draft state)},
-             :event {:click (handle-input mutate! (:draft state))}}))
-        (translate
-          {:style {:y 40, :x 240}}
-          (button {:style style-button, :event (event-button mutate! (:draft state))})))
+       {:style {:y 40, :x -20}}
+       (input
+        {:style {:w 400, :h 40, :text (:draft state)},
+         :event {:click (handle-input mutate! (:draft state))}}))
       (translate
-        {:style position-body}
-        (group
-          {}
-          (->>
-            store
+       {:style {:y 40, :x 240}}
+       (button {:style style-button, :event (event-button mutate! (:draft state))})))
+     (translate
+      {:style position-body}
+      (group
+       {}
+       (->> store
             (reverse)
             (map-indexed
-              (fn [index task]
-                (let [shift-x (max
+             (fn [index task]
+               (let [shift-x (max
+                              -40
+                              (min
+                               0
+                               (*
                                 -40
-                                (min
-                                  0
-                                  (*
-                                    -40
-                                    (+
-                                      (if (= (count store) 1)
-                                        0
-                                        (if (> (:presence-v instant) 0)
-                                          (/ index (- (count store) 1))
-                                          (-
-                                            1
-                                            (if (= index 0)
-                                              0
-                                              (/ index (- (count store) 1))))))
-                                      (- 1 (/ (:presence instant) 500))))))]
-                  [(:id task) (comp-task timestamp task index shift-x)]))))))
-      (comp-debug instant {}))))
+                                (+
+                                 (if (= (count store) 1)
+                                   0
+                                   (if (> (:presence-v instant) 0)
+                                     (/ index (- (count store) 1))
+                                     (- 1 (if (= index 0) 0 (/ index (- (count store) 1))))))
+                                 (- 1 (/ (:presence instant) 500))))))]
+                 [(:id task) (comp-task timestamp task index shift-x)]))))))
+     (comp-debug instant {}))))
 
 (defn init-instant [args state at-place?] {:presence 0, :numb? false, :presence-v 3})
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
 (def comp-todolist
- (create-comp
+  (create-comp
    :todolist
    init-state
    merge

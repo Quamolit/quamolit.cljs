@@ -8,8 +8,8 @@
 (defn render [timestamp]
   (fn [state mutate! instant tick]
     (group
-      {}
-      (translate {:style {:x -200}} (comp-icon-increase))
-      (translate {:style {:x 0}} (comp-icon-play)))))
+     {}
+     (translate {:style {:x -200}} (comp-icon-increase))
+     (translate {:style {:x 0}} (comp-icon-play)))))
 
 (def comp-icons-table (create-comp :icons-table render))

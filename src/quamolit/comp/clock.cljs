@@ -15,13 +15,13 @@
           get-one (fn [x] (mod x 10))]
       (comment .log js/console secs)
       (group
-        {}
-        (comp-digit (get-ten hrs) {:style {:x -200}})
-        (comp-digit (get-one hrs) {:style {:x -140}})
-        (comp-digit (get-ten mins) {:style {:x -60}})
-        (comp-digit (get-one mins) {:style {:x 0}})
-        (comp-digit (get-ten secs) {:style {:x 80}})
-        (comp-digit (get-one secs) {:style {:x 140}})
-        (comp-debug now {:y -60})))))
+       {}
+       (comp-digit (get-ten hrs) {:style {:x -200}})
+       (comp-digit (get-one hrs) {:style {:x -140}})
+       (comp-digit (get-ten mins) {:style {:x -60}})
+       (comp-digit (get-one mins) {:style {:x 0}})
+       (comp-digit (get-ten secs) {:style {:x 80}})
+       (comp-digit (get-one secs) {:style {:x 140}})
+       (comp-debug now {:y -60})))))
 
 (def comp-clock (create-comp :clock render))

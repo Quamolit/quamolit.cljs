@@ -1,6 +1,5 @@
 
-(ns quamolit.util.keyboard
-  (:require [clojure.string :as string]))
+(ns quamolit.util.keyboard (:require [clojure.string :as string]))
 
 (defn keycode->key [k shift?]
   (if (and (<= k 90) (>= k 65))

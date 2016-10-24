@@ -23,7 +23,7 @@
   (.log js/console "code updated..."))
 
 (defn dispatch! [op op-data]
-  (let [new-tick (get-tick) new-store (updater-fn @store-ref op op-data new-tick)]
+  (let [new-tick (get-tick), new-store (updater-fn @store-ref op op-data new-tick)]
     (reset! store-ref new-store)))
 
 (defn -main []
@@ -37,5 +37,5 @@
 (set! js/window.onload -main)
 
 (set!
-  js/window.onresize
-  (fn [event] (let [target (.querySelector js/document "#app")] (configure-canvas target))))
+ js/window.onresize
+ (fn [event] (let [target (.querySelector js/document "#app")] (configure-canvas target))))

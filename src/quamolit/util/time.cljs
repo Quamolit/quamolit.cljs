@@ -1,4 +1,4 @@
 
-(ns quamolit.util.time)
+(ns quamolit.util.time )
 
 (defn get-tick [] (.valueOf (js/Date.)))

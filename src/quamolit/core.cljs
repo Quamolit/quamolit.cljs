@@ -23,7 +23,7 @@
             maybe-state (get-in @states-ref state-path)
             old-state (if (some? maybe-state)
                         maybe-state
-                        (let [init-state (:init-state component) args (:args component)]
+                        (let [init-state (:init-state component), args (:args component)]
                           (apply init-state args)))
             update-state (:update-state component)
             new-state (apply update-state (cons old-state state-args))
@@ -38,22 +38,20 @@
   (comment .log js/console directives @directives-ref)
   (if (not= directives @directives-ref)
     (do
-      (let [ctx (.getContext target "2d")]
-        (paint
-          ctx
-          (->> directives (filter (fn [directive] (not= :group (get directive 1)))))))
-      (reset! directives-ref directives))))
+     (let [ctx (.getContext target "2d")]
+       (paint ctx (->> directives (filter (fn [directive] (not= :group (get directive 1)))))))
+     (reset! directives-ref directives))))
 
 (defn render-page [markup states-ref target]
   (let [new-tick (get-tick)
         elapsed (- new-tick @tick-ref)
         tree (expand-app
-               markup
-               @tree-ref
-               @states-ref
-               (mutate-factory states-ref)
-               new-tick
-               elapsed)
+              markup
+              @tree-ref
+              @states-ref
+              (mutate-factory states-ref)
+              new-tick
+              elapsed)
         directives (:directives tree)]
     (comment .info js/console "rendering page..." @states-ref)
     (reset! tree-ref tree)
@@ -79,23 +77,23 @@
 (defn setup-events [root-element dispatch]
   (let [ctx (.getContext root-element "2d")]
     (.addEventListener
-      root-element
-      "click"
-      (fn [event]
-        (let [hit-region (aget event "region")]
-          (comment .log js/console "hit:" event hit-region)
-          (if (some? hit-region)
-            (let [coord (reader/read-string hit-region)]
-              (reset! focus-ref coord)
-              (handle-event coord :click event dispatch))
-            (reset! focus-ref [])))))
+     root-element
+     "click"
+     (fn [event]
+       (let [hit-region (aget event "region")]
+         (comment .log js/console "hit:" event hit-region)
+         (if (some? hit-region)
+           (let [coord (reader/read-string hit-region)]
+             (reset! focus-ref coord)
+             (handle-event coord :click event dispatch))
+           (reset! focus-ref [])))))
     (.addEventListener
-      root-element
-      "keypress"
-      (fn [event] (let [coord @focus-ref] (handle-event coord :keypress event dispatch))))
+     root-element
+     "keypress"
+     (fn [event] (let [coord @focus-ref] (handle-event coord :keypress event dispatch))))
     (.addEventListener
-      root-element
-      "keydown"
-      (fn [event] (let [coord @focus-ref] (handle-event coord :keydown event dispatch))))
+     root-element
+     "keydown"
+     (fn [event] (let [coord @focus-ref] (handle-event coord :keydown event dispatch))))
     (if (nil? (aget ctx "addHitRegion"))
       (js/alert "You need to enable experimental canvas features to view this app"))))

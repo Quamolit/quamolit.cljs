@@ -1,16 +1,14 @@
 
-(ns quamolit.alias
-  (:require [quamolit.types :refer [Component Shape]]))
+(ns quamolit.alias (:require [quamolit.types :refer [Component Shape]]))
 
 (defn arrange-children [children]
   (sort-by
-    first
-    (if (and
-          (= (count children) 1)
-          (not
-            (or (= Component (type (first children))) (= Shape (type (first children))))))
-      (first children)
-      (->> children (map-indexed vector) (filter (fn [entry] (some? (val entry))))))))
+   first
+   (if (and (= (count children) 1)
+            (not
+             (or (= Component (type (first children))) (= Shape (type (first children))))))
+     (first children)
+     (->> children (map-indexed vector) (filter (fn [entry] (some? (val entry))))))))
 
 (defn create-shape [shape-name props children]
   (if (not (map? props)) (throw (js/Error. "Props expeced to be a map!")))
@@ -45,18 +43,9 @@
 (defn create-comp
   ([comp-name render] (create-comp comp-name nil nil nil nil nil nil nil render))
   ([comp-name init-state update-state render]
-    (create-comp comp-name init-state update-state nil nil nil nil nil render))
+   (create-comp comp-name init-state update-state nil nil nil nil nil render))
   ([comp-name init-instant on-tick on-update on-unmount remove? render]
-    (create-comp
-      comp-name
-      nil
-      nil
-      init-instant
-      on-tick
-      on-update
-      on-unmount
-      remove?
-      render))
+   (create-comp comp-name nil nil init-instant on-tick on-update on-unmount remove? render))
   ([comp-name
     init-state
     update-state
@@ -66,23 +55,23 @@
     on-unmount
     remove?
     render]
-    (fn [& args]
-      (Component.
-        comp-name
-        nil
-        args
-        nil
-        nil
-        (or init-state default-init-state)
-        (or update-state merge)
-        (or init-instant default-init-instant)
-        (or on-tick default-on-tick)
-        (or on-update default-on-update)
-        (or on-unmount default-on-unmount)
-        (or remove? default-remove?)
-        render
-        nil
-        false))))
+   (fn [& args]
+     (Component.
+      comp-name
+      nil
+      args
+      nil
+      nil
+      (or init-state default-init-state)
+      (or update-state merge)
+      (or init-instant default-init-instant)
+      (or on-tick default-on-tick)
+      (or on-update default-on-update)
+      (or on-unmount default-on-unmount)
+      (or remove? default-remove?)
+      render
+      nil
+      false))))
 
 (defn native-alpha [props & children] (create-shape :native-alpha props children))
 

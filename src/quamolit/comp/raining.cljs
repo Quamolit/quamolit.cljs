@@ -11,10 +11,10 @@
 (defn on-tick [instant tick elapsed]
   (if (> (rand-int 100) 40)
     (conj
-      (subvec instant 3)
-      [(get-tick) (random-point)]
-      [(get-tick) (random-point)]
-      [(get-tick) (random-point)])
+     (subvec instant 3)
+     [(get-tick) (random-point)]
+     [(get-tick) (random-point)]
+     [(get-tick) (random-point)])
     instant))
 
 (defn remove? [instant] true)
@@ -25,22 +25,20 @@
   (fn [state mutate! instant tick]
     (comment .log js/console (pr-str instant))
     (group
-      {}
-      (->>
-        instant
-        (map
-          (fn [entry]
-            (let [child-key (first entry) child (last entry)]
-              [child-key (comp-raindrop child timestamp)])))))))
+     {}
+     (->> instant
+          (map
+           (fn [entry]
+             (let [child-key (first entry), child (last entry)]
+               [child-key (comp-raindrop child timestamp)])))))))
 
 (defn init-instant []
-  (let [init-val (->>
-                   (repeat 80 0)
-                   (map-indexed (fn [index x] [index (random-point)]))
-                   (into []))]
+  (let [init-val (->> (repeat 80 0)
+                      (map-indexed (fn [index x] [index (random-point)]))
+                      (into []))]
     init-val))
 
 (defn on-unmount [instant tick] instant)
 
 (def comp-raining
- (create-comp :raining init-instant on-tick on-update on-unmount remove? render))
+  (create-comp :raining init-instant on-tick on-update on-unmount remove? render))

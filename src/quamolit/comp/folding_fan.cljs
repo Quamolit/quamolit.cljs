@@ -29,45 +29,41 @@
           dest-h 432
           dest-unit (/ dest-w n)]
       (group
-        {}
-        (translate
-          {:style {:y 160, :x 0}}
-          (->>
-            (range n)
-            (map
-              (fn [i] [i
-                       (rotate
-                         {:style
-                          {:angle
-                           (*
-                             (tween [0 6] [0 1000] (:folding-value instant))
-                             (+ 0.5 (- i (/ n 2))))}}
-                         (image
-                           {:style
-                            {:dh dest-h,
-                             :dx (- 0 (/ image-unit 2)),
-                             :sy 0,
-                             :dy (- 10 dest-h),
-                             :src "lotus.jpg",
-                             :dw dest-unit,
-                             :sx (* i image-unit),
-                             :sh image-h,
-                             :sw image-unit}}))]))))
-        (button
-          {:style
-           {:y 200,
-            :surface-color (hsl 30 80 60),
-            :text-color (hsl 0 0 100),
-            :x 160,
-            :text "Toggle"},
-           :event {:click (handle-toggle mutate!)}})))))
+       {}
+       (translate
+        {:style {:y 160, :x 0}}
+        (->> (range n)
+             (map
+              (fn [i]
+                [i
+                 (rotate
+                  {:style {:angle (*
+                                   (tween [0 6] [0 1000] (:folding-value instant))
+                                   (+ 0.5 (- i (/ n 2))))}}
+                  (image
+                   {:style {:dh dest-h,
+                            :dx (- 0 (/ image-unit 2)),
+                            :sy 0,
+                            :dy (- 10 dest-h),
+                            :src "lotus.jpg",
+                            :dw dest-unit,
+                            :sx (* i image-unit),
+                            :sh image-h,
+                            :sw image-unit}}))]))))
+       (button
+        {:style {:y 200,
+                 :surface-color (hsl 30 80 60),
+                 :text-color (hsl 0 0 100),
+                 :x 160,
+                 :text "Toggle"},
+         :event {:click (handle-toggle mutate!)}})))))
 
 (defn init-instant [args state] {:folding-v 0, :folding-value (if state 1000 0)})
 
 (defn on-unmount [instant tick] instant)
 
 (def comp-folding-fan
- (create-comp
+  (create-comp
    :folding-fan
    init-state
    update-state

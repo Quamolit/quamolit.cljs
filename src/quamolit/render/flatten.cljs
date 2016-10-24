@@ -7,7 +7,7 @@
     (recur (:tree tree))
     (let [this-directive [(:coord tree) (:name tree) (:style tree)]
           child-directives (map
-                             (fn [child-entry] (flatten-tree (last child-entry)))
-                             (:children tree))
+                            (fn [child-entry] (flatten-tree (last child-entry)))
+                            (:children tree))
           all-directives (cons this-directive (apply concat child-directives))]
       all-directives)))

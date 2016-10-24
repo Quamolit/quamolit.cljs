@@ -1,20 +1,30 @@
 
 (ns quamolit.render.element
   (:require [hsl.core :refer [hsl]]
-            [quamolit.alias :refer [create-comp native-translate native-alpha native-save
-                                    native-restore native-rotate native-scale group rect
-                                    text arrange-children]]
+            [quamolit.alias
+             :refer
+             [create-comp
+              native-translate
+              native-alpha
+              native-save
+              native-restore
+              native-rotate
+              native-scale
+              group
+              rect
+              text
+              arrange-children]]
             [quamolit.util.keyboard :refer [keycode->key]]))
 
 (defn render-translate [props & children]
   (let [style (merge {:y 0, :x 0} (:style props))]
     (fn [state mutate! instant tick]
       (group
-        {}
-        (native-save {})
-        (native-translate (assoc props :style style))
-        (group {} (arrange-children children))
-        (native-restore {})))))
+       {}
+       (native-save {})
+       (native-translate (assoc props :style style))
+       (group {} (arrange-children children))
+       (native-restore {})))))
 
 (def translate (create-comp :translate render-translate))
 
@@ -41,9 +51,9 @@
                     :text (:text style)}]
     (fn [state mutate! instant tick]
       (group
-        {}
-        (rect {:style style-bg, :event event-collection})
-        (translate {:style style-place-text} (text {:style style-text}))))))
+       {}
+       (rect {:style style-bg, :event event-collection})
+       (translate {:style style-place-text} (text {:style style-text}))))))
 
 (defn init-textbox [props] (:text (:style props)))
 
@@ -51,24 +61,24 @@
 
 (defn render-rotate [props & children]
   (fn [state mutate! instant tick]
-    (let [style (:style props) angle (* pi-ratio (or (:angle style) 30))]
+    (let [style (:style props), angle (* pi-ratio (or (:angle style) 30))]
       (comment .log js/console "actual degree:" angle)
       (group
-        {}
-        (native-save {})
-        (native-rotate {:style {:angle angle}})
-        (group {} (arrange-children children))
-        (native-restore {})))))
+       {}
+       (native-save {})
+       (native-rotate {:style {:angle angle}})
+       (group {} (arrange-children children))
+       (native-restore {})))))
 
 (defn render-scale [props & children]
   (let [style (merge {:y 0, :x 0} (:style props))]
     (fn [state mutate! instant tick]
       (group
-        {}
-        (native-save {})
-        (native-scale (assoc props :style style))
-        (group {} (map-indexed vector children))
-        (native-restore {})))))
+       {}
+       (native-save {})
+       (native-scale (assoc props :style style))
+       (group {} (map-indexed vector children))
+       (native-restore {})))))
 
 (def scale (create-comp :scale render-scale))
 
@@ -95,11 +105,11 @@
   (let [style (merge {:opacity 0.5} (:style props))]
     (fn [state mutate! instant tick]
       (group
-        {}
-        (native-save {})
-        (native-alpha (assoc props :style style))
-        (group {} (arrange-children children))
-        (native-restore {})))))
+       {}
+       (native-save {})
+       (native-alpha (assoc props :style style))
+       (group {} (arrange-children children))
+       (native-restore {})))))
 
 (def alpha (create-comp :alpha render-alpha))
 

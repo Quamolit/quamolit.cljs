@@ -22,4 +22,4 @@
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
 (def comp-fade-in-out
- (create-comp :fade-in-out init-instant on-tick on-update on-unmount nil render))
+  (create-comp :fade-in-out init-instant on-tick on-update on-unmount nil render))

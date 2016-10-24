@@ -1,5 +1,5 @@
 
-(ns quamolit.util.order)
+(ns quamolit.util.order )
 
 (defn by-coord [a b]
   (comment .log js/console "comparing" a b)
