@@ -41,10 +41,7 @@
       (let [ctx (.getContext target "2d")]
         (paint
           ctx
-          (->>
-            directives
-            (filter (fn [directive] (not= :group (get directive 1))))
-            (into []))))
+          (->> directives (filter (fn [directive] (not= :group (get directive 1)))))))
       (reset! directives-ref directives))))
 
 (defn render-page [markup states-ref target]

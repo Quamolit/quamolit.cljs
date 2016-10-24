@@ -205,5 +205,5 @@
     (.save ctx)
     (.translate ctx (/ w 2) (/ h 2))
     (loop [ds directives eff {:alpha-stack (list 1)}]
-      (if (> (count ds) 0) (do (recur (subvec ds 1) (paint-one ctx (first ds) eff)))))
+      (if (not (empty? ds)) (do (recur (rest ds) (paint-one ctx (first ds) eff)))))
     (.restore ctx)))

@@ -3,20 +3,16 @@
   (:require [quamolit.schema :as schema]))
 
 (defn task-toggle [store op-data tick]
-  (->>
-    store
-    (map (fn [task] (if (= op-data (:id task)) (update task :done? not) task)))
-    (into [])))
+  (->> store (mapv (fn [task] (if (= op-data (:id task)) (update task :done? not) task)))))
 
 (defn task-rm [store op-data tick]
-  (->> store (filter (fn [task] (not= op-data (:id task)))) (into [])))
+  (->> store (filterv (fn [task] (not= op-data (:id task))))))
 
 (defn task-update [store op-data tick]
   (let [[task-id text] op-data]
     (->>
       store
-      (map (fn [task] (if (= task-id (:id task)) (assoc task :text text) task)))
-      (into []))))
+      (mapv (fn [task] (if (= task-id (:id task)) (assoc task :text text) task))))))
 
 (defn task-add [store op-data tick] (conj store (assoc schema/task :id tick :text op-data)))
 
