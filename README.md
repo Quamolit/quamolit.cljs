@@ -106,13 +106,11 @@ boot dev # start develop workspace at target/index.html
 (defn remove? [instant])
 (defn render [arg1 arg2]
   (fn [state mutate instant tick]))
-(defn removable? [instant]
-  (:numb? instant))
 
-(create-comp :demo                                                                            render)
-(create-comp :demo init-state update-state                                                    render)
-(create-comp :demo                         init-instant on-tick on-update on-mount removable? render)
-(create-comp :demo init-state update-state init-instant on-tick on-update on-mount removable? render)
+(create-comp :demo                                                                         render)
+(create-comp :demo init-state update-state                                                 render)
+(create-comp :demo                         init-instant on-tick on-update on-mount remove? render)
+(create-comp :demo init-state update-state init-instant on-tick on-update on-mount remove? render)
 
 (mutate state-arg1 state-arg2)
 (dispatch op op-data)

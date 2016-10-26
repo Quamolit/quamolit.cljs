@@ -12,7 +12,7 @@
 
 (defn handle-toggle [mutate!] (fn [e dispatch] (mutate!)))
 
-(defn removable? [instant] true)
+(defn remove? [instant] true)
 
 (defn on-update [instant old-args old-state args state]
   (if (not= old-state state) (assoc instant :folding-v (if state 2 -2)) instant))
@@ -71,5 +71,5 @@
    on-tick
    on-update
    on-unmount
-   removable?
+   remove?
    render))

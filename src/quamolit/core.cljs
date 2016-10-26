@@ -70,6 +70,8 @@
 (defn configure-canvas [app-container]
   (.setAttribute app-container "width" js/window.innerWidth)
   (.setAttribute app-container "height" js/window.innerHeight)
+  (aset (.-style app-container) "width" js/window.innerWidth)
+  (aset (.-style app-container) "height" js/window.innerHeight)
   (reset! directives-ref nil))
 
 (defn handle-event [coord event-name event dispatch]
