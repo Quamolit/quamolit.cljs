@@ -32,22 +32,17 @@
         (comment .log js/console "new-states" new-states)
         (reset! states-ref new-states)))))
 
-(defonce directives-ref (atom []))
-
 (defn call-paint [tree target]
-  (comment .log js/console tree @directives-ref)
-  (if (not= tree @directives-ref)
-    (do
-     (let [ctx (.getContext target "2d")
-           eff-ref (atom {:alpha-stack (list 1)})
-           w js/window.innerWidth
-           h js/window.innerHeight]
-       (.clearRect ctx 0 0 w h)
-       (.save ctx)
-       (.translate ctx (/ w 2) (/ h 2))
-       (paint ctx tree eff-ref)
-       (.restore ctx))
-     (reset! directives-ref tree))))
+  (comment .log js/console tree)
+  (let [ctx (.getContext target "2d")
+        eff-ref (atom {:alpha-stack (list 1)})
+        w js/window.innerWidth
+        h js/window.innerHeight]
+    (.clearRect ctx 0 0 w h)
+    (.save ctx)
+    (.translate ctx (/ w 2) (/ h 2))
+    (paint ctx tree eff-ref)
+    (.restore ctx)))
 
 (defn render-page [markup states-ref target]
   (let [new-tick (get-tick)
@@ -69,10 +64,7 @@
 
 (defn configure-canvas [app-container]
   (.setAttribute app-container "width" js/window.innerWidth)
-  (.setAttribute app-container "height" js/window.innerHeight)
-  (aset (.-style app-container) "width" js/window.innerWidth)
-  (aset (.-style app-container) "height" js/window.innerHeight)
-  (reset! directives-ref nil))
+  (.setAttribute app-container "height" js/window.innerHeight))
 
 (defn handle-event [coord event-name event dispatch]
   (let [maybe-listener (resolve-target @tree-ref event-name coord)]
