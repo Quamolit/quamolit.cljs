@@ -1,7 +1,7 @@
 
 (ns quamolit.render.expand
   (:require [quamolit.types :refer [Component Shape]]
-            [quamolit.util.detect :refer [=vector]]
+            [quamolit.util.detect :refer [=seq]]
             [quamolit.util.list :refer [filter-first]]))
 
 (declare expand-component)
@@ -33,10 +33,10 @@
                     at-place?
                     tick
                     elapsed]
-  (let [old-children (->> (:children old-tree) (into []))
+  (let [old-children (:children old-tree)
         new-children (->> (:children markup)
-                          (filterv (fn [entry] (some? (last entry))))
-                          (mapv
+                          (filter (fn [entry] (some? (last entry))))
+                          (map
                            (fn [child]
                              (let [child-key (first child)
                                    child-markup (last child)
@@ -71,16 +71,17 @@
                                    tick
                                    elapsed))]))))]
     (if (some? old-tree)
-      (let [merged-children (merge-children
-                             []
-                             old-children
-                             new-children
-                             coord
-                             states
-                             build-mutate
-                             at-place?
-                             tick
-                             elapsed)]
+      (let [merged-children (seq
+                             (merge-children
+                              []
+                              old-children
+                              new-children
+                              coord
+                              states
+                              build-mutate
+                              at-place?
+                              tick
+                              elapsed))]
         (assoc markup :coord coord :c-coord c-coord :children merged-children))
       (assoc markup :children new-children :coord coord :c-coord c-coord))))
 
@@ -93,42 +94,40 @@
                       at-place?
                       tick
                       elapsed]
-  (let [new-n (count new-children)
-        old-n (count old-children)
+  (let [was-empty? (empty? old-children)
+        now-empty? (empty? new-children)
         old-cursor (first old-children)
         new-cursor (first new-children)]
     (cond
-      (and (= old-n 0) (= new-n 0)) acc
-      (and (> old-n 0) (> new-n 0) (= (key old-cursor) (key new-cursor)))
+      (and was-empty? now-empty?) (do (comment println (into (list) acc)) acc)
+      (and (not was-empty?) (not now-empty?) (= (key old-cursor) (key new-cursor)))
         (recur
          (conj acc [(key new-cursor) (val new-cursor)])
-         (subvec old-children 1)
-         (subvec new-children 1)
+         (rest old-children)
+         (rest new-children)
          coord
          states
          build-mutate
          at-place?
          tick
          elapsed)
-      (and (> new-n 0)
-           (or (= old-n 0)
-               (and (> old-n 0) (= 1 (compare (key old-cursor) (key new-cursor))))))
+      (and (not now-empty?)
+           (or was-empty? (= 1 (compare (key old-cursor) (key new-cursor)))))
         (let [child-key (first new-cursor)
               child (last new-cursor)
               new-acc (conj acc [child-key child])]
           (recur
            new-acc
            old-children
-           (subvec new-children 1)
+           (rest new-children)
            coord
            states
            build-mutate
            at-place?
            tick
            elapsed))
-      (and (> old-n 0)
-           (or (= new-n 0)
-               (and (> new-n 0) (= -1 (compare (key old-cursor) (key new-cursor))))))
+      (and (not was-empty?)
+           (or now-empty? (= -1 (compare (key old-cursor) (key new-cursor)))))
         (let [child-key (first old-cursor)
               child (last old-cursor)
               component? (= Component (type child))
@@ -158,7 +157,7 @@
                         acc)]
           (recur
            new-acc
-           (subvec old-children 1)
+           (rest old-children)
            new-children
            coord
            states
@@ -189,15 +188,11 @@
             on-update (:on-update markup)
             new-instant (-> old-instant
                             (on-tick tick elapsed)
-                            (on-update
-                             (into [] old-args)
-                             (into [] new-args)
-                             old-state
-                             new-state))]
+                            (on-update old-args new-args old-state new-state))]
         (if (and (identical? old-states state-tree)
                  (identical? (:render old-tree) (:render markup))
                  (identical? old-instant new-instant)
-                 (=vector (into [] old-args) (into [] new-args)))
+                 (=seq old-args new-args))
           (do
            (comment println "reusing tree" child-coord)
            (comment println old-args new-args)
@@ -237,7 +232,7 @@
             state (if (contains? state-tree 'data)
                     (get state-tree 'data)
                     (apply init-state args))
-            instant (init-instant (into [] args) state at-place?)
+            instant (init-instant args state at-place?)
             mutate! (build-mutate child-coord)
             shape (-> (:render markup)
                       (apply args)

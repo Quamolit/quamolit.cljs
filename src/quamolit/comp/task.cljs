@@ -26,7 +26,7 @@
 
 (defn on-update [instant old-args args old-state state]
   (comment .log js/console "on update:" instant old-args args)
-  (let [old-index (get old-args 2), new-index (get args 2)]
+  (let [old-index (get (into [] old-args) 2), new-index (get (into [] args) 2)]
     (if (not= old-index new-index)
       (assoc
        instant
@@ -63,7 +63,7 @@
       (comp-debug task {})))))
 
 (defn init-instant [args state at-place?]
-  (let [index (get args 2)]
+  (let [index (get (into [] args) 2)]
     {:presence-velocity 3,
      :index index,
      :presence 0,

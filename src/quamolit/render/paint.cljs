@@ -164,21 +164,21 @@
 (defn paint-rotate [ctx style] (let [angle (or (:angle style) 30)] (.rotate ctx angle)))
 
 (defn paint-one [ctx directive eff-ref]
-  (let [coord (:coord directive), op (:name directive), style (:style directive)]
+  (let [op (:name directive), style (:style directive)]
     (comment .log js/console :paint-one op style)
     (case op
       :line (paint-line ctx style)
       :path (paint-path ctx style)
       :text (paint-text ctx style)
-      :rect (paint-rect ctx style coord)
+      :rect (paint-rect ctx style (:coord directive))
       :native-save (paint-save ctx style eff-ref)
       :native-restore (paint-restore ctx style eff-ref)
       :native-translate (paint-translate ctx style)
       :native-alpha (paint-alpha ctx style eff-ref)
       :native-rotate (paint-rotate ctx style)
       :native-scale (paint-scale ctx style)
-      :arc (paint-arc ctx style coord)
-      :image (paint-image ctx style coord)
+      :arc (paint-arc ctx style (:coord directive))
+      :image (paint-image ctx style (:coord directive))
       :group (paint-group!)
       (do (.log js/console "painting not implemented" op) @eff-ref))))
 

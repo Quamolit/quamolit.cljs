@@ -2,13 +2,11 @@
 (ns quamolit.alias (:require [quamolit.types :refer [Component Shape]]))
 
 (defn arrange-children [children]
-  (sort-by
-   first
-   (if (and (= (count children) 1)
-            (not
-             (or (= Component (type (first children))) (= Shape (type (first children))))))
-     (first children)
-     (->> children (map-indexed vector) (filter (fn [entry] (some? (val entry))))))))
+  (if (and (= (count children) 1)
+           (not
+            (or (= Component (type (first children))) (= Shape (type (first children))))))
+    (sort-by first (first children))
+    (->> children (map-indexed vector) (filter (fn [entry] (some? (val entry)))))))
 
 (defn create-shape [shape-name props children]
   (if (not (map? props)) (throw (js/Error. "Props expeced to be a map!")))
