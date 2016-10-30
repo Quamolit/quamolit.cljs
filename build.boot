@@ -69,6 +69,12 @@
     (cljs :compiler-options {:language-in :ecmascript5})
     (target)))
 
+(deftask editor! []
+  (comp
+    (repl)
+    (start-stack-editor!)
+    (target :dir #{"src/"})))
+
 (deftask generate-code []
   (comp
     (transform-stack :filename "stack-sepal.ir")

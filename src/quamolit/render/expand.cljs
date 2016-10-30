@@ -35,7 +35,6 @@
                     elapsed]
   (let [old-children (:children old-tree)
         new-children (->> (:children markup)
-                          (filter (fn [entry] (some? (last entry))))
                           (map
                            (fn [child]
                              (let [child-key (first child)

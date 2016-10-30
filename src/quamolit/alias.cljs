@@ -1,10 +1,12 @@
 
 (ns quamolit.alias (:require [quamolit.types :refer [Component Shape]]))
 
+(def children-xfrom (comp (map-indexed vector) (filter (fn [entry] (some? (last entry))))))
+
 (defn arrange-children [children]
   (if (seq? (first children))
     (sort-by first (first children))
-    (->> children (map-indexed vector) (filter (fn [entry] (some? (last entry)))))))
+    (seq (transduce children-xfrom conj [] children))))
 
 (defn create-shape [shape-name props children]
   (if (not (map? props)) (throw (js/Error. "Props expeced to be a map!")))
