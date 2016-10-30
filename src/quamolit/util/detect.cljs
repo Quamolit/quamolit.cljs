@@ -8,7 +8,3 @@
       (if (or xs-empty? ys-empty?)
         false
         (if (identical? (first xs) (first ys)) (recur (rest xs) (rest ys)) false)))))
-
-(defn map-of-children? [x]
-  (and (map? x)
-       (every? (fn [entry] (and (map? (val entry)) (contains? (val entry) :type))) x)))

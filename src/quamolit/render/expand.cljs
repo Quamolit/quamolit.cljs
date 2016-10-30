@@ -99,7 +99,7 @@
         old-cursor (first old-children)
         new-cursor (first new-children)]
     (cond
-      (and was-empty? now-empty?) (do (comment println (into (list) acc)) acc)
+      (and was-empty? now-empty?) acc
       (and (not was-empty?) (not now-empty?) (= (key old-cursor) (key new-cursor)))
         (recur
          (conj acc [(key new-cursor) (val new-cursor)])
