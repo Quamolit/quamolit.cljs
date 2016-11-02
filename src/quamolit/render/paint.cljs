@@ -180,7 +180,7 @@
       :arc (paint-arc ctx style (:coord directive))
       :image (paint-image ctx style (:coord directive))
       :group (paint-group!)
-      (do (.log js/console "painting not implemented" op) @eff-ref))))
+      (do (.log js/console "painting not implemented" directive) @eff-ref))))
 
 (defn paint [ctx tree eff-ref]
   (if (= Component (type tree))

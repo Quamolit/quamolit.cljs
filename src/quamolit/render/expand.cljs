@@ -34,19 +34,14 @@
                     tick
                     elapsed]
   (let [old-children (:children old-tree)
+        cached-map (into {} old-children)
         new-children (->> (:children markup)
                           (map
                            (fn [child]
                              (let [child-key (first child)
                                    child-markup (last child)
                                    child-coord (conj coord child-key)
-                                   old-child-pair (->> old-children
-                                                       (filter-first
-                                                        (fn [pair]
-                                                          (identical? (first pair) child-key))))
-                                   old-child-tree (if (some? old-child-pair)
-                                                    (last old-child-pair)
-                                                    nil)
+                                   old-child-tree (get cached-map child-key)
                                    child-state (get states child-key)]
                                [child-key
                                 (if (= (type child-markup) Component)

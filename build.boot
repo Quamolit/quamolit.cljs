@@ -7,7 +7,7 @@
                   [adzerk/boot-reload        "0.4.12"      :scope "test"]
                   [cirru/boot-stack-server   "0.1.19"      :scope "test"]
                   [binaryage/devtools        "0.7.2"       :scope "test"]
-                  [respo                     "0.3.25"]
+                  [respo                     "0.3.28"]
                   [mvc-works/hsl             "0.1.2"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]]
@@ -31,18 +31,18 @@
 (defn html-dsl [data fileset]
   (make-html
     (html {}
-    (head {}
-      (title (use-text "Quamolit"))
-      (link {:attrs {:rel "icon" :type "image/png" :href "quamolit.png"}})
-      (meta'{:attrs {:charset "utf-8"}})
-      (meta' {:attrs {:name "viewport" :content "width=device-width, initial-scale=1"}})
-      (meta' {:attrs {:id "ssr-stages" :content "#{}"}})
-      (style (use-text "body {margin: 0;}"))
-      (style (use-text "body * {box-sizing: border-box;}"))
-      (script {:attrs {:id "config" :type "text/edn" :innerHTML (pr-str data)}}))
-    (body {}
-      (canvas {:attrs {:id "app" :tabindex 1}})
-      (script {:attrs {:src "main.js"}})))))
+      (head {}
+        (title (use-text "Quamolit"))
+        (link {:attrs {:rel "icon" :type "image/png" :href "quamolit.png"}})
+        (meta'{:attrs {:charset "utf-8"}})
+        (meta' {:attrs {:name "viewport" :content "width=device-width, initial-scale=1"}})
+        (meta' {:attrs {:id "ssr-stages" :content "#{}"}})
+        (style (use-text "body {margin: 0;}"))
+        (style (use-text "body * {box-sizing: border-box;}"))
+        (script {:attrs {:id "config" :type "text/edn" :innerHTML (pr-str data)}}))
+      (body {}
+        (canvas {:attrs {:id "app" :tabindex 1}})
+        (script {:attrs {:src "main.js"}})))))
 
 (deftask html-file
   "task to generate HTML file"
@@ -56,24 +56,22 @@
         (add-resource tmp)
         (commit!)))))
 
-(deftask dev! []
-  (set-env!
-    :asset-paths #{"assets"})
-  (comp
-    (repl)
-    (start-stack-editor!)
-    (target :dir #{"src/"})
-    (html-file :data {:build? false})
-    (reload :on-jsload 'quamolit.main/on-jsload
-            :cljs-asset-path ".")
-    (cljs :compiler-options {:language-in :ecmascript5})
-    (target)))
-
 (deftask editor! []
   (comp
     (repl)
     (start-stack-editor!)
     (target :dir #{"src/"})))
+
+(deftask dev! []
+  (set-env!
+    :asset-paths #{"assets"})
+  (comp
+    (editor!)
+    (html-file :data {:build? false})
+    (reload :on-jsload 'quamolit.main/on-jsload
+            :cljs-asset-path ".")
+    (cljs :compiler-options {:language-in :ecmascript5})
+    (target)))
 
 (deftask generate-code []
   (comp
