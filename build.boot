@@ -4,10 +4,11 @@
   :dependencies '[[org.clojure/clojure       "1.8.0"       :scope "test"]
                   [org.clojure/clojurescript "1.9.293"     :scope "test"]
                   [adzerk/boot-cljs          "1.7.228-1"   :scope "test"]
-                  [adzerk/boot-reload        "0.4.12"      :scope "test"]
-                  [cirru/boot-stack-server   "0.1.19"      :scope "test"]
+                  [adzerk/boot-reload        "0.4.13"      :scope "test"]
+                  [cirru/boot-stack-server   "0.1.24"      :scope "test"]
                   [binaryage/devtools        "0.7.2"       :scope "test"]
-                  [respo                     "0.3.28"]
+                  [adzerk/boot-test          "1.1.2"       :scope "test"]
+                  [respo                     "0.3.32"]
                   [mvc-works/hsl             "0.1.2"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]]
@@ -15,6 +16,7 @@
          '[stack-server.core  :refer [start-stack-editor! transform-stack]]
          '[respo.alias        :refer [html head title script style meta' div link body canvas]]
          '[respo.render.html  :refer [make-html]]
+         '[adzerk.boot-test   :refer :all]
          '[clojure.java.io    :as    io])
 
 (def +version+ "0.1.3")
@@ -58,7 +60,7 @@
 
 (deftask editor! []
   (comp
-    (repl)
+    (wait)
     (start-stack-editor!)
     (target :dir #{"src/"})))
 
