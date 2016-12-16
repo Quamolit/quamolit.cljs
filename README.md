@@ -32,7 +32,7 @@ Quamolit is trying to combine two things:
 [![Clojars Project](https://img.shields.io/clojars/v/quamolit.svg)](https://clojars.org/quamolit)
 
 ```clojure
-[quamolit "0.1.1"]
+[quamolit "0.1.4"]
 ```
 
 You may require Quamolit with higher level APIs:
