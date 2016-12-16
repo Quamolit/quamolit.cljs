@@ -8,7 +8,7 @@
                   [cirru/boot-stack-server   "0.1.24"      :scope "test"]
                   [binaryage/devtools        "0.7.2"       :scope "test"]
                   [adzerk/boot-test          "1.1.2"       :scope "test"]
-                  [respo                     "0.3.32"]
+                  [respo                     "0.3.32"      :scope "test"]
                   [mvc-works/hsl             "0.1.2"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]]
@@ -19,7 +19,7 @@
          '[adzerk.boot-test   :refer :all]
          '[clojure.java.io    :as    io])
 
-(def +version+ "0.1.3")
+(def +version+ "0.1.4")
 
 (task-options!
   pom {:project     'quamolit/quamolit
