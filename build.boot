@@ -19,7 +19,7 @@
          '[adzerk.boot-test   :refer :all]
          '[clojure.java.io    :as    io])
 
-(def +version+ "0.1.4")
+(def +version+ "0.1.5")
 
 (task-options!
   pom {:project     'quamolit/quamolit
