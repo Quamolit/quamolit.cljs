@@ -40,7 +40,7 @@
 
 (def pi-ratio (/ js/Math.PI 180))
 
-(defn paint-arc [ctx style coord]
+(defn paint-arc [ctx style coord event]
   (let [x (or (:x style) 0)
         y (or (:y style) 0)
         r (or (:r style) 40)
@@ -53,9 +53,10 @@
         miter-limit (or (:miter-limit style) 8)]
     (.beginPath ctx)
     (.arc ctx x y r s-angle e-angle counterclockwise)
-    (let [caller (aget ctx "addHitRegion"), options (clj->js {:id (pr-str coord)})]
-      (comment .log js/console "hit region" coord (some? caller))
-      (if (some? caller) (.call caller ctx options)))
+    (if (some? event)
+      (let [caller (aget ctx "addHitRegion"), options (clj->js {:id (pr-str coord)})]
+        (comment .log js/console "hit region" coord (some? caller))
+        (if (some? caller) (.call caller ctx options))))
     (if (some? (:fill-style style))
       (do (set! ctx.fillStyle (:fill-style style)) (.fill ctx)))
     (if (some? (:stroke-style style))
@@ -140,7 +141,7 @@
         image (get-image (:src style))]
     (.drawImage ctx image sx sy sw sh dx dy dw dh)))
 
-(defn paint-rect [ctx style coord]
+(defn paint-rect [ctx style coord event]
   (let [w (or (:w style) 100)
         h (or (:h style) 40)
         x (- (or (:x style) 0) (/ w 2))
@@ -148,9 +149,10 @@
         line-width (or (:line-width style) 2)]
     (.beginPath ctx)
     (.rect ctx x y w h)
-    (let [caller (aget ctx "addHitRegion"), options (clj->js {:id (pr-str coord)})]
-      (comment .log js/console "hit region" coord (some? caller))
-      (if (some? caller) (.call caller ctx options)))
+    (if (some? event)
+      (let [caller (aget ctx "addHitRegion"), options (clj->js {:id (pr-str coord)})]
+        (comment .log js/console "hit region" coord (some? caller))
+        (if (some? caller) (.call caller ctx options))))
     (if (contains? style :fill-style)
       (do (set! ctx.fillStyle (:fill-style style)) (.fill ctx)))
     (if (contains? style :stroke-style)
@@ -164,20 +166,20 @@
 (defn paint-rotate [ctx style] (let [angle (or (:angle style) 30)] (.rotate ctx angle)))
 
 (defn paint-one [ctx directive eff-ref]
-  (let [op (:name directive), style (:style directive)]
+  (let [op (:name directive), style (:style directive), event (:event directive)]
     (comment .log js/console :paint-one op style)
     (case op
       :line (paint-line ctx style)
       :path (paint-path ctx style)
       :text (paint-text ctx style)
-      :rect (paint-rect ctx style (:coord directive))
+      :rect (paint-rect ctx style (:coord directive) event)
       :native-save (paint-save ctx style eff-ref)
       :native-restore (paint-restore ctx style eff-ref)
       :native-translate (paint-translate ctx style)
       :native-alpha (paint-alpha ctx style eff-ref)
       :native-rotate (paint-rotate ctx style)
       :native-scale (paint-scale ctx style)
-      :arc (paint-arc ctx style (:coord directive))
+      :arc (paint-arc ctx style (:coord directive) event)
       :image (paint-image ctx style (:coord directive))
       :group (paint-group!)
       (do (.log js/console "painting not implemented" directive) @eff-ref))))
