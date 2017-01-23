@@ -1,7 +1,7 @@
 
 (ns quamolit.render.expand
   (:require [quamolit.types :refer [Component Shape]]
-            [quamolit.util.detect :refer [=seq]]
+            [quamolit.util.detect :refer [=seq compare-more]]
             [quamolit.util.list :refer [filter-first]]))
 
 (declare expand-component)
@@ -106,7 +106,7 @@
          tick
          elapsed)
       (and (not now-empty?)
-           (or was-empty? (= 1 (compare (key old-cursor) (key new-cursor)))))
+           (or was-empty? (= 1 (compare-more (key old-cursor) (key new-cursor)))))
         (let [child-key (first new-cursor)
               child (last new-cursor)
               new-acc (conj acc [child-key child])]
@@ -121,7 +121,7 @@
            tick
            elapsed))
       (and (not was-empty?)
-           (or now-empty? (= -1 (compare (key old-cursor) (key new-cursor)))))
+           (or now-empty? (= -1 (compare-more (key old-cursor) (key new-cursor)))))
         (let [child-key (first old-cursor)
               child (last old-cursor)
               component? (= Component (type child))
