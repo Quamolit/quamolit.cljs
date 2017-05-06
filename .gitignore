@@ -3,3 +3,4 @@
 /.nrepl*
 /src/*.*
 /src/.*
+/.lumo_cache
