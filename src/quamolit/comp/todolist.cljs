@@ -20,7 +20,7 @@
 
 (defn handle-click [simple-event dispatch set-state] (.log js/console simple-event))
 
-(def position-header {:y -200, :x 0})
+(def position-header {:x 0, :y -200})
 
 (defn on-update [instant old-args args old-state state] instant)
 
@@ -30,7 +30,7 @@
 
 (defn init-state [store] {:draft ""})
 
-(def position-body {:y 40, :x 0})
+(def position-body {:x 0, :y 40})
 
 (defn render [timestamp store]
   (fn [state mutate! instant tick]
@@ -40,12 +40,12 @@
      (translate
       {:style position-header}
       (translate
-       {:style {:y 40, :x -20}}
+       {:style {:x -20, :y 40}}
        (input
         {:style {:w 400, :h 40, :text (:draft state)},
          :event {:click (handle-input mutate! (:draft state))}}))
       (translate
-       {:style {:y 40, :x 240}}
+       {:style {:x 240, :y 40}}
        (button {:style style-button, :event (event-button mutate! (:draft state))})))
      (translate
       {:style position-body}
@@ -71,7 +71,7 @@
                  [(:id task) (comp-task timestamp task index shift-x)]))))))
      (comp-debug instant {}))))
 
-(defn init-instant [args state at-place?] {:presence 0, :numb? false, :presence-v 3})
+(defn init-instant [args state at-place?] {:presence 0, :presence-v 3, :numb? false})
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 

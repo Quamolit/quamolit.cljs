@@ -17,7 +17,7 @@
             [quamolit.util.keyboard :refer [keycode->key]]))
 
 (defn render-translate [props & children]
-  (let [style (merge {:y 0, :x 0} (:style props))]
+  (let [style (merge {:x 0, :y 0} (:style props))]
     (fn [state mutate! instant tick]
       (group
        {}
@@ -33,22 +33,22 @@
         event-collection (:event props)
         w (:w style)
         h (:h style)
-        style-bg {:y (or (:y style) 0),
+        style-bg {:fill-style (hsl 0 50 80),
                   :stroke-style (hsl 0 0 50),
-                  :w w,
-                  :h h,
                   :line-width 2,
-                  :fill-style (hsl 0 50 80),
-                  :x (or (:x style) 0)}
+                  :x (or (:x style) 0),
+                  :y (or (:y style) 0),
+                  :w w,
+                  :h h}
         style-place-text {}
-        style-text {:y 0,
-                    :text-align "center",
-                    :max-width w,
+        style-text {:text-align "center",
+                    :text (:text style),
+                    :font-family "Optima",
                     :size 20,
                     :fill-style (hsl 0 0 0),
                     :x 0,
-                    :font-family "Optima",
-                    :text (:text style)}]
+                    :y 0,
+                    :max-width w}]
     (fn [state mutate! instant tick]
       (group
        {}
@@ -71,7 +71,7 @@
        (native-restore {})))))
 
 (defn render-scale [props & children]
-  (let [style (merge {:y 0, :x 0} (:style props))]
+  (let [style (merge {:x 0, :y 0} (:style props))]
     (fn [state mutate! instant tick]
       (group
        {}
@@ -121,19 +121,19 @@
         y (or (:y style) 0)
         w (or (:w style) 100)
         h (or (:h style) 40)
-        style-bg {:y y,
-                  :w w,
-                  :h h,
+        style-bg {:x x,
+                  :y y,
                   :fill-style (or (:surface-color style) (hsl 0 80 80)),
-                  :x x}
+                  :w w,
+                  :h h}
         event-button (:event props)
-        style-text {:y y,
-                    :text-align "center",
+        style-text {:fill-style (or (:text-color style) (hsl 0 0 10)),
+                    :text guide-text,
                     :size (or (:font-size style) 20),
-                    :fill-style (or (:text-color style) (hsl 0 0 10)),
-                    :x x,
                     :font-family (or (:font-family style) "Optima"),
-                    :text guide-text}]
+                    :text-align "center",
+                    :x x,
+                    :y y}]
     (fn [state mutate! instant tick]
       (group {} (rect {:style style-bg, :event event-button}) (text {:style style-text})))))
 

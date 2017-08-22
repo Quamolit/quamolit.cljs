@@ -48,7 +48,7 @@
        (comment comp-debug instant {})))))
 
 (defn init-instant [args state]
-  (let [value (if true 1 0)] {:play-value value, :play-v 0, :play-target value}))
+  (let [value (if true 1 0)] {:play-target value, :play-v 0, :play-value value}))
 
 (defn on-unmount [instant tick] instant)
 

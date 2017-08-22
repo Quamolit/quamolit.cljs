@@ -5,17 +5,17 @@
             [quamolit.render.element :refer [alpha translate button]]
             [quamolit.util.iterate :refer [iterate-instant tween]]))
 
-(defn style-button [x y page-name bg-color]
-  {:y (- (* y 100) 200),
-   :surface-color bg-color,
-   :w 180,
-   :text-color (hsl 0 0 100),
-   :h 60,
-   :x (- (* x 240) 400),
-   :text page-name})
-
 (defn handle-navigate [mutate-navigate next-page]
   (fn [event dispatch] (mutate-navigate next-page)))
+
+(defn style-button [x y page-name bg-color]
+  {:w 180,
+   :h 60,
+   :x (- (* x 240) 400),
+   :y (- (* y 100) 200),
+   :surface-color bg-color,
+   :text page-name,
+   :text-color (hsl 0 0 100)})
 
 (defn render [mutate-navigate]
   (fn [state mutate! instant tick]

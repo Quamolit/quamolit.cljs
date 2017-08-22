@@ -41,7 +41,7 @@
     (let [new-text (js/prompt "new content:" task-text)]
       (dispatch :update [task-id new-text]))))
 
-(defn style-input [text] {:y 0, :w 400, :h 40, :fill-style (hsl 0 0 60), :x 40, :text text})
+(defn style-input [text] {:w 400, :h 40, :x 40, :y 0, :fill-style (hsl 0 0 60), :text text})
 
 (def style-remove {:w 40, :h 40, :fill-style (hsl 0 80 40)})
 
@@ -50,7 +50,7 @@
 (defn render [timestamp task index shift-x]
   (fn [state mutate! instant tick]
     (translate
-     {:style {:y (- (* 60 (:index instant)) 140), :x (+ shift-x (:left instant))}}
+     {:style {:x (+ shift-x (:left instant)), :y (- (* 60 (:index instant)) 140)}}
      (alpha
       {:style {:opacity (/ (:presence instant) 1000)}}
       (translate {:style {:x -200}} (comp-toggler (:done? task) (:id task)))
@@ -64,13 +64,13 @@
 
 (defn init-instant [args state at-place?]
   (let [index (get (into [] args) 2)]
-    {:presence-velocity 3,
-     :index index,
+    {:numb? false,
      :presence 0,
-     :numb? false,
-     :index-velocity 0,
+     :presence-velocity 3,
+     :left (if at-place? -40 0),
      :left-velocity (if at-place? 0.09 0),
-     :left (if at-place? -40 0)}))
+     :index index,
+     :index-velocity 0}))
 
 (defn on-unmount [instant tick]
   (comment .log js/console "calling unmount" instant)

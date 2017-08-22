@@ -1,6 +1,3 @@
 
-/target/
-/.nrepl*
-/src/*.*
-/src/.*
-/.lumo_cache
+/target
+/node_modules/

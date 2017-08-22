@@ -5,7 +5,7 @@
             [quamolit.render.element :refer [alpha translate button]]))
 
 (def default-style
-  {:y 0, :max-width 600, :size 12, :fill-style (hsl 0 0 0 0.5), :x 0, :font-family "Menlo"})
+  {:x 0, :y 0, :fill-style (hsl 0 0 0 0.5), :font-family "Menlo", :size 12, :max-width 600})
 
 (defn render [data more-style]
   (fn [state mutate! instant tick]

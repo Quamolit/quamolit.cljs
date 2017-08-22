@@ -8,9 +8,9 @@
 
 (declare render)
 
-(def style-small {:r 30, :fill-style (hsl 200 80 80)})
+(def style-small {:fill-style (hsl 200 80 80), :r 30})
 
-(def style-large {:r 60, :fill-style (hsl 80 80 80)})
+(def style-large {:fill-style (hsl 80 80 80), :r 60})
 
 (defn render [timestamp level]
   (fn [state mutate! instant tick]
@@ -18,11 +18,11 @@
     (rotate
      {:style {:angle (rem (/ tick 8) 360)}}
      (arc {:style style-large})
-     (translate {:style {:y -40, :x 100}} (arc {:style style-small}))
+     (translate {:style {:x 100, :y -40}} (arc {:style style-small}))
      (if (> level 0)
        (scale
         {:style {:ratio 0.8}}
-        (translate {:style {:y 180, :x 20}} (comp-solar timestamp (- level 1))))))))
+        (translate {:style {:x 20, :y 180}} (comp-solar timestamp (- level 1))))))))
 
 (def comp-solar (create-comp :solar render))
 

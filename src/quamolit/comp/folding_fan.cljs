@@ -31,7 +31,7 @@
       (group
        {}
        (translate
-        {:style {:y 160, :x 0}}
+        {:style {:x 0, :y 160}}
         (->> (range n)
              (map
               (fn [i]
@@ -41,24 +41,24 @@
                                    (tween [0 6] [0 1000] (:folding-value instant))
                                    (+ 0.5 (- i (/ n 2))))}}
                   (image
-                   {:style {:dh dest-h,
-                            :dx (- 0 (/ image-unit 2)),
-                            :sy 0,
-                            :dy (- 10 dest-h),
-                            :src "lotus.jpg",
-                            :dw dest-unit,
+                   {:style {:src "lotus.jpg",
                             :sx (* i image-unit),
+                            :sy 0,
+                            :sw image-unit,
                             :sh image-h,
-                            :sw image-unit}}))]))))
+                            :dx (- 0 (/ image-unit 2)),
+                            :dy (- 10 dest-h),
+                            :dw dest-unit,
+                            :dh dest-h}}))]))))
        (button
-        {:style {:y 200,
-                 :surface-color (hsl 30 80 60),
-                 :text-color (hsl 0 0 100),
+        {:style {:text "Toggle",
                  :x 160,
-                 :text "Toggle"},
+                 :y 200,
+                 :surface-color (hsl 30 80 60),
+                 :text-color (hsl 0 0 100)},
          :event {:click (handle-toggle mutate!)}})))))
 
-(defn init-instant [args state] {:folding-v 0, :folding-value (if state 1000 0)})
+(defn init-instant [args state] {:folding-value (if state 1000 0), :folding-v 0})
 
 (defn on-unmount [instant tick] instant)
 

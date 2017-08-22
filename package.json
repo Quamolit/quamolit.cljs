@@ -1,0 +1,34 @@
+{
+  "name": "quamolit",
+  "version": "0.1.0",
+  "description": "FIXME: description",
+  "main": "index.js",
+  "directories": {},
+  "scripts": {
+    "tiye": "rsync -r target/ tiye.me:repo/Quamolit/quamolit",
+    "html": "cp assets/* target/",
+    "watch": "shadow-cljs watch app",
+    "sv": "shadow-cljs server",
+    "compile": "shadow-cljs compile app",
+    "release": "shadow-cljs release release",
+    "serve": "http-server target/ -s -c-1",
+    "build": "yarn html && yarn release && yarn serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Quamolit/quamolit.git"
+  },
+  "author": "jiyinyiyong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Quamolit/quamolit/issues"
+  },
+  "homepage": "https://github.com/Quamolit/quamolit#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "http-server": "^0.10.0",
+    "shadow-cljs": "^0.18.7",
+    "source-map-support": "^0.4.16",
+    "ws": "^3.1.0"
+  }
+}

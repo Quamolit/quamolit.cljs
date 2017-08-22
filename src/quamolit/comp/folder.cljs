@@ -36,7 +36,7 @@
           ratio (+ 0.2 (* 0.8 popup-ratio))
           bg-light (tween [60 82] [0 1] popup-ratio)]
       (translate
-       {:style {:y place-y, :x place-x}}
+       {:style {:x place-x, :y place-y}}
        (scale
         {:style {:ratio ratio}}
         (alpha
@@ -70,7 +70,7 @@
             :event {:click (handle-back navigate index)}})))))))
 
 (defn init-instant [args state at-place?]
-  {:popup 0, :presence 0, :popup-v 0, :presence-v 3})
+  {:presence 0, :presence-v 3, :popup 0, :popup-v 0})
 
 (defn on-unmount [instant tick] (assoc instant :presence-v -3))
 

@@ -1,4 +1,4 @@
 
 (ns quamolit.schema )
 
-(def task {:done? false, :id nil, :text ""})
+(def task {:text "", :id nil, :done? false})

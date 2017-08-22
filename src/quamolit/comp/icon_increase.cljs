@@ -32,9 +32,9 @@
         (rotate
          {:style {:angle (* 90 n1)}}
          (line
-          {:style {:stroke-style (hsl 0 80 30), :y1 0, :line-width 2, :y0 0, :x1 7, :x0 -7}})
+          {:style {:stroke-style (hsl 0 80 30), :x0 -7, :y0 0, :x1 7, :y1 0, :line-width 2}})
          (line
-          {:style {:stroke-style (hsl 0 80 30), :y1 7, :line-width 2, :y0 -7, :x1 0, :x0 0}})))
+          {:style {:stroke-style (hsl 0 80 30), :x0 0, :y0 -7, :x1 0, :y1 7, :line-width 2}})))
        (translate
         {:style {:x 10}}
         (list
@@ -44,18 +44,18 @@
            (alpha
             {:style {:opacity (- (+ 1 n1) state)}}
             (text
-             {:style {:fill-style (hsl 0 80 30),
-                      :font-family "Wawati SC Regular",
-                      :text (str (+ state 1))}})))]
+             {:style {:text (str (+ state 1)),
+                      :fill-style (hsl 0 80 30),
+                      :font-family "Wawati SC Regular"}})))]
          [state
           (translate
            {:style {:y (* 20 (- n1 (- state 1)))}}
            (alpha
             {:style {:opacity (- state n1)}}
             (text
-             {:style {:fill-style (hsl 0 80 30),
-                      :font-family "Wawati SC Regular",
-                      :text (str state)}})))]))))))
+             {:style {:text (str state),
+                      :fill-style (hsl 0 80 30),
+                      :font-family "Wawati SC Regular"}})))]))))))
 
 (defn init-instant [args state] {:n state, :n-v 0, :n-target state})
 

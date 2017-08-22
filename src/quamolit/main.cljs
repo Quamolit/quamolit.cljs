@@ -8,9 +8,13 @@
 
 (defonce store-ref (atom []))
 
-(defonce states-ref (atom {}))
+(defn dispatch! [op op-data]
+  (let [new-tick (get-tick), new-store (updater-fn @store-ref op op-data new-tick)]
+    (reset! store-ref new-store)))
 
 (defonce loop-ref (atom nil))
+
+(defonce states-ref (atom {}))
 
 (defn render-loop! [timestamp]
   (let [target (.querySelector js/document "#app")]
@@ -21,10 +25,6 @@
   (js/cancelAnimationFrame @loop-ref)
   (js/requestAnimationFrame render-loop!)
   (.log js/console "code updated..."))
-
-(defn dispatch! [op op-data]
-  (let [new-tick (get-tick), new-store (updater-fn @store-ref op op-data new-tick)]
-    (reset! store-ref new-store)))
 
 (defn -main []
   (devtools/install!)

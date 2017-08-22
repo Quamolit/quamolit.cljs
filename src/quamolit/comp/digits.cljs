@@ -44,26 +44,26 @@
      (alpha
       {:style {:opacity (:presence instant)}}
       (line
-       {:style {:y1 (:y1 instant), :y0 (:y0 instant), :x1 (:x1 instant), :x0 (:x0 instant)}})))))
+       {:style {:x0 (:x0 instant), :y0 (:y0 instant), :x1 (:x1 instant), :y1 (:y1 instant)}})))))
 
 (defn init-instant [args state]
   (comment .log js/console "stroke init:" args)
   (let [style (:style (first args)), [x0 y0 x1 y1] args]
-    {:x1-v 0,
-     :x0-v 0,
+    {:numb? false,
      :presence 0,
-     :numb? false,
-     :y1 y1,
-     :y0-target 0,
-     :y1-target 0,
-     :y0-v 0,
      :presence-v 0.003,
-     :y1-v 0,
-     :y0 y0,
-     :x0-target 0,
-     :x1 x1,
      :x0 x0,
-     :x1-target 0}))
+     :x1 x1,
+     :y0 y0,
+     :y1 y1,
+     :x0-v 0,
+     :x1-v 0,
+     :y0-v 0,
+     :y1-v 0,
+     :x0-target 0,
+     :y0-target 0,
+     :x1-target 0,
+     :y1-target 0}))
 
 (defn on-unmount [instant tick]
   (comment .log js/console "stroke unmount")

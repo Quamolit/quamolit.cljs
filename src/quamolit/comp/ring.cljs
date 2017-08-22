@@ -31,9 +31,9 @@
       (group
        {}
        (path
-        {:style {:stroke-style (hsl 300 80 60),
-                 :points (concat [[0 (- 0 r)]] curve-points),
-                 :line-width 2}})
+        {:style {:points (concat [[0 (- 0 r)]] curve-points),
+                 :line-width 2,
+                 :stroke-style (hsl 300 80 60)}})
        (comp-debug (js/Math.floor rotation) {})))))
 
 (def comp-ring (create-comp :ring render))

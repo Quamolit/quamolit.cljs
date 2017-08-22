@@ -1,0 +1,17 @@
+
+{:source-paths ["src" "polyfill" "test"]
+ :http {:port 8200}
+ :dependencies [[mvc-works/polyfill   "0.1.1"]
+                [mvc-works/hsl        "0.1.2"]
+                [binaryage/devtools   "0.9.4"]]
+ :builds {:app {:output-dir "target/"
+                :asset-path "."
+                :target :browser
+                :modules {:main {:entries [quamolit.main]}}
+                :devtools {:after-load quamolit.main/on-jsload!
+                           :preloads [shadow.cljs.devtools.client.hud]}}
+          :release {:output-dir "target"
+                    :target :browser
+                    :modules {:main {:entries [quamolit.main]}}
+                    :compiler-options {:pseudo-names true
+                                       :pretty-print true}}}}

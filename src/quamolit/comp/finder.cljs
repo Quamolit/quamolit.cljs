@@ -4,12 +4,6 @@
             [quamolit.alias :refer [create-comp rect group]]
             [quamolit.comp.folder :refer [comp-folder]]))
 
-(defn update-state [state target]
-  (comment .log js/console state target)
-  (assoc state 1 target))
-
-(defn handle-back [mutate!] (fn [event dispatch] (mutate! nil)))
-
 (def card-collection
   [["喷雪花" "檵木" "石楠" "文竹"]
    ["紫云英" "绣球花" "蔷薇"]
@@ -18,6 +12,8 @@
    ["芍药" "木棉"]])
 
 (defn init-state [] [card-collection nil])
+
+(defn handle-back [mutate!] (fn [event dispatch] (mutate! nil)))
 
 (defn render [timestamp]
   (fn [state mutate! instant tick]
@@ -39,5 +35,9 @@
             (fn [entry]
               (let [[index tree] entry, target (last state)]
                 (if (some? target) (= index target) true)))))))))
+
+(defn update-state [state target]
+  (comment .log js/console state target)
+  (assoc state 1 target))
 
 (def comp-finder (create-comp :finder init-state update-state render))

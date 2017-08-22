@@ -25,10 +25,10 @@
           shift-b (* (+ 0.03 (* 0.001 r3)) (js/Math.sin (/ tick (+ 1300 (* 60 r4)))))]
       (group
        {}
-       (path {:style {:stroke-style (hsl 200 80 50), :points [[x1 y1] [0 0] [x2 y2]]}})
+       (path {:style {:points [[x1 y1] [0 0] [x2 y2]], :stroke-style (hsl 200 80 50)}})
        (if (> level 0)
          (translate
-          {:style {:y y1, :x x1}}
+          {:style {:x x1, :y y1}}
           (scale
            {:style {:ratio (+ 0.6 (* 1.3 shift-a))}}
            (rotate
@@ -36,7 +36,7 @@
             (comp-binary-tree timestamp (dec level))))))
        (if (> level 0)
          (translate
-          {:style {:y y2, :x x2}}
+          {:style {:x x2, :y y2}}
           (scale
            {:style {:ratio (+ 0.73 (* 2 shift-b))}}
            (rotate

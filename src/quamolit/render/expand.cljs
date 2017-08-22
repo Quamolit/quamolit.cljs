@@ -4,25 +4,105 @@
             [quamolit.util.detect :refer [=seq compare-more]]
             [quamolit.util.list :refer [filter-first]]))
 
-(declare expand-component)
-
 (declare merge-children)
 
 (declare expand-shape)
 
-(defn contain-markups? [items]
-  (let [result (some
-                (fn [item]
-                  (if (or (= Component (type item)) (= Shape (type item)))
-                    true
-                    (if (and (map? item) (> (count item) 0))
-                      (some
-                       (fn [child] (or (= Component (type child)) (= Shape (type child))))
-                       (vals item))
-                      false)))
-                items)]
-    (comment if (not result) (.log js/console result items))
-    result))
+(declare expand-component)
+
+(defn expand-component [markup old-tree coord states build-mutate at-place? tick elapsed]
+  (let [child-coord (conj coord (:name markup))
+        existed? (some? old-tree)
+        state-tree (get states (:name markup))]
+    (comment .log js/console "child-coord:" child-coord)
+    (comment .log js/console "component" (:name markup) coord)
+    (comment .log js/console states)
+    (if existed?
+      (let [old-args (:args old-tree)
+            old-states (:states old-tree)
+            old-instant (:instant old-tree)
+            new-args (:args markup)
+            old-state (get old-states 'data)
+            init-state (:init-state markup)
+            new-state (if (contains? state-tree 'data)
+                        (get state-tree 'data)
+                        (apply init-state new-args))
+            on-tick (:on-tick markup)
+            on-update (:on-update markup)
+            new-instant (-> old-instant
+                            (on-tick tick elapsed)
+                            (on-update old-args new-args old-state new-state))]
+        (if (and (identical? old-states state-tree)
+                 (identical? (:render old-tree) (:render markup))
+                 (identical? old-instant new-instant)
+                 (=seq old-args new-args))
+          (do
+           (comment println "reusing tree" child-coord)
+           (comment println old-args new-args)
+           (comment println coord old-states state-tree)
+           old-tree)
+          (let [mutate! (build-mutate child-coord)
+                new-shape (-> (:render markup)
+                              (apply new-args)
+                              (apply (list new-state mutate! new-instant tick)))
+                new-tree (if (= Component (type new-shape))
+                           (expand-component
+                            new-shape
+                            (:tree old-tree)
+                            child-coord
+                            state-tree
+                            build-mutate
+                            at-place?
+                            tick
+                            elapsed)
+                           (expand-shape
+                            new-shape
+                            (:tree old-tree)
+                            child-coord
+                            child-coord
+                            state-tree
+                            build-mutate
+                            at-place?
+                            tick
+                            elapsed))]
+            (comment .log js/console "existing state" coord state-tree)
+            (merge
+             old-tree
+             {:args new-args, :states state-tree, :instant new-instant, :tree new-tree}))))
+      (let [args (:args markup)
+            init-state (:init-state markup)
+            init-instant (:init-instant markup)
+            state (if (contains? state-tree 'data)
+                    (get state-tree 'data)
+                    (apply init-state args))
+            instant (init-instant args state at-place?)
+            mutate! (build-mutate child-coord)
+            shape (-> (:render markup)
+                      (apply args)
+                      (apply (list state mutate! instant tick)))
+            tree (if (= Component (type shape))
+                   (expand-component
+                    shape
+                    nil
+                    child-coord
+                    state-tree
+                    build-mutate
+                    false
+                    tick
+                    elapsed)
+                   (expand-shape
+                    shape
+                    nil
+                    child-coord
+                    child-coord
+                    state-tree
+                    build-mutate
+                    false
+                    tick
+                    elapsed))]
+        (merge
+         markup
+         {:coord child-coord, :args args, :states state-tree, :instant instant, :tree tree})))))
 
 (defn expand-shape [markup
                     old-tree
@@ -161,99 +241,19 @@
            elapsed))
       :else acc)))
 
-(defn expand-component [markup old-tree coord states build-mutate at-place? tick elapsed]
-  (let [child-coord (conj coord (:name markup))
-        existed? (some? old-tree)
-        state-tree (get states (:name markup))]
-    (comment .log js/console "child-coord:" child-coord)
-    (comment .log js/console "component" (:name markup) coord)
-    (comment .log js/console states)
-    (if existed?
-      (let [old-args (:args old-tree)
-            old-states (:states old-tree)
-            old-instant (:instant old-tree)
-            new-args (:args markup)
-            old-state (get old-states 'data)
-            init-state (:init-state markup)
-            new-state (if (contains? state-tree 'data)
-                        (get state-tree 'data)
-                        (apply init-state new-args))
-            on-tick (:on-tick markup)
-            on-update (:on-update markup)
-            new-instant (-> old-instant
-                            (on-tick tick elapsed)
-                            (on-update old-args new-args old-state new-state))]
-        (if (and (identical? old-states state-tree)
-                 (identical? (:render old-tree) (:render markup))
-                 (identical? old-instant new-instant)
-                 (=seq old-args new-args))
-          (do
-           (comment println "reusing tree" child-coord)
-           (comment println old-args new-args)
-           (comment println coord old-states state-tree)
-           old-tree)
-          (let [mutate! (build-mutate child-coord)
-                new-shape (-> (:render markup)
-                              (apply new-args)
-                              (apply (list new-state mutate! new-instant tick)))
-                new-tree (if (= Component (type new-shape))
-                           (expand-component
-                            new-shape
-                            (:tree old-tree)
-                            child-coord
-                            state-tree
-                            build-mutate
-                            at-place?
-                            tick
-                            elapsed)
-                           (expand-shape
-                            new-shape
-                            (:tree old-tree)
-                            child-coord
-                            child-coord
-                            state-tree
-                            build-mutate
-                            at-place?
-                            tick
-                            elapsed))]
-            (comment .log js/console "existing state" coord state-tree)
-            (merge
-             old-tree
-             {:args new-args, :tree new-tree, :instant new-instant, :states state-tree}))))
-      (let [args (:args markup)
-            init-state (:init-state markup)
-            init-instant (:init-instant markup)
-            state (if (contains? state-tree 'data)
-                    (get state-tree 'data)
-                    (apply init-state args))
-            instant (init-instant args state at-place?)
-            mutate! (build-mutate child-coord)
-            shape (-> (:render markup)
-                      (apply args)
-                      (apply (list state mutate! instant tick)))
-            tree (if (= Component (type shape))
-                   (expand-component
-                    shape
-                    nil
-                    child-coord
-                    state-tree
-                    build-mutate
-                    false
-                    tick
-                    elapsed)
-                   (expand-shape
-                    shape
-                    nil
-                    child-coord
-                    child-coord
-                    state-tree
-                    build-mutate
-                    false
-                    tick
-                    elapsed))]
-        (merge
-         markup
-         {:args args, :coord child-coord, :tree tree, :instant instant, :states state-tree})))))
+(defn contain-markups? [items]
+  (let [result (some
+                (fn [item]
+                  (if (or (= Component (type item)) (= Shape (type item)))
+                    true
+                    (if (and (map? item) (> (count item) 0))
+                      (some
+                       (fn [child] (or (= Component (type child)) (= Shape (type child))))
+                       (vals item))
+                      false)))
+                items)]
+    (comment if (not result) (.log js/console result items))
+    result))
 
 (defn expand-app [markup old-tree states build-mutate tick elapsed]
   (comment .log js/console "caches:" (map first (map key @comp-caches)))
