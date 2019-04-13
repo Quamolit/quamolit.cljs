@@ -18409,15 +18409,6 @@
           }
          }
         }
-        "y" {
-         :type :expr, :id "HJ1CnoAyNFuZ", :time 1503375314228
-         :data {
-          "T" {:type :leaf, :id "SJg03iRJEY_-", :author "root", :time 1503375314228, :text "[]"}
-          "j" {:type :leaf, :id "Syb0niAkEtOW", :author "root", :time 1503375314228, :text "devtools.core"}
-          "r" {:type :leaf, :id "SyGChjCyNYu-", :author "root", :time 1503375314228, :text ":as"}
-          "v" {:type :leaf, :id "ryQChiRyVY_W", :author "root", :time 1503375314228, :text "devtools"}
-         }
-        }
        }
       }
      }
@@ -18431,13 +18422,6 @@
        "r" {
         :type :expr, :id "H1UGpsCyEYu-", :time 1503375314228
         :data {}
-       }
-       "v" {
-        :type :expr, :id "Bywzpi0k4t_W", :time 1503375314228
-        :data {
-         "D" {:type :leaf, :by "_yzgLY-K2", :at 1555150510620, :text ";", :id "3Yl6qiB-C1"}
-         "T" {:type :leaf, :id "SyuzpsRJ4Yub", :author "root", :time 1503375314228, :text "devtools/install!"}
-        }
        }
        "y" {
         :type :expr, :id "S1jGai0JNYOZ", :time 1503375314228

@@ -9,11 +9,9 @@
     "html": "cp assets/* target/",
     "html-dist": "cp assets/* dist/",
     "watch": "shadow-cljs watch app",
-    "sv": "shadow-cljs server",
-    "compile": "shadow-cljs compile app",
-    "release": "shadow-cljs release release",
+    "release": "shadow-cljs release app",
     "serve": "http-server target/ -s -c-1",
-    "build": "yarn html && yarn release && yarn serve"
+    "build": "yarn html-dist && yarn release"
   },
   "repository": {
     "type": "git",

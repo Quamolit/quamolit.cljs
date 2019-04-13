@@ -69,8 +69,6 @@ You may require Quamolit with higher level APIs:
     (reset! loop-ref (js/requestAnimationFrame render-loop))))
 
 (defn -main []
-  (devtools/install! [:custom-formatters :santy-hints])
-  (enable-console-print!)
   (let [target (.querySelector js/document "#app")]
     (configure-canvas target)
     (setup-events target dispatch)
@@ -89,12 +87,6 @@ You may require Quamolit with higher level APIs:
 Also you may use lower level APIs directly by copy/paste this [Gist][Gist]:
 
 [Gist]: https://gist.github.com/jiyinyiyong/62a3e7a1350023e41af7672f111ab369
-
-```bash
-boot compile-cirru # generate ClojureScript at src/
-boot build-simple # build app at target/
-boot dev # start develop workspace at target/index.html
-```
 
 ```clj
 (defn init-state [arg1 arg2])
@@ -216,6 +208,17 @@ Component record:
   :font-size 20}})
 (input {:style {:w 0 :h 0 :text ""}})
 (comp-debug data {})
+```
+
+### Develop
+
+To run this project:
+
+
+```bash
+yarn
+yarn html
+yarn watch # localhost:7000
 ```
 
 ### License

@@ -3,8 +3,7 @@
   (:require [quamolit.comp.container :refer [comp-container]]
             [quamolit.core :refer [render-page configure-canvas setup-events]]
             [quamolit.util.time :refer [get-tick]]
-            [quamolit.updater.core :refer [updater-fn]]
-            [devtools.core :as devtools]))
+            [quamolit.updater.core :refer [updater-fn]]))
 
 (defonce store-ref (atom []))
 
@@ -22,7 +21,6 @@
     (reset! loop-ref (js/requestAnimationFrame render-loop!))))
 
 (defn -main []
-  (comment devtools/install!)
   (let [target (.querySelector js/document "#app")]
     (configure-canvas target)
     (setup-events target dispatch!)

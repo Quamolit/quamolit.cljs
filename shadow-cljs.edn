@@ -14,7 +14,8 @@
                 :target :browser
                 :modules {:main {:init-fn quamolit.main/-main}}
                 :compiler-options {:infer-externs :auto}
-                :devtools {:after-load quamolit.main/on-jsload!}
+                :devtools {:after-load quamolit.main/on-jsload!
+                           :preloads [devtools.core]}
                 :release {:output-dir "dist/"
                           :compiler-options {:pseudo-names true
                                              :pretty-print true}}}}}
