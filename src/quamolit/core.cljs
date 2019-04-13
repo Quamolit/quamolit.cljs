@@ -7,9 +7,32 @@
             [quamolit.render.paint :refer [paint]]
             [quamolit.controller.resolve :refer [resolve-target locate-target]]))
 
+(defn call-paint [tree target]
+  (comment .log js/console tree)
+  (let [ctx (.getContext target "2d")
+        eff-ref (atom {:alpha-stack (list 1)})
+        w js/window.innerWidth
+        h js/window.innerHeight]
+    (.clearRect ctx 0 0 w h)
+    (.save ctx)
+    (.translate ctx (/ w 2) (/ h 2))
+    (paint ctx tree eff-ref)
+    (.restore ctx)))
+
+(defn configure-canvas [app-container]
+  (.setAttribute app-container "width" js/window.innerWidth)
+  (.setAttribute app-container "height" js/window.innerHeight))
+
+(defonce focus-ref (atom []))
+
 (defonce tree-ref (atom nil))
 
-(defonce tick-ref (atom (get-tick)))
+(defn handle-event [coord event-name event dispatch]
+  (let [maybe-listener (resolve-target @tree-ref event-name coord)]
+    (comment .log js.console "handle event" maybe-listener coord event-name @tree-ref)
+    (if (some? maybe-listener)
+      (do (.preventDefault event) (maybe-listener event dispatch))
+      (comment .log js/console "no target"))))
 
 (defn mutate-factory [states-ref]
   (fn [coord]
@@ -32,17 +55,7 @@
         (comment .log js/console "new-states" new-states)
         (reset! states-ref new-states)))))
 
-(defn call-paint [tree target]
-  (comment .log js/console tree)
-  (let [ctx (.getContext target "2d")
-        eff-ref (atom {:alpha-stack (list 1)})
-        w js/window.innerWidth
-        h js/window.innerHeight]
-    (.clearRect ctx 0 0 w h)
-    (.save ctx)
-    (.translate ctx (/ w 2) (/ h 2))
-    (paint ctx tree eff-ref)
-    (.restore ctx)))
+(defonce tick-ref (atom (get-tick)))
 
 (defn render-page [markup states-ref target]
   (let [new-tick (get-tick)
@@ -59,19 +72,6 @@
     (reset! tick-ref new-tick)
     (call-paint tree target)
     (comment .log js/console "tree" tree)))
-
-(defonce focus-ref (atom []))
-
-(defn configure-canvas [app-container]
-  (.setAttribute app-container "width" js/window.innerWidth)
-  (.setAttribute app-container "height" js/window.innerHeight))
-
-(defn handle-event [coord event-name event dispatch]
-  (let [maybe-listener (resolve-target @tree-ref event-name coord)]
-    (comment .log js.console "handle event" maybe-listener coord event-name @tree-ref)
-    (if (some? maybe-listener)
-      (do (.preventDefault event) (maybe-listener event dispatch))
-      (comment .log js/console "no target"))))
 
 (defn setup-events [root-element dispatch]
   (let [ctx (.getContext root-element "2d")]

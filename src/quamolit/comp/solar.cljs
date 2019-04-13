@@ -8,9 +8,9 @@
 
 (declare render)
 
-(def style-small {:fill-style (hsl 200 80 80), :r 30})
-
 (def style-large {:fill-style (hsl 80 80 80), :r 60})
+
+(def style-small {:fill-style (hsl 200 80 80), :r 30})
 
 (defn render [timestamp level]
   (fn [state mutate! instant tick]

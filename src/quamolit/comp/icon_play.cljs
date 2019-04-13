@@ -5,6 +5,13 @@
             [quamolit.util.iterate :refer [iterate-instant tween]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
+(defn handle-click [mutate!] (fn [event dispatch] (mutate!)))
+
+(defn init-instant [args state]
+  (let [value (if true 1 0)] {:play-target value, :play-v 0, :play-value value}))
+
+(defn init-state [] true)
+
 (defn on-tick [instant tick elapsed]
   (iterate-instant
    instant
@@ -13,11 +20,7 @@
    elapsed
    [(:play-target instant) (:play-target instant)]))
 
-(def update-state not)
-
-(defn remove? [instant] true)
-
-(defn handle-click [mutate!] (fn [event dispatch] (mutate!)))
+(defn on-unmount [instant tick] instant)
 
 (defn on-update [instant old-args args old-state state]
   (if (= old-state state)
@@ -25,7 +28,7 @@
     (let [next-value (if state 1 0), next-v (if state 0.002 -0.002)]
       (assoc instant :play-target next-value :play-v next-v))))
 
-(defn init-state [] true)
+(defn remove? [instant] true)
 
 (defn render []
   (fn [state mutate! instant tick]
@@ -47,10 +50,7 @@
                  :fill-style (hsl 120 50 60)}})
        (comment comp-debug instant {})))))
 
-(defn init-instant [args state]
-  (let [value (if true 1 0)] {:play-target value, :play-v 0, :play-value value}))
-
-(defn on-unmount [instant tick] instant)
+(def update-state not)
 
 (def comp-icon-play
   (create-comp

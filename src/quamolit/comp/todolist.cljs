@@ -7,30 +7,32 @@
             [quamolit.util.iterate :refer [iterate-instant tween]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
+(defn event-button [mutate! draft]
+  {:click (fn [simple-event dispatch] (dispatch :add draft) (mutate! {:draft ""}))})
+
+(defn handle-input [mutate! default-text]
+  (fn [simple-event dispatch]
+    (let [user-text (js/prompt "input to canvas:" default-text)] (mutate! {:draft user-text}))))
+
+(defn init-instant [args state at-place?] {:presence 0, :presence-v 3, :numb? false})
+
+(defn init-state [store] {:draft ""})
+
 (defn on-tick [instant tick elapsed]
   (let [new-instant (iterate-instant instant :presence :presence-v elapsed [0 1000])]
     (if (and (< (:presence-v instant) 0) (= (:presence new-instant) 0))
       (assoc new-instant :numb? true)
       new-instant)))
 
-(defn event-button [mutate! draft]
-  {:click (fn [simple-event dispatch] (dispatch :add draft) (mutate! {:draft ""}))})
-
-(def style-button {:w 80, :h 40, :text "add"})
-
-(defn handle-click [simple-event dispatch set-state] (.log js/console simple-event))
-
-(def position-header {:x 0, :y -200})
+(defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
 (defn on-update [instant old-args args old-state state] instant)
 
-(defn handle-input [mutate! default-text]
-  (fn [simple-event dispatch]
-    (let [user-text (js/prompt "input to canvas:" default-text)] (mutate! {:draft user-text}))))
-
-(defn init-state [store] {:draft ""})
-
 (def position-body {:x 0, :y 40})
+
+(def position-header {:x 0, :y -200})
+
+(def style-button {:w 80, :h 40, :text "add"})
 
 (defn render [timestamp store]
   (fn [state mutate! instant tick]
@@ -71,10 +73,6 @@
                  [(:id task) (comp-task timestamp task index shift-x)]))))))
      (comp-debug instant {}))))
 
-(defn init-instant [args state at-place?] {:presence 0, :presence-v 3, :numb? false})
-
-(defn on-unmount [instant tick] (assoc instant :presence-v -3))
-
 (def comp-todolist
   (create-comp
    :todolist
@@ -86,3 +84,5 @@
    on-unmount
    nil
    render))
+
+(defn handle-click [simple-event dispatch set-state] (.log js/console simple-event))

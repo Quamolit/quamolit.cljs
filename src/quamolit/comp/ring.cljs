@@ -4,9 +4,9 @@
             [quamolit.alias :refer [create-comp group path]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
-(defn sin [x] (js/Math.sin (* js/Math.PI (/ x 180))))
-
 (defn cos [x] (js/Math.cos (* js/Math.PI (/ x 180))))
+
+(defn sin [x] (js/Math.sin (* js/Math.PI (/ x 180))))
 
 (defn render [timestamp]
   (fn [state mutate! instant tick]

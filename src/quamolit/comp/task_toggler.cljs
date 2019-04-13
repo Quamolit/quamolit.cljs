@@ -4,8 +4,19 @@
             [quamolit.util.iterate :refer [iterate-instant tween]]
             [quamolit.alias :refer [create-comp group rect]]))
 
+(defn handle-click [task-id] (fn [event dispatch] (dispatch :toggle task-id)))
+
+(defn init-instant [args state]
+  (let [done? (first args)] {:numb? true, :done-value (if done? 0 1000), :done-velocity 0}))
+
 (defn on-tick [instant tick elapsed]
   (iterate-instant instant :done-value :done-velocity elapsed [0 1000]))
+
+(defn on-update [instant old-args args old-state state]
+  (let [old-done? (first old-args), done? (first args)]
+    (if (not= old-done? done?)
+      (assoc instant :done-velocity (if (> (:done-value instant) 500) -3 3))
+      instant)))
 
 (defn style-toggler [done-value]
   {:w 40,
@@ -15,22 +26,11 @@
                 80
                 (tween [40 80] [0 1000] done-value))})
 
-(defn handle-click [task-id] (fn [event dispatch] (dispatch :toggle task-id)))
-
 (defn render [done? task-id]
   (fn [state mutate! instant tick]
     (comment .log js/console "done:" instant)
     (rect
      {:style (style-toggler (:done-value instant)), :event {:click (handle-click task-id)}})))
-
-(defn on-update [instant old-args args old-state state]
-  (let [old-done? (first old-args), done? (first args)]
-    (if (not= old-done? done?)
-      (assoc instant :done-velocity (if (> (:done-value instant) 500) -3 3))
-      instant)))
-
-(defn init-instant [args state]
-  (let [done? (first args)] {:numb? true, :done-value (if done? 0 1000), :done-velocity 0}))
 
 (def comp-toggler
   (create-comp :task-toggler nil nil init-instant on-tick on-update nil nil render))

@@ -4,11 +4,162 @@
             [quamolit.util.detect :refer [=seq compare-more]]
             [quamolit.util.list :refer [filter-first]]))
 
-(declare merge-children)
+(declare expand-component)
 
 (declare expand-shape)
 
-(declare expand-component)
+(declare merge-children)
+
+(defn contain-markups? [items]
+  (let [result (some
+                (fn [item]
+                  (if (or (= Component (type item)) (= Shape (type item)))
+                    true
+                    (if (and (map? item) (> (count item) 0))
+                      (some
+                       (fn [child] (or (= Component (type child)) (= Shape (type child))))
+                       (vals item))
+                      false)))
+                items)]
+    (comment if (not result) (.log js/console result items))
+    result))
+
+(defn merge-children [acc
+                      old-children
+                      new-children
+                      coord
+                      states
+                      build-mutate
+                      at-place?
+                      tick
+                      elapsed]
+  (let [was-empty? (empty? old-children)
+        now-empty? (empty? new-children)
+        old-cursor (first old-children)
+        new-cursor (first new-children)]
+    (cond
+      (and was-empty? now-empty?) acc
+      (and (not was-empty?) (not now-empty?) (= (first old-cursor) (first new-cursor)))
+        (recur
+         (conj acc [(first new-cursor) (last new-cursor)])
+         (rest old-children)
+         (rest new-children)
+         coord
+         states
+         build-mutate
+         at-place?
+         tick
+         elapsed)
+      (and (not now-empty?)
+           (or was-empty? (= 1 (compare-more (first old-cursor) (first new-cursor)))))
+        (let [child-key (first new-cursor)
+              child (last new-cursor)
+              new-acc (conj acc [child-key child])]
+          (recur
+           new-acc
+           old-children
+           (rest new-children)
+           coord
+           states
+           build-mutate
+           at-place?
+           tick
+           elapsed))
+      (and (not was-empty?)
+           (or now-empty? (= -1 (compare-more (first old-cursor) (first new-cursor)))))
+        (let [child-key (first old-cursor)
+              child (last old-cursor)
+              component? (= Component (type child))
+              child-coord (conj coord child-key)
+              new-acc (if component?
+                        (if (:fading? child)
+                          (if (let [remove? (:remove? child)] (remove? (:instant child)))
+                            acc
+                            (conj
+                             acc
+                             [child-key
+                              (expand-component
+                               child
+                               child
+                               child-coord
+                               states
+                               build-mutate
+                               at-place?
+                               tick
+                               elapsed)]))
+                          (let [old-instant (:instant child)
+                                on-unmount (:on-unmount child)
+                                new-instant (on-unmount old-instant)]
+                            (conj
+                             acc
+                             [child-key (assoc child :instant new-instant :fading? true)])))
+                        acc)]
+          (recur
+           new-acc
+           (rest old-children)
+           new-children
+           coord
+           states
+           build-mutate
+           at-place?
+           tick
+           elapsed))
+      :else acc)))
+
+(defn expand-shape [markup
+                    old-tree
+                    coord
+                    c-coord
+                    states
+                    build-mutate
+                    at-place?
+                    tick
+                    elapsed]
+  (let [old-children (:children old-tree)
+        cached-map (into {} old-children)
+        new-children (->> (:children markup)
+                          (map
+                           (fn [child]
+                             (let [child-key (first child)
+                                   child-markup (last child)
+                                   child-coord (conj coord child-key)
+                                   old-child-tree (get cached-map child-key)
+                                   child-state (get states child-key)]
+                               [child-key
+                                (if (= (type child-markup) Component)
+                                  (expand-component
+                                   child-markup
+                                   old-child-tree
+                                   child-coord
+                                   child-state
+                                   build-mutate
+                                   at-place?
+                                   tick
+                                   elapsed)
+                                  (expand-shape
+                                   child-markup
+                                   old-child-tree
+                                   child-coord
+                                   coord
+                                   child-state
+                                   build-mutate
+                                   at-place?
+                                   tick
+                                   elapsed))]))))]
+    (if (some? old-tree)
+      (let [merged-children (seq
+                             (merge-children
+                              []
+                              old-children
+                              new-children
+                              coord
+                              states
+                              build-mutate
+                              at-place?
+                              tick
+                              elapsed))]
+        (assoc markup :coord coord :c-coord c-coord :children merged-children))
+      (assoc markup :children new-children :coord coord :c-coord c-coord))))
 
 (defn expand-component [markup old-tree coord states build-mutate at-place? tick elapsed]
   (let [child-coord (conj coord (:name markup))
@@ -103,157 +254,6 @@
         (merge
          markup
          {:coord child-coord, :args args, :states state-tree, :instant instant, :tree tree})))))
-
-(defn expand-shape [markup
-                    old-tree
-                    coord
-                    c-coord
-                    states
-                    build-mutate
-                    at-place?
-                    tick
-                    elapsed]
-  (let [old-children (:children old-tree)
-        cached-map (into {} old-children)
-        new-children (->> (:children markup)
-                          (map
-                           (fn [child]
-                             (let [child-key (first child)
-                                   child-markup (last child)
-                                   child-coord (conj coord child-key)
-                                   old-child-tree (get cached-map child-key)
-                                   child-state (get states child-key)]
-                               [child-key
-                                (if (= (type child-markup) Component)
-                                  (expand-component
-                                   child-markup
-                                   old-child-tree
-                                   child-coord
-                                   child-state
-                                   build-mutate
-                                   at-place?
-                                   tick
-                                   elapsed)
-                                  (expand-shape
-                                   child-markup
-                                   old-child-tree
-                                   child-coord
-                                   coord
-                                   child-state
-                                   build-mutate
-                                   at-place?
-                                   tick
-                                   elapsed))]))))]
-    (if (some? old-tree)
-      (let [merged-children (seq
-                             (merge-children
-                              []
-                              old-children
-                              new-children
-                              coord
-                              states
-                              build-mutate
-                              at-place?
-                              tick
-                              elapsed))]
-        (assoc markup :coord coord :c-coord c-coord :children merged-children))
-      (assoc markup :children new-children :coord coord :c-coord c-coord))))
-
-(defn merge-children [acc
-                      old-children
-                      new-children
-                      coord
-                      states
-                      build-mutate
-                      at-place?
-                      tick
-                      elapsed]
-  (let [was-empty? (empty? old-children)
-        now-empty? (empty? new-children)
-        old-cursor (first old-children)
-        new-cursor (first new-children)]
-    (cond
-      (and was-empty? now-empty?) acc
-      (and (not was-empty?) (not now-empty?) (= (key old-cursor) (key new-cursor)))
-        (recur
-         (conj acc [(key new-cursor) (val new-cursor)])
-         (rest old-children)
-         (rest new-children)
-         coord
-         states
-         build-mutate
-         at-place?
-         tick
-         elapsed)
-      (and (not now-empty?)
-           (or was-empty? (= 1 (compare-more (key old-cursor) (key new-cursor)))))
-        (let [child-key (first new-cursor)
-              child (last new-cursor)
-              new-acc (conj acc [child-key child])]
-          (recur
-           new-acc
-           old-children
-           (rest new-children)
-           coord
-           states
-           build-mutate
-           at-place?
-           tick
-           elapsed))
-      (and (not was-empty?)
-           (or now-empty? (= -1 (compare-more (key old-cursor) (key new-cursor)))))
-        (let [child-key (first old-cursor)
-              child (last old-cursor)
-              component? (= Component (type child))
-              child-coord (conj coord child-key)
-              new-acc (if component?
-                        (if (:fading? child)
-                          (if (let [remove? (:remove? child)] (remove? (:instant child)))
-                            acc
-                            (conj
-                             acc
-                             [child-key
-                              (expand-component
-                               child
-                               child
-                               child-coord
-                               states
-                               build-mutate
-                               at-place?
-                               tick
-                               elapsed)]))
-                          (let [old-instant (:instant child)
-                                on-unmount (:on-unmount child)
-                                new-instant (on-unmount old-instant)]
-                            (conj
-                             acc
-                             [child-key (assoc child :instant new-instant :fading? true)])))
-                        acc)]
-          (recur
-           new-acc
-           (rest old-children)
-           new-children
-           coord
-           states
-           build-mutate
-           at-place?
-           tick
-           elapsed))
-      :else acc)))
-
-(defn contain-markups? [items]
-  (let [result (some
-                (fn [item]
-                  (if (or (= Component (type item)) (= Shape (type item)))
-                    true
-                    (if (and (map? item) (> (count item) 0))
-                      (some
-                       (fn [child] (or (= Component (type child)) (= Shape (type child))))
-                       (vals item))
-                      false)))
-                items)]
-    (comment if (not result) (.log js/console result items))
-    result))
 
 (defn expand-app [markup old-tree states build-mutate tick elapsed]
   (comment .log js/console "caches:" (map first (map key @comp-caches)))

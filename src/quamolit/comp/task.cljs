@@ -7,6 +7,23 @@
             [quamolit.comp.task-toggler :refer [comp-toggler]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
+(defn handle-input [task-id task-text]
+  (fn [event dispatch]
+    (let [new-text (js/prompt "new content:" task-text)]
+      (dispatch :update [task-id new-text]))))
+
+(defn handle-remove [task-id] (fn [event dispatch] (dispatch :rm task-id)))
+
+(defn init-instant [args state at-place?]
+  (let [index (get (into [] args) 2)]
+    {:numb? false,
+     :presence 0,
+     :presence-velocity 3,
+     :left (if at-place? -40 0),
+     :left-velocity (if at-place? 0.09 0),
+     :index index,
+     :index-velocity 0}))
+
 (defn on-tick [instant tick elapsed]
   (comment .log js/console "on tick data:" instant tick elapsed)
   (let [v (:presence-velocity instant)
@@ -22,7 +39,9 @@
       (assoc new-instant :numb? true)
       new-instant)))
 
-(def style-block {:w 300, :h 40, :fill-style (hsl 40 80 80)})
+(defn on-unmount [instant tick]
+  (comment .log js/console "calling unmount" instant)
+  (assoc instant :presence-velocity -3 :left-velocity -0.09))
 
 (defn on-update [instant old-args args old-state state]
   (comment .log js/console "on update:" instant old-args args)
@@ -36,16 +55,9 @@
        new-index)
       instant)))
 
-(defn handle-input [task-id task-text]
-  (fn [event dispatch]
-    (let [new-text (js/prompt "new content:" task-text)]
-      (dispatch :update [task-id new-text]))))
-
 (defn style-input [text] {:w 400, :h 40, :x 40, :y 0, :fill-style (hsl 0 0 60), :text text})
 
 (def style-remove {:w 40, :h 40, :fill-style (hsl 0 80 40)})
-
-(defn handle-remove [task-id] (fn [event dispatch] (dispatch :rm task-id)))
 
 (defn render [timestamp task index shift-x]
   (fn [state mutate! instant tick]
@@ -62,19 +74,7 @@
        (rect {:style style-remove, :event {:click (handle-remove (:id task))}}))
       (comp-debug task {})))))
 
-(defn init-instant [args state at-place?]
-  (let [index (get (into [] args) 2)]
-    {:numb? false,
-     :presence 0,
-     :presence-velocity 3,
-     :left (if at-place? -40 0),
-     :left-velocity (if at-place? 0.09 0),
-     :index index,
-     :index-velocity 0}))
-
-(defn on-unmount [instant tick]
-  (comment .log js/console "calling unmount" instant)
-  (assoc instant :presence-velocity -3 :left-velocity -0.09))
-
 (def comp-task
   (create-comp :task nil nil init-instant on-tick on-update on-unmount nil render))
+
+(def style-block {:w 300, :h 40, :fill-style (hsl 40 80 80)})

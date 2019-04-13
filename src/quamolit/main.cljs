@@ -21,21 +21,17 @@
     (render-page (comp-container timestamp @store-ref) states-ref target)
     (reset! loop-ref (js/requestAnimationFrame render-loop!))))
 
+(defn -main []
+  (comment devtools/install!)
+  (let [target (.querySelector js/document "#app")]
+    (configure-canvas target)
+    (setup-events target dispatch!)
+    (js/requestAnimationFrame render-loop!))
+  (set!
+   js/window.onresize
+   (fn [event] (let [target (.querySelector js/document "#app")] (configure-canvas target)))))
+
 (defn on-jsload []
   (js/cancelAnimationFrame @loop-ref)
   (js/requestAnimationFrame render-loop!)
   (.log js/console "code updated..."))
-
-(defn -main []
-  (devtools/install!)
-  (enable-console-print!)
-  (let [target (.querySelector js/document "#app")]
-    (configure-canvas target)
-    (setup-events target dispatch!)
-    (js/requestAnimationFrame render-loop!)))
-
-(set! js/window.onload -main)
-
-(set!
- js/window.onresize
- (fn [event] (let [target (.querySelector js/document "#app")] (configure-canvas target))))

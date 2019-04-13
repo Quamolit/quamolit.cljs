@@ -1,3 +1,8 @@
 
-/target
-/node_modules/
+/target/
+/dist
+/node_modules
+.cpcache/
+.shadow-cljs/
+
+.nrepl-port

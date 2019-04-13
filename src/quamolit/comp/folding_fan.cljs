@@ -5,19 +5,21 @@
             [hsl.core :refer [hsl]]
             [quamolit.util.iterate :refer [iterate-instant tween]]))
 
+(defn handle-toggle [mutate!] (fn [e dispatch] (mutate!)))
+
+(defn init-instant [args state] {:folding-value (if state 1000 0), :folding-v 0})
+
+(defn init-state [] true)
+
 (defn on-tick [instant tick elapsed]
   (iterate-instant instant :folding-value :folding-v elapsed [0 1000]))
 
-(defn update-state [state] (not state))
-
-(defn handle-toggle [mutate!] (fn [e dispatch] (mutate!)))
-
-(defn remove? [instant] true)
+(defn on-unmount [instant tick] instant)
 
 (defn on-update [instant old-args old-state args state]
   (if (not= old-state state) (assoc instant :folding-v (if state 2 -2)) instant))
 
-(defn init-state [] true)
+(defn remove? [instant] true)
 
 (defn render []
   (fn [state mutate! instant tick]
@@ -58,9 +60,7 @@
                  :text-color (hsl 0 0 100)},
          :event {:click (handle-toggle mutate!)}})))))
 
-(defn init-instant [args state] {:folding-value (if state 1000 0), :folding-v 0})
-
-(defn on-unmount [instant tick] instant)
+(defn update-state [state] (not state))
 
 (def comp-folding-fan
   (create-comp

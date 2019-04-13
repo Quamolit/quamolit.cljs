@@ -5,6 +5,8 @@
             [quamolit.render.element :refer [input translate textbox]]
             [quamolit.util.keyboard :refer [keycode->key]]))
 
+(defn init-state [] (into [] (repeat 3 (into [] (repeat 3 "edit")))))
+
 (defn render []
   (fn [state mutate! instant tick]
     (comment .log js/console state)
@@ -24,7 +26,5 @@
                           (translate
                            {:style {:x move-x, :y move-y}}
                            (textbox {:style {:w 80, :h 40, :text content}})))]))))]))))))
-
-(defn init-state [] (into [] (repeat 3 (into [] (repeat 3 "edit")))))
 
 (def comp-code-table (create-comp :code-table init-state nil render))

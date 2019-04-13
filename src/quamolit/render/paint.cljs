@@ -2,41 +2,18 @@
 (ns quamolit.render.paint
   (:require [hsl.core :refer [hsl]] [quamolit.types :refer [Component]]))
 
-(defn paint-text [ctx style]
-  (set! ctx.fillStyle (or (:fill-style style) (hsl 0 0 0)))
-  (set! ctx.textAlign (or (:text-align style) "center"))
-  (set! ctx.textBaseline (or (:base-line style) "middle"))
-  (set! ctx.font (str (or (:size style) 20) "px " (or (:font-family style) "Optima")))
-  (if (contains? style :fill-style)
-    (do
-     (.fillText
-      ctx
-      (:text style)
-      (or (:x style) 0)
-      (or (:y style) 0)
-      (or (:max-width style) 400))))
-  (if (contains? style :stroke-style)
-    (do
-     (.strokeText
-      ctx
-      (:text style)
-      (or (:x style) 0)
-      (or (:y style) 0)
-      (or (:max-width style) 400)))))
+(defonce image-pool (atom {}))
 
-(defn paint-restore [ctx style eff-ref]
-  (.restore ctx)
-  (swap! eff-ref update :alpha-stack rest))
+(defn get-image [src]
+  (if (contains? image-pool src)
+    (get image-pool src)
+    (let [image (.createElement js/document "img")] (.setAttribute image "src" src) image)))
 
 (defn paint-alpha [ctx style eff-ref]
   (let [inherent-opacity (first (:alpha-stack @eff-ref))
         opacity (* inherent-opacity (or (:opacity style) 0.5))]
     (set! ctx.globalAlpha opacity)
     (swap! eff-ref update :alpha-stack (fn [alpha-stack] (cons opacity (rest alpha-stack))))))
-
-(defn paint-save [ctx style eff-ref]
-  (.save ctx)
-  (swap! eff-ref update :alpha-stack (fn [alpha-stack] (cons ctx.globalAlpha alpha-stack))))
 
 (def pi-ratio (/ js/Math.PI 180))
 
@@ -67,11 +44,19 @@
        (set! ctx.miterLimit miter-limit)
        (.stroke ctx)))))
 
-(defn paint-scale [ctx style]
-  (let [ratio (or (:ratio style) 1.2)] (.scale ctx ratio ratio)))
+(defn paint-group! [] )
 
-(defn paint-translate [ctx style]
-  (let [x (or (:x style) 0), y (or (:y style) 0)] (.translate ctx x y)))
+(defn paint-image [ctx style coord]
+  (let [sx (or (:sx style) 0)
+        sy (or (:sy style) 0)
+        sw (or (:sw style) 40)
+        sh (or (:sh style) 40)
+        dx (or (:dx style) 0)
+        dy (or (:dy style) 0)
+        dw (or (:dw style) 40)
+        dh (or (:dh style) 40)
+        image (get-image (:src style))]
+    (.drawImage ctx image sx sy sw sh dx dy dw dh)))
 
 (defn paint-line [ctx style]
   (let [x0 (or (:x0 style) 0)
@@ -122,25 +107,6 @@
     (if (contains? style :fill-style)
       (do (set! ctx.fillStyle (:fill-style style)) (.closePath ctx) (.fill ctx)))))
 
-(defonce image-pool (atom {}))
-
-(defn get-image [src]
-  (if (contains? image-pool src)
-    (get image-pool src)
-    (let [image (.createElement js/document "img")] (.setAttribute image "src" src) image)))
-
-(defn paint-image [ctx style coord]
-  (let [sx (or (:sx style) 0)
-        sy (or (:sy style) 0)
-        sw (or (:sw style) 40)
-        sh (or (:sh style) 40)
-        dx (or (:dx style) 0)
-        dy (or (:dy style) 0)
-        dw (or (:dw style) 40)
-        dh (or (:dh style) 40)
-        image (get-image (:src style))]
-    (.drawImage ctx image sx sy sw sh dx dy dw dh)))
-
 (defn paint-rect [ctx style coord event]
   (let [w (or (:w style) 100)
         h (or (:h style) 40)
@@ -161,9 +127,43 @@
        (set! ctx.lineWidth line-width)
        (.stroke ctx)))))
 
-(defn paint-group! [] )
+(defn paint-restore [ctx style eff-ref]
+  (.restore ctx)
+  (swap! eff-ref update :alpha-stack rest))
 
 (defn paint-rotate [ctx style] (let [angle (or (:angle style) 30)] (.rotate ctx angle)))
+
+(defn paint-save [ctx style eff-ref]
+  (.save ctx)
+  (swap! eff-ref update :alpha-stack (fn [alpha-stack] (cons ctx.globalAlpha alpha-stack))))
+
+(defn paint-scale [ctx style]
+  (let [ratio (or (:ratio style) 1.2)] (.scale ctx ratio ratio)))
+
+(defn paint-text [ctx style]
+  (set! ctx.fillStyle (or (:fill-style style) (hsl 0 0 0)))
+  (set! ctx.textAlign (or (:text-align style) "center"))
+  (set! ctx.textBaseline (or (:base-line style) "middle"))
+  (set! ctx.font (str (or (:size style) 20) "px " (or (:font-family style) "Optima")))
+  (if (contains? style :fill-style)
+    (do
+     (.fillText
+      ctx
+      (:text style)
+      (or (:x style) 0)
+      (or (:y style) 0)
+      (or (:max-width style) 400))))
+  (if (contains? style :stroke-style)
+    (do
+     (.strokeText
+      ctx
+      (:text style)
+      (or (:x style) 0)
+      (or (:y style) 0)
+      (or (:max-width style) 400)))))
+
+(defn paint-translate [ctx style]
+  (let [x (or (:x style) 0), y (or (:y style) 0)] (.translate ctx x y)))
 
 (defn paint-one [ctx directive eff-ref]
   (let [op (:name directive), style (:style directive), event (:event directive)]

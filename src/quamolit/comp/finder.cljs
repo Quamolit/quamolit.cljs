@@ -11,9 +11,9 @@
    ["卷柏" "稻" "马尾松" "五角星花" "苔藓"]
    ["芍药" "木棉"]])
 
-(defn init-state [] [card-collection nil])
-
 (defn handle-back [mutate!] (fn [event dispatch] (mutate! nil)))
+
+(defn init-state [] [card-collection nil])
 
 (defn render [timestamp]
   (fn [state mutate! instant tick]

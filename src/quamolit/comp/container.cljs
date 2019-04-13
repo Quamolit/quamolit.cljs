@@ -18,6 +18,10 @@
             [quamolit.comp.folding-fan :refer [comp-folding-fan]]
             [quamolit.comp.debug :refer [comp-debug]]))
 
+(defn handle-back [mutate!] (fn [event dispatch] (mutate! :portal)))
+
+(defn init-state [] :portal)
+
 (defn style-button [guide-text]
   {:text guide-text,
    :surface-color (hsl 200 80 50),
@@ -25,10 +29,6 @@
    :font-size 16,
    :w 80,
    :h 32})
-
-(defn init-state [] :portal)
-
-(defn handle-back [mutate!] (fn [event dispatch] (mutate! :portal)))
 
 (defn render [timestamp store]
   (fn [state mutate! instant tick]

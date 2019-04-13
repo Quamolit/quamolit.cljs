@@ -16,6 +16,49 @@
               arrange-children]]
             [quamolit.util.keyboard :refer [keycode->key]]))
 
+(defn render-alpha [props & children]
+  (let [style (merge {:opacity 0.5} (:style props))]
+    (fn [state mutate! instant tick]
+      (group
+       {}
+       (native-save {})
+       (native-alpha (assoc props :style style))
+       (group {} (arrange-children children))
+       (native-restore {})))))
+
+(def alpha (create-comp :alpha render-alpha))
+
+(defn render-button [props]
+  (comment .log js/console (:style props))
+  (let [style (:style props)
+        guide-text (or (:text style) "button")
+        x (or (:x style) 0)
+        y (or (:y style) 0)
+        w (or (:w style) 100)
+        h (or (:h style) 40)
+        style-bg {:x x,
+                  :y y,
+                  :fill-style (or (:surface-color style) (hsl 0 80 80)),
+                  :w w,
+                  :h h}
+        event-button (:event props)
+        style-text {:fill-style (or (:text-color style) (hsl 0 0 10)),
+                    :text guide-text,
+                    :size (or (:font-size style) 20),
+                    :font-family (or (:font-family style) "Optima"),
+                    :text-align "center",
+                    :x x,
+                    :y y}]
+    (fn [state mutate! instant tick]
+      (group {} (rect {:style style-bg, :event event-button}) (text {:style style-text})))))
+
+(def button (create-comp :button render-button))
+
+(defn handle-keydown [mutate!]
+  (fn [event dispatch] (mutate! (.-keyCode event) (.-shiftKey event))))
+
+(defn init-textbox [props] (:text (:style props)))
+
 (defn render-translate [props & children]
   (let [style (merge {:x 0, :y 0} (:style props))]
     (fn [state mutate! instant tick]
@@ -55,7 +98,7 @@
        (rect {:style style-bg, :event event-collection})
        (translate {:style style-place-text} (text {:style style-text}))))))
 
-(defn init-textbox [props] (:text (:style props)))
+(def input (create-comp :input render-input))
 
 (def pi-ratio (/ js/Math.PI 180))
 
@@ -80,6 +123,13 @@
        (group {} (map-indexed vector children))
        (native-restore {})))))
 
+(defn render-textbox [props]
+  (fn [state mutate! instant tick]
+    (let [style (assoc (:style props) :text state)]
+      (input {:style style, :event {:keydown (handle-keydown mutate!)}}))))
+
+(def rotate (create-comp :rotate render-rotate))
+
 (def scale (create-comp :scale render-scale))
 
 (defn update-textbox [state keycode shift?]
@@ -89,54 +139,4 @@
       (str state guess)
       (case keycode 8 (if (= state "") "" (subs state 0 (- (count state) 1))) state))))
 
-(def input (create-comp :input render-input))
-
-(defn handle-keydown [mutate!]
-  (fn [event dispatch] (mutate! (.-keyCode event) (.-shiftKey event))))
-
-(defn render-textbox [props]
-  (fn [state mutate! instant tick]
-    (let [style (assoc (:style props) :text state)]
-      (input {:style style, :event {:keydown (handle-keydown mutate!)}}))))
-
 (def textbox (create-comp :textbox init-textbox update-textbox render-textbox))
-
-(defn render-alpha [props & children]
-  (let [style (merge {:opacity 0.5} (:style props))]
-    (fn [state mutate! instant tick]
-      (group
-       {}
-       (native-save {})
-       (native-alpha (assoc props :style style))
-       (group {} (arrange-children children))
-       (native-restore {})))))
-
-(def alpha (create-comp :alpha render-alpha))
-
-(defn render-button [props]
-  (comment .log js/console (:style props))
-  (let [style (:style props)
-        guide-text (or (:text style) "button")
-        x (or (:x style) 0)
-        y (or (:y style) 0)
-        w (or (:w style) 100)
-        h (or (:h style) 40)
-        style-bg {:x x,
-                  :y y,
-                  :fill-style (or (:surface-color style) (hsl 0 80 80)),
-                  :w w,
-                  :h h}
-        event-button (:event props)
-        style-text {:fill-style (or (:text-color style) (hsl 0 0 10)),
-                    :text guide-text,
-                    :size (or (:font-size style) 20),
-                    :font-family (or (:font-family style) "Optima"),
-                    :text-align "center",
-                    :x x,
-                    :y y}]
-    (fn [state mutate! instant tick]
-      (group {} (rect {:style style-bg, :event event-button}) (text {:style style-text})))))
-
-(def rotate (create-comp :rotate render-rotate))
-
-(def button (create-comp :button render-button))

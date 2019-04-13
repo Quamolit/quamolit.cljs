@@ -6,6 +6,13 @@
             [quamolit.util.iterate :refer [iterate-instant tween]]
             [quamolit.comp.file-card :refer [comp-file-card]]))
 
+(defn handle-back [mutate-navitate index] (fn [event dispatch] (mutate-navitate index)))
+
+(defn init-instant [args state at-place?]
+  {:presence 0, :presence-v 3, :popup 0, :popup-v 0})
+
+(defn init-state [cards position _ index popup?] nil)
+
 (defn on-tick [instant tick elapsed]
   (let [new-instant (-> instant
                         (iterate-instant :presence :presence-v elapsed [0 1000])
@@ -14,16 +21,12 @@
       (assoc new-instant :numb? true)
       new-instant)))
 
-(defn update-state [state target] target)
+(defn on-unmount [instant tick] (assoc instant :presence-v -3))
 
 (defn on-update [instant old-args args old-state state]
   (comment .log js/console "update folder..." args)
   (let [old-popup? (last old-args), popup? (last args)]
     (if (not= old-popup? popup?) (assoc instant :popup-v (if popup? 3 -3)) instant)))
-
-(defn handle-back [mutate-navitate index] (fn [event dispatch] (mutate-navitate index)))
-
-(defn init-state [cards position _ index popup?] nil)
 
 (defn render [cards position navigate index popup?]
   (fn [state mutate! instant tick]
@@ -69,10 +72,7 @@
            {:style {:w 600, :h 400, :fill-style (hsl 0 80 0 0)},
             :event {:click (handle-back navigate index)}})))))))
 
-(defn init-instant [args state at-place?]
-  {:presence 0, :presence-v 3, :popup 0, :popup-v 0})
-
-(defn on-unmount [instant tick] (assoc instant :presence-v -3))
+(defn update-state [state target] target)
 
 (def comp-folder
   (create-comp

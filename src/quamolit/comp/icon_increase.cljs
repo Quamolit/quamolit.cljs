@@ -5,21 +5,23 @@
             [quamolit.render.element :refer [translate rotate alpha]]
             [quamolit.util.iterate :refer [iterate-instant]]))
 
+(defn handle-click [mutate!] (fn [event dispatch] (mutate!)))
+
+(defn init-instant [args state] {:n state, :n-v 0, :n-target state})
+
+(defn init-state [] 0)
+
 (defn on-tick [instant tick elapsed]
   (let [target (:n-target instant)
         new-instant (-> instant (iterate-instant :n :n-v elapsed [target target]))]
     new-instant))
 
-(defn update-state [x] (inc x))
-
-(defn remove? [instant] true)
-
-(defn handle-click [mutate!] (fn [event dispatch] (mutate!)))
+(defn on-unmount [instant tick] instant)
 
 (defn on-update [instant old-args args old-state state]
   (if (not= old-state state) (assoc instant :n-v 0.004 :n-target state) instant))
 
-(defn init-state [] 0)
+(defn remove? [instant] true)
 
 (defn render []
   (fn [state mutate! instant tick]
@@ -57,9 +59,7 @@
                       :fill-style (hsl 0 80 30),
                       :font-family "Wawati SC Regular"}})))]))))))
 
-(defn init-instant [args state] {:n state, :n-v 0, :n-target state})
-
-(defn on-unmount [instant tick] instant)
+(defn update-state [x] (inc x))
 
 (def comp-icon-increase
   (create-comp

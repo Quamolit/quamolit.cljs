@@ -5,8 +5,9 @@
   "main": "index.js",
   "directories": {},
   "scripts": {
-    "tiye": "rsync -r target/ tiye.me:repo/Quamolit/quamolit",
+    "tiye": "rsync -r dist/ tiye.me:repo/Quamolit/quamolit",
     "html": "cp assets/* target/",
+    "html-dist": "cp assets/* dist/",
     "watch": "shadow-cljs watch app",
     "sv": "shadow-cljs server",
     "compile": "shadow-cljs compile app",
@@ -26,9 +27,7 @@
   "homepage": "https://github.com/Quamolit/quamolit#readme",
   "dependencies": {},
   "devDependencies": {
-    "http-server": "^0.10.0",
-    "shadow-cljs": "^0.18.7",
-    "source-map-support": "^0.4.16",
-    "ws": "^3.1.0"
+    "http-server": "^0.11.1",
+    "shadow-cljs": "^2.8.31"
   }
 }
