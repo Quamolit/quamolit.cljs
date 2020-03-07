@@ -25,7 +25,7 @@
   "homepage": "https://github.com/Quamolit/quamolit#readme",
   "dependencies": {},
   "devDependencies": {
-    "http-server": "^0.11.1",
-    "shadow-cljs": "^2.8.31"
+    "http-server": "^0.12.1",
+    "shadow-cljs": "^2.8.91"
   }
 }

@@ -12,7 +12,7 @@ Features:
 * animation abstractions
 * persistent data by default with ClojureScript
 
-> Still working in progress... And Quamolit requires `ctx.addHitRegion(opts)`, which is an experimental technology.
+> Still prototype... Quamolit requires `ctx.addHitRegion(opts)`, which is an experimental technology.
 
 ### Design
 
@@ -34,6 +34,8 @@ Quamolit is trying to combine two things:
 ```clojure
 [quamolit "0.1.6"]
 ```
+
+Browser [docs/](docs/) for a little more details.
 
 You may require Quamolit with higher level APIs:
 

@@ -1,21 +1,34 @@
-
-{:source-paths ["src" "polyfill" "test"]
- :dependencies [[mvc-works/polyfill   "0.1.1"]
-                [mvc-works/hsl        "0.1.2"]
-                [binaryage/devtools   "0.9.10"]]
- :repositories {"central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
-                "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}
-                "maven-central" {:url "https://repo1.maven.org/maven2/"}
-                "clojars-default" {:url "https://clojars.org/repo"}}
- :open-file-command ["subl" ["%s:%s:%s" :file :line :column]]
- :dev-http {7000 "target/"}
- :builds {:app {:output-dir "target/"
-                :asset-path "."
-                :target :browser
-                :modules {:main {:init-fn quamolit.main/-main}}
-                :compiler-options {:infer-externs :auto}
-                :devtools {:after-load quamolit.main/on-jsload!
-                           :preloads [devtools.core]}
-                :release {:output-dir "dist/"
-                          :compiler-options {:pseudo-names true
-                                             :pretty-print true}}}}}
+{
+  :source-paths ["src" "polyfill" "test"]
+  :dependencies [
+    [mvc-works/polyfill "0.1.1"]
+    [mvc-works/hsl "0.1.2"]
+    [binaryage/devtools "1.0.0"]
+  ]
+  ; :repositories {
+  ;   "central" {:url "https://maven.aliyun.com/nexus/content/groups/public/"}
+  ;   "clojars" {:url "https://mirrors.ustc.edu.cn/clojars/"}
+  ; }
+  :open-file-command [
+    "subl"
+    ["%s:%s:%s" :file :line :column]
+  ]
+  :dev-http {7000 "target/"}
+  :builds {
+    :app {
+      :output-dir "target/", :asset-path ".", :target :browser
+      :modules {
+        :main {:init-fn quamolit.main/-main}
+      }
+      :compiler-options {:infer-externs :auto}
+      :devtools {
+        :after-load quamolit.main/on-jsload!
+        :preloads [devtools.core]
+      }
+      :release {
+        :output-dir "dist/"
+        :compiler-options {:pseudo-names true, :pretty-print true}
+      }
+    }
+  }
+}
