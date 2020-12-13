@@ -6,3 +6,6 @@
 .shadow-cljs/
 
 .nrepl-port
+
+pom.xml
+trace.edn

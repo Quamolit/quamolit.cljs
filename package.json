@@ -5,6 +5,8 @@
   "main": "index.js",
   "directories": {},
   "scripts": {
+    "deploy": "clj -A:release",
+    "m2": "clj -A:release install",
     "tiye": "rsync -r dist/ tiye.me:repo/Quamolit/quamolit",
     "html": "cp assets/* target/",
     "html-dist": "cp assets/* dist/",
