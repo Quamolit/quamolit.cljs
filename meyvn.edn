@@ -1,9 +1,0 @@
-
-{:pom {:group-id "quamolit",
-       :artifact-id "quamolit",
-       :version "0.1.6",
-       :name "Quamolit is declarative animation library for Canvas"}
- :packaging {:jar {:enabled true
-                   :remote-repository {:id "clojars"
-                                       :url "https://clojars.org/repo"}}}
- :scm {:enabled true}}

@@ -1,0 +1,6 @@
+{:version "0.1.6"
+ :group-id "quamolit"
+ :artifact-id "quamolit"
+ :skip-tag true
+ :description "Quamolit is declarative animation library for Canvas"
+ :scm-url "https://github.com/quamolit/quamolit"}
